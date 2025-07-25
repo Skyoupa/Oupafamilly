@@ -420,12 +420,16 @@ class OupafamillyAPITester:
             self.test_get_current_user()
             self.test_admin_dashboard()
             self.test_auth_stats()
+            self.test_content_stats()
         
         # Public endpoints
         self.test_tournaments_list()
         self.test_tournament_stats()
         self.test_tournament_templates()
         self.test_status_endpoints()
+        
+        # MAIN FOCUS: Tutorial endpoints testing
+        self.test_tutorials_endpoints()
         
         # User registration (should work without auth)
         self.test_user_registration()
