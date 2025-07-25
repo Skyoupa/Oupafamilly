@@ -302,7 +302,7 @@ const Tutoriels = () => {
                         </div>
                         
                         <Link
-                          to={`/tutorial/${tutorial.gameId}/${slugify(tutorial.title)}`}
+                          to={`/tutoriels/${tutorial.gameId}/${slugify(tutorial.title)}`}
                           className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg 
                                    hover:from-orange-600 hover:to-orange-700 transition-all duration-300 
                                    font-semibold text-sm hover:scale-105"
