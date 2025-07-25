@@ -296,6 +296,115 @@ class OupafamillyAPITester:
         
         return success1 and success2
 
+    def test_tutorials_endpoints(self):
+        """Test tutorial endpoints - MAIN FOCUS FOR VALIDATION"""
+        self.log("=== TESTING TUTORIALS ENDPOINTS ===")
+        
+        # Test getting all tutorials
+        success1, response1 = self.run_test(
+            "Get All Tutorials",
+            "GET",
+            "content/tutorials",
+            200
+        )
+        
+        if success1:
+            tutorials = response1 if isinstance(response1, list) else []
+            self.log(f"  Found {len(tutorials)} tutorials total")
+            
+            # Check for different games
+            games_found = set()
+            levels_found = set()
+            for tutorial in tutorials:
+                if 'game' in tutorial:
+                    games_found.add(tutorial['game'])
+                if 'level' in tutorial:
+                    levels_found.add(tutorial['level'])
+            
+            self.log(f"  Games found: {sorted(games_found)}")
+            self.log(f"  Levels found: {sorted(levels_found)}")
+            
+            # Test specific tutorial if available
+            if tutorials:
+                first_tutorial = tutorials[0]
+                tutorial_id = first_tutorial.get('id')
+                if tutorial_id:
+                    success_detail, response_detail = self.run_test(
+                        f"Get Tutorial Detail",
+                        "GET",
+                        f"content/tutorials/{tutorial_id}",
+                        200
+                    )
+                    if success_detail:
+                        self.log(f"  Tutorial detail: {response_detail.get('title', 'No title')}")
+                        self.log(f"  Content length: {len(response_detail.get('content', ''))}")
+        
+        # Test filtering by game (CS2 priority)
+        success2, response2 = self.run_test(
+            "Get CS2 Tutorials",
+            "GET",
+            "content/tutorials?game=cs2",
+            200
+        )
+        
+        if success2:
+            cs2_tutorials = response2 if isinstance(response2, list) else []
+            self.log(f"  CS2 tutorials found: {len(cs2_tutorials)}")
+        
+        # Test filtering by level
+        success3, response3 = self.run_test(
+            "Get Beginner Tutorials",
+            "GET",
+            "content/tutorials?level=beginner",
+            200
+        )
+        
+        if success3:
+            beginner_tutorials = response3 if isinstance(response3, list) else []
+            self.log(f"  Beginner tutorials found: {len(beginner_tutorials)}")
+        
+        # Test tutorials by game endpoint
+        success4, response4 = self.run_test(
+            "Get Tutorials by Game (CS2)",
+            "GET",
+            "content/tutorials/by-game/cs2",
+            200
+        )
+        
+        if success4:
+            self.log(f"  CS2 tutorials by level structure: {response4.get('total_tutorials', 0)} total")
+            tutorials_by_level = response4.get('tutorials_by_level', {})
+            for level, tuts in tutorials_by_level.items():
+                self.log(f"    {level}: {len(tuts)} tutorials")
+        
+        return success1 and success2 and success3 and success4
+
+    def test_content_stats(self):
+        """Test content statistics endpoint"""
+        if not self.token:
+            self.log("Skipping content stats test - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING CONTENT STATS ===")
+        success, response = self.run_test(
+            "Content Statistics",
+            "GET",
+            "content/stats/content",
+            200
+        )
+        
+        if success:
+            tutorials = response.get('tutorials', {})
+            self.log(f"  Total tutorials: {tutorials.get('total', 0)}")
+            self.log(f"  Recent tutorials: {tutorials.get('recent', 0)}")
+            
+            by_game = tutorials.get('by_game', [])
+            self.log(f"  Tutorials by game: {len(by_game)} games")
+            for game_stat in by_game:
+                self.log(f"    {game_stat.get('game')}: {game_stat.get('count')} tutorials")
+        
+        return success
+
     def run_all_tests(self):
         """Run all API tests"""
         self.log("🚀 Starting Oupafamilly API Tests")
