@@ -28,7 +28,7 @@ const Tutoriels = () => {
     const fetchTutorials = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API}/content/tutorials`);
+        const response = await axios.get(`${API}/content/tutorials?limit=50`);
         setTutorials(response.data);
         setError(null);
       } catch (err) {
