@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Tutoriels = () => {
   const [selectedGame, setSelectedGame] = useState('cs2');
+  const [tutorials, setTutorials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
 
   // Fonction pour convertir le titre en slug URL (améliorée pour gérer les accents français)
   const slugify = (text) => {
@@ -16,6 +23,25 @@ const Tutoriels = () => {
       .trim();
   };
 
+  // Load tutorials from API
+  useEffect(() => {
+    const fetchTutorials = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API}/content/tutorials`);
+        setTutorials(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading tutorials:', err);
+        setError('Erreur de chargement des tutoriels');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTutorials();
+  }, [API]);
+
   const games = [
     {
       id: 'cs2',
@@ -23,31 +49,111 @@ const Tutoriels = () => {
       description: 'FPS Tactique Compétitif',
       color: '#FF6B35',
       backgroundImage: 'https://c4.wallpaperflare.com/wallpaper/361/922/362/counter-strike-2-valve-weapon-men-ultrawide-hd-wallpaper-preview.jpg',
-      tutorials: [
-        // === NIVEAU DÉBUTANT (15 tutoriels) ===
-        { title: 'Interface et contrôles de base', level: 'Débutant', duration: '15 min', type: 'Fundamentals' },
-        { title: 'Économie CS2 : comprendre les achats', level: 'Débutant', duration: '20 min', type: 'Economy' },
-        { title: 'Mouvement et déplacement optimal', level: 'Débutant', duration: '18 min', type: 'Movement' },
-        { title: 'Visée et réglages crosshair', level: 'Débutant', duration: '25 min', type: 'Aiming' },
-        { title: 'Présentation des armes principales', level: 'Débutant', duration: '22 min', type: 'Weapons' },
-        { title: 'Maps Active Duty : Dust2 basics', level: 'Débutant', duration: '20 min', type: 'Maps' },
-        { title: 'Maps Active Duty : Mirage basics', level: 'Débutant', duration: '20 min', type: 'Maps' },
-        { title: 'Maps Active Duty : Inferno basics', level: 'Débutant', duration: '20 min', type: 'Maps' },
-        { title: 'Utilisation des grenades de base', level: 'Débutant', duration: '18 min', type: 'Utilities' },
-        { title: 'Positionnement et angles communs', level: 'Débutant', duration: '17 min', type: 'Positioning' },
-        { title: 'Communication team efficace', level: 'Débutant', duration: '15 min', type: 'Communication' },
-        { title: 'Rounds d\'échauffement et warm-up', level: 'Débutant', duration: '12 min', type: 'Training' },
-        { title: 'Paramètres audio et son directionnel', level: 'Débutant', duration: '14 min', type: 'Settings' },
-        { title: 'Gestion du stress et mental game', level: 'Débutant', duration: '16 min', type: 'Mental' },
-        { title: 'Routine pré-match et préparation', level: 'Débutant', duration: '13 min', type: 'Preparation' },
+    },
+    {
+      id: 'wow',
+      name: 'World of Warcraft',
+      description: 'MMORPG Stratégique',
+      color: '#F4D03F',
+      backgroundImage: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwxfHxnYW1pbmd8ZW58MHx8fHwxNzUzMzE0OTQ4fDA&ixlib=rb-4.1.0&q=85',
+    },
+    {
+      id: 'lol',
+      name: 'League of Legends',
+      description: 'MOBA Esports',
+      color: '#3498DB',
+      backgroundImage: 'https://images.unsplash.com/photo-1593280359364-5242f1958068?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHw0fHxnYW1pbmd8ZW58MHx8fGJsdWV8MTc1MzM0MTQxMXww&ixlib=rb-4.1.0&q=85',
+    },
+    {
+      id: 'sc2',
+      name: 'StarCraft II',
+      description: 'RTS Stratégique',
+      color: '#9B59B6',
+      backgroundImage: 'https://images.unsplash.com/photo-1504370164829-8c6ef0c41d06?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxnYW1pbmd8ZW58MHx8fGJsdWV8MTc1MzM0MTQxMXww&ixlib=rb-4.1.0&q=85',
+    },
+    {
+      id: 'minecraft',
+      name: 'Minecraft',
+      description: 'Créatif & Compétitif',
+      color: '#27AE60',
+      backgroundImage: 'https://images.unsplash.com/photo-1524685794168-52985e79c1f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHxNaW5lY3JhZnR8ZW58MHx8fHwxNzUzMzk3Mjg4fDA&ixlib=rb-4.1.0&q=85',
+    }
+  ];
 
-        // === NIVEAU INTERMÉDIAIRE (15 tutoriels) ===
-        { title: 'Contrôle de recul avancé (AK-47)', level: 'Intermédiaire', duration: '30 min', type: 'Advanced Weapons' },
-        { title: 'Contrôle de recul avancé (M4A4/A1-S)', level: 'Intermédiaire', duration: '28 min', type: 'Advanced Weapons' },
-        { title: 'Smokes dynamiques et nouvelles mécaniques', level: 'Intermédiaire', duration: '35 min', type: 'Advanced Utilities' },
-        { title: 'Flashbangs : timing et coordination', level: 'Intermédiaire', duration: '25 min', type: 'Advanced Utilities' },
-        { title: 'Molotovs/HE : contrôle territorial', level: 'Intermédiaire', duration: '22 min', type: 'Advanced Utilities' },
-        { title: 'Maps Active Duty : Ancient stratégies', level: 'Intermédiaire', duration: '32 min', type: 'Advanced Maps' },
+  const levels = ['beginner', 'intermediate', 'expert'];
+  const levelDisplayNames = {
+    'beginner': 'Débutant',
+    'intermediate': 'Intermédiaire', 
+    'expert': 'Expert'
+  };
+
+  const getDifficultyColor = (level) => {
+    switch (level) {
+      case 'beginner': return 'difficulty-beginner';
+      case 'intermediate': return 'difficulty-intermediate';
+      case 'expert': return 'difficulty-expert';
+      default: return 'difficulty-default';
+    }
+  };
+
+  const filteredTutorials = () => {
+    if (selectedGame === 'all') {
+      return tutorials.map(tutorial => {
+        const game = games.find(g => g.id === tutorial.game);
+        return {
+          ...tutorial,
+          game: game ? game.name : tutorial.game,
+          gameId: tutorial.game,
+          gameColor: game ? game.color : '#666',
+          level: levelDisplayNames[tutorial.level] || tutorial.level
+        };
+      });
+    }
+    
+    const gameTutorials = tutorials.filter(t => t.game === selectedGame);
+    const selectedGameData = games.find(g => g.id === selectedGame);
+    
+    return gameTutorials.map(tutorial => ({
+      ...tutorial,
+      game: selectedGameData ? selectedGameData.name : tutorial.game,
+      gameId: selectedGame,
+      gameColor: selectedGameData ? selectedGameData.color : '#666',
+      level: levelDisplayNames[tutorial.level] || tutorial.level
+    }));
+  };
+
+  // Get tutorial count per game
+  const getGameTutorialCount = (gameId) => {
+    return tutorials.filter(t => t.game === gameId).length;
+  };
+
+  if (loading) {
+    return (
+      <div className="page-pro">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-white text-lg">Chargement des tutoriels professionnels...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page-pro">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="bg-red-900/20 border border-red-500 rounded-lg p-8 max-w-md">
+              <h2 className="text-red-400 text-xl font-bold mb-2">❌ Erreur</h2>
+              <p className="text-gray-300">{error}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
         { title: 'Maps Active Duty : Nuke verticality', level: 'Intermédiaire', duration: '35 min', type: 'Advanced Maps' },
         { title: 'Maps Active Duty : Overpass contrôle', level: 'Intermédiaire', duration: '30 min', type: 'Advanced Maps' },
         { title: 'Maps Active Duty : Train positioning', level: 'Intermédiaire', duration: '28 min', type: 'Advanced Maps' },
