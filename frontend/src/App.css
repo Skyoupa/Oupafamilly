@@ -6025,3 +6025,73 @@ body {
     height: 25px;
   }
 }
+
+/* Styles pour les tutoriels - Mise en forme professionnelle */
+.tutorial-content {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+.tutorial-content h1, .tutorial-content h2, .tutorial-content h3, .tutorial-content h4 {
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+
+.tutorial-content p {
+  margin-bottom: 0.75rem;
+  color: #e5e7eb;
+}
+
+.tutorial-content ul, .tutorial-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.tutorial-content li {
+  margin-bottom: 0.25rem;
+  color: #d1d5db;
+}
+
+.tutorial-content strong {
+  font-weight: 500;
+}
+
+.tutorial-content em {
+  font-style: italic;
+}
+
+.tutorial-content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #374151, transparent);
+  margin: 1.5rem 0;
+}
+
+.tutorial-content code {
+  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+}
+
+.tutorial-content pre {
+  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+}
+
+/* Responsivité pour les tutoriels */
+@media (max-width: 768px) {
+  .tutorial-content {
+    font-size: 13px;
+  }
+  
+  .tutorial-content h1 {
+    font-size: 1.1rem !important;
+  }
+  
+  .tutorial-content h2 {
+    font-size: 1rem !important;
+  }
+  
+  .tutorial-content h3 {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Amélioration des badges de difficulté */
