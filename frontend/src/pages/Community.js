@@ -342,7 +342,7 @@ const ChatTab = () => {
   const [newMessage, setNewMessage] = useState('');
   const [selectedChannel, setSelectedChannel] = useState('general');
 
-  const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     fetchMessages();
