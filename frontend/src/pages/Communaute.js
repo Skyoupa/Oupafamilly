@@ -29,6 +29,19 @@ const Communaute = () => {
   const [memberSearch, setMemberSearch] = useState('');
   const [selectedRecipient, setSelectedRecipient] = useState('');
   const [messageContent, setMessageContent] = useState('');
+  
+  // Tournament scheduling state
+  const [tournaments, setTournaments] = useState([]);
+  const [selectedTournament, setSelectedTournament] = useState('');
+  const [tournamentSchedule, setTournamentSchedule] = useState(null);
+  const [upcomingMatches, setUpcomingMatches] = useState([]);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState(null);
+  const [scheduleForm, setScheduleForm] = useState({
+    date: '',
+    time: '',
+    notes: ''
+  });
 
   // Filtered data based on search
   const filteredMembers = members.filter(member => 
