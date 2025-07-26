@@ -131,6 +131,7 @@ api_router.include_router(monitoring.router)
 api_router.include_router(achievements.router)
 api_router.include_router(elo.router)
 api_router.include_router(steam.router)
+api_router.include_router(analytics.router)
 
 # Include the router in the main app
 app.include_router(api_router)
