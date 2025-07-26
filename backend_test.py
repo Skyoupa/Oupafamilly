@@ -2079,7 +2079,7 @@ class OupafamillyAPITester:
             }
         )
         
-        if not success8_test:  # We expect this to fail
+        if not success8_test:  # We expect this to fail (404)
             self.log(f"  ✅ Non-existent match validation working correctly (rejected)")
             success8 = True
         else:
