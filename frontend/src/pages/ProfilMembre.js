@@ -368,6 +368,25 @@ const ProfilMembre = () => {
                 )}
               </div>
 
+              {/* Teams Information */}
+              {memberProfile.teams && memberProfile.teams.length > 0 && (
+                <div className="profile-section">
+                  <h3>👥 Équipes</h3>
+                  <div className="teams-list">
+                    {memberProfile.teams.map(team => (
+                      <div key={team.id} className="team-item">
+                        <div className="team-info">
+                          <span className="team-name">{team.name}</span>
+                          <span className="team-game">({getGameDisplay(team.game)})</span>
+                          {team.is_captain && <span className="captain-badge">👑 Capitaine</span>}
+                        </div>
+                        <div className="team-id">ID: {team.id}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Comments Section */}
               <div className="profile-section comments-section">
                 <div className="comments-header">
