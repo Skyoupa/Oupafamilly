@@ -1289,17 +1289,17 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5
 
-    def test_enriched_achievements_system(self):
-        """Test ENRICHED achievements system with 54+ badges - MAIN FOCUS"""
+    def test_elite_achievements_system_58_badges(self):
+        """Test FINAL ELITE achievements system with 58+ badges and mythic rewards - MAIN FOCUS"""
         if not self.token:
-            self.log("Skipping enriched achievements tests - no token", "WARNING")
+            self.log("Skipping elite achievements tests - no token", "WARNING")
             return False
             
-        self.log("=== TESTING ENRICHED ACHIEVEMENTS SYSTEM (54+ BADGES) ===")
+        self.log("=== TESTING FINAL ELITE ACHIEVEMENTS SYSTEM (58+ BADGES) ===")
         
         # Test 1: GET /api/achievements/available - Verify total badges available
         success1, response1 = self.run_test(
-            "Get Available Badges (Total Count Check)",
+            "Get Available Badges (58+ Count Check)",
             "GET",
             "achievements/available",
             200
@@ -1308,6 +1308,7 @@ class OupafamillyAPITester:
         total_badges = 0
         badge_categories = set()
         badge_rarities = set()
+        mythic_badges = []
         
         if success1:
             badges = response1.get('badges', [])
@@ -1315,29 +1316,35 @@ class OupafamillyAPITester:
             
             self.log(f"  Found {total_badges} total badges available")
             
-            if total_badges >= 54:
-                self.log(f"  ✅ ENRICHED SYSTEM CONFIRMED: {total_badges} badges (target: 54+)")
-            elif total_badges >= 21:
-                self.log(f"  ⚠️ PARTIAL ENRICHMENT: {total_badges} badges (expected 54+)", "WARNING")
+            if total_badges >= 58:
+                self.log(f"  ✅ ELITE SYSTEM CONFIRMED: {total_badges} badges (target: 58+)")
+            elif total_badges >= 51:
+                self.log(f"  ⚠️ PARTIAL ELITE: {total_badges} badges (expected 58+)", "WARNING")
             else:
-                self.log(f"  ❌ INSUFFICIENT BADGES: {total_badges} badges (expected 54+)", "ERROR")
+                self.log(f"  ❌ INSUFFICIENT BADGES: {total_badges} badges (expected 58+)", "ERROR")
             
             # Analyze badge distribution
             for badge in badges:
-                badge_categories.add(badge.get('category', 'unknown'))
-                badge_rarities.add(badge.get('rarity', 'unknown'))
+                category = badge.get('category', 'unknown')
+                rarity = badge.get('rarity', 'unknown')
+                badge_categories.add(category)
+                badge_rarities.add(rarity)
+                
+                if rarity == 'mythic':
+                    mythic_badges.append(badge)
             
             self.log(f"  Categories found: {sorted(badge_categories)}")
             self.log(f"  Rarities found: {sorted(badge_rarities)}")
+            self.log(f"  Mythic badges found: {len(mythic_badges)}")
             
-            # Check for new specialized categories
-            expected_categories = ['gaming', 'economic', 'competitive', 'social', 'achievement', 'loyalty', 'special']
+            # Check for all expected categories
+            expected_categories = ['gaming', 'economic', 'competitive', 'social', 'achievement', 'loyalty', 'special', 'community']
             found_categories = len([cat for cat in expected_categories if cat in badge_categories])
             
-            if found_categories >= 6:
-                self.log(f"  ✅ Rich category diversity: {found_categories}/7 expected categories")
+            if found_categories >= 7:
+                self.log(f"  ✅ Rich category diversity: {found_categories}/8 expected categories")
             else:
-                self.log(f"  ❌ Poor category diversity: {found_categories}/7 expected categories", "ERROR")
+                self.log(f"  ❌ Poor category diversity: {found_categories}/8 expected categories", "ERROR")
             
             # Check for all rarity levels including MYTHIC
             expected_rarities = ['common', 'rare', 'epic', 'legendary', 'mythic']
@@ -1348,92 +1355,131 @@ class OupafamillyAPITester:
             else:
                 self.log(f"  ❌ Incomplete rarity system: {found_rarities}/5 rarity levels", "ERROR")
         
-        # Test 2: Check for specific new badge types
+        # Test 2: Check for 7 new mythic badges with ultra-high rewards
         success2 = True
-        if success1:
-            badges = response1.get('badges', [])
+        if success1 and mythic_badges:
+            self.log(f"\n  🏆 ANALYZING {len(mythic_badges)} MYTHIC BADGES:")
             
-            # Look for advanced gaming badges
-            gaming_badges = [b for b in badges if b.get('category') == 'gaming']
-            advanced_gaming_names = ['Tireur d\'Élite', 'Roi du Headshot', 'Maître du Clutch', 'Sniper Légendaire']
-            found_advanced_gaming = sum(1 for badge in gaming_badges if any(name in badge.get('name', '') for name in advanced_gaming_names))
+            # Look for specific elite mythic badges
+            elite_mythic_names = [
+                'Légende d\'Oupafamilly', 'Joueur Parfait', 'Dieu de la Communauté',
+                'Empereur des Tournois', 'Génie Économique', 'Gaming Immortel', 'Fondateur'
+            ]
             
-            self.log(f"  Gaming badges: {len(gaming_badges)} total")
-            if found_advanced_gaming > 0:
-                self.log(f"  ✅ Advanced gaming badges found: {found_advanced_gaming}")
-            else:
-                self.log("  ❌ No advanced gaming badges detected", "ERROR")
-                success2 = False
-            
-            # Look for economic badges
-            economic_badges = [b for b in badges if b.get('category') == 'economic']
-            economic_names = ['Économe', 'Gros Dépensier', 'Collectionneur', 'Investisseur']
-            found_economic = sum(1 for badge in economic_badges if any(name in badge.get('name', '') for name in economic_names))
-            
-            self.log(f"  Economic badges: {len(economic_badges)} total")
-            if found_economic > 0:
-                self.log(f"  ✅ Economic badges found: {found_economic}")
-            else:
-                self.log("  ❌ No economic badges detected", "ERROR")
-                success2 = False
-            
-            # Look for competitive badges
-            competitive_badges = [b for b in badges if b.get('category') == 'competitive']
-            competitive_names = ['Destructeur de Tournoi', 'Champion', 'Vétéran']
-            found_competitive = sum(1 for badge in competitive_badges if any(name in badge.get('name', '') for name in competitive_names))
-            
-            self.log(f"  Competitive badges: {len(competitive_badges)} total")
-            if found_competitive > 0:
-                self.log(f"  ✅ Competitive badges found: {found_competitive}")
-            else:
-                self.log("  ❌ No competitive badges detected", "ERROR")
-                success2 = False
-            
-            # Look for social badges
-            social_badges = [b for b in badges if b.get('category') == 'social']
-            social_names = ['Mentor', 'Pacificateur', 'Ambassadeur']
-            found_social = sum(1 for badge in social_badges if any(name in badge.get('name', '') for name in social_names))
-            
-            self.log(f"  Social badges: {len(social_badges)} total")
-            if found_social > 0:
-                self.log(f"  ✅ Social badges found: {found_social}")
-            else:
-                self.log("  ❌ No social badges detected", "ERROR")
-                success2 = False
-        
-        # Test 3: Check enriched rewards system (up to 1200 XP, 800 coins)
-        success3 = True
-        if success1:
-            badges = response1.get('badges', [])
-            
-            # Find mythic badges and check their rewards
-            mythic_badges = [b for b in badges if b.get('rarity') == 'mythic']
+            found_elite_mythics = 0
             max_xp_reward = 0
             max_coins_reward = 0
+            ultra_high_rewards = []
             
-            for badge in badges:
+            for badge in mythic_badges:
+                badge_name = badge.get('name', '')
                 xp_reward = badge.get('xp_reward', 0)
                 coins_reward = badge.get('coins_reward', 0)
                 
+                # Track maximum rewards
                 if xp_reward > max_xp_reward:
                     max_xp_reward = xp_reward
                 if coins_reward > max_coins_reward:
                     max_coins_reward = coins_reward
+                
+                # Check for elite mythic badges
+                if any(elite_name in badge_name for elite_name in elite_mythic_names):
+                    found_elite_mythics += 1
+                    self.log(f"    ✅ Elite Mythic: {badge_name} - {xp_reward} XP, {coins_reward} coins")
+                
+                # Check for ultra-high rewards (3000+ XP or 2000+ coins)
+                if xp_reward >= 3000 or coins_reward >= 2000:
+                    ultra_high_rewards.append({
+                        'name': badge_name,
+                        'xp': xp_reward,
+                        'coins': coins_reward
+                    })
             
-            self.log(f"  Mythic badges found: {len(mythic_badges)}")
+            self.log(f"  Elite mythic badges found: {found_elite_mythics}/7")
             self.log(f"  Maximum XP reward: {max_xp_reward}")
             self.log(f"  Maximum coins reward: {max_coins_reward}")
+            self.log(f"  Ultra-high reward badges: {len(ultra_high_rewards)}")
             
-            if max_xp_reward >= 1000:
-                self.log(f"  ✅ High XP rewards implemented: {max_xp_reward} (target: 1200)")
+            # Validate elite rewards (5000 XP / 3000 coins target)
+            if max_xp_reward >= 5000:
+                self.log(f"  ✅ ELITE XP REWARDS CONFIRMED: {max_xp_reward} XP (target: 5000+)")
+            elif max_xp_reward >= 3000:
+                self.log(f"  ⚠️ HIGH XP REWARDS: {max_xp_reward} XP (target: 5000+)", "WARNING")
             else:
-                self.log(f"  ❌ Low XP rewards: {max_xp_reward} (expected 1000+)", "ERROR")
+                self.log(f"  ❌ LOW XP REWARDS: {max_xp_reward} XP (expected 5000+)", "ERROR")
+                success2 = False
+            
+            if max_coins_reward >= 3000:
+                self.log(f"  ✅ ELITE COINS REWARDS CONFIRMED: {max_coins_reward} coins (target: 3000+)")
+            elif max_coins_reward >= 2000:
+                self.log(f"  ⚠️ HIGH COINS REWARDS: {max_coins_reward} coins (target: 3000+)", "WARNING")
+            else:
+                self.log(f"  ❌ LOW COINS REWARDS: {max_coins_reward} coins (expected 3000+)", "ERROR")
+                success2 = False
+            
+            # Show ultra-high reward badges
+            if ultra_high_rewards:
+                self.log(f"  🌟 ULTRA-HIGH REWARD BADGES:")
+                for badge in ultra_high_rewards[:3]:  # Show top 3
+                    self.log(f"    - {badge['name']}: {badge['xp']} XP, {badge['coins']} coins")
+        
+        # Test 3: Check for specific new badge types and specialization
+        success3 = True
+        if success1:
+            badges = response1.get('badges', [])
+            
+            # Count badges by category
+            category_counts = {}
+            for badge in badges:
+                category = badge.get('category', 'unknown')
+                category_counts[category] = category_counts.get(category, 0) + 1
+            
+            self.log(f"\n  📊 BADGE DISTRIBUTION BY CATEGORY:")
+            for category, count in sorted(category_counts.items()):
+                self.log(f"    {category.upper()}: {count} badges")
+            
+            # Look for advanced gaming badges
+            gaming_badges = [b for b in badges if b.get('category') == 'gaming']
+            advanced_gaming_names = ['Maître du Clutch', 'Gaming Immortel', 'Joueur Parfait', 'Dieu du Temps de Réaction']
+            found_advanced_gaming = sum(1 for badge in gaming_badges if any(name in badge.get('name', '') for name in advanced_gaming_names))
+            
+            if found_advanced_gaming >= 2:
+                self.log(f"  ✅ Advanced gaming badges: {found_advanced_gaming} found")
+            else:
+                self.log(f"  ❌ Insufficient advanced gaming badges: {found_advanced_gaming}", "ERROR")
                 success3 = False
             
-            if max_coins_reward >= 500:
-                self.log(f"  ✅ High coins rewards implemented: {max_coins_reward} (target: 800)")
+            # Look for economic badges
+            economic_badges = [b for b in badges if b.get('category') == 'economic']
+            economic_names = ['Gros Dépensier', 'Collectionneur', 'Génie Économique']
+            found_economic = sum(1 for badge in economic_badges if any(name in badge.get('name', '') for name in economic_names))
+            
+            if found_economic >= 3:
+                self.log(f"  ✅ Economic specialization badges: {found_economic} found")
             else:
-                self.log(f"  ❌ Low coins rewards: {max_coins_reward} (expected 500+)", "ERROR")
+                self.log(f"  ❌ Insufficient economic badges: {found_economic}", "ERROR")
+                success3 = False
+            
+            # Look for competitive badges
+            competitive_badges = [b for b in badges if b.get('category') == 'competitive']
+            competitive_names = ['Destructeur de Tournoi', 'Empereur des Tournois', 'Vétéran des Tournois']
+            found_competitive = sum(1 for badge in competitive_badges if any(name in badge.get('name', '') for name in competitive_names))
+            
+            if found_competitive >= 1:
+                self.log(f"  ✅ Competitive specialization badges: {found_competitive} found")
+            else:
+                self.log(f"  ❌ No competitive specialization badges found", "ERROR")
+                success3 = False
+            
+            # Look for social badges
+            social_badges = [b for b in badges if b.get('category') == 'social']
+            social_names = ['Dieu de la Communauté', 'Mentor', 'Ambassadeur']
+            found_social = sum(1 for badge in social_badges if any(name in badge.get('name', '') for name in social_names))
+            
+            if found_social >= 2:
+                self.log(f"  ✅ Social specialization badges: {found_social} found")
+            else:
+                self.log(f"  ❌ Insufficient social badges: {found_social}", "ERROR")
                 success3 = False
         
         # Test 4: Check hidden badges functionality
