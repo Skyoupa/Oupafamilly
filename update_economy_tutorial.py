@@ -206,20 +206,20 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 
 ### 💰 Formules de Base
 
-#### **Calcul Force-Buy Possibility**
+#### **Calcul Possibilité Force-Buy**
 ```
 Argent Total Équipe ÷ 5 = Budget par joueur
 Si Budget > 2 500$ → Force-Buy possible
 Si Budget < 2 500$ → Eco recommandé
 ```
 
-#### **Calcul Full-Buy Readiness**
+#### **Calcul Préparation Full-Buy**
 ```
 Argent Actuel + Bonus Défaite = Budget Round Suivant
 Si Budget > 4 500$ (T) ou 5 500$ (CT) → Full-Buy possible
 ```
 
-#### **Calcul Economic Damage**
+#### **Calcul Dégâts Économiques**
 ```
 Armes Perdues × Valeur = Dégâts Économiques
 AK-47 perdue = 2 700$ de dégâts
