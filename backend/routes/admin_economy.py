@@ -155,12 +155,16 @@ async def get_all_transactions(
         
         transactions = await db.coin_transactions.find(filter_dict).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
         
-        # Enrichir avec les noms d'utilisateur
+        # Enrichir avec les noms d'utilisateur et convertir en modèles
+        from models import CoinTransaction
         enriched_transactions = []
         for transaction in transactions:
             user = await db.users.find_one({"id": transaction["user_id"]})
-            transaction["username"] = user["username"] if user else "Unknown"
-            enriched_transactions.append(transaction)
+            # Convert to CoinTransaction model to handle serialization
+            transaction_model = CoinTransaction(**transaction)
+            transaction_dict = transaction_model.dict()
+            transaction_dict["username"] = user["username"] if user else "Unknown"
+            enriched_transactions.append(transaction_dict)
         
         return enriched_transactions
         
