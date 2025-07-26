@@ -2117,6 +2117,226 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8
 
+    def test_cs2_tutorial_cleanup_verification(self):
+        """Test CS2 tutorial cleanup - MAIN FOCUS FOR CURRENT REVIEW"""
+        self.log("=== TESTING CS2 TUTORIAL CLEANUP VERIFICATION ===")
+        
+        # Test 1: GET /api/content/tutorials - should return exactly 12 CS2 tutorials
+        success1, response1 = self.run_test(
+            "Get All Tutorials (Should be 12 CS2 only)",
+            "GET",
+            "content/tutorials",
+            200
+        )
+        
+        total_tutorials = 0
+        cs2_count = 0
+        other_games_count = 0
+        
+        if success1:
+            tutorials = response1 if isinstance(response1, list) else []
+            total_tutorials = len(tutorials)
+            self.log(f"  Total tutorials found: {total_tutorials}")
+            
+            # Count by game
+            games_count = {}
+            difficulty_count = {"beginner": 0, "intermediate": 0, "expert": 0}
+            sort_order_issues = []
+            
+            for tutorial in tutorials:
+                game = tutorial.get('game', 'unknown')
+                level = tutorial.get('level', 'unknown')
+                sort_order = tutorial.get('sort_order', 0)
+                
+                games_count[game] = games_count.get(game, 0) + 1
+                
+                if game == 'cs2':
+                    cs2_count += 1
+                    if level in difficulty_count:
+                        difficulty_count[level] += 1
+                    
+                    # Check sort_order mapping (1=beginner, 2=intermediate, 3=expert)
+                    expected_sort_order = {"beginner": 1, "intermediate": 2, "expert": 3}.get(level, 0)
+                    if sort_order != expected_sort_order:
+                        sort_order_issues.append(f"Tutorial '{tutorial.get('title', 'Unknown')}' has sort_order={sort_order}, expected={expected_sort_order} for level={level}")
+                else:
+                    other_games_count += 1
+            
+            self.log(f"  Games breakdown: {games_count}")
+            self.log(f"  CS2 tutorials: {cs2_count}")
+            self.log(f"  Other games tutorials: {other_games_count}")
+            self.log(f"  CS2 difficulty breakdown: {difficulty_count}")
+            
+            # Validate expectations
+            if total_tutorials == 12:
+                self.log("  ✅ Total tutorials count correct (12)")
+            else:
+                self.log(f"  ❌ Total tutorials incorrect: {total_tutorials} (expected 12)", "ERROR")
+            
+            if cs2_count == 12:
+                self.log("  ✅ CS2 tutorials count correct (12)")
+            else:
+                self.log(f"  ❌ CS2 tutorials incorrect: {cs2_count} (expected 12)", "ERROR")
+            
+            if other_games_count == 0:
+                self.log("  ✅ No other games tutorials found (cleanup successful)")
+            else:
+                self.log(f"  ❌ Found {other_games_count} tutorials from other games (should be 0)", "ERROR")
+            
+            # Check sort_order issues
+            if not sort_order_issues:
+                self.log("  ✅ All sort_order values correct (1=beginner, 2=intermediate, 3=expert)")
+            else:
+                self.log("  ❌ Sort order issues found:", "ERROR")
+                for issue in sort_order_issues:
+                    self.log(f"    {issue}", "ERROR")
+        
+        # Test 2: GET /api/content/tutorials?game=cs2 - confirm CS2 filtering
+        success2, response2 = self.run_test(
+            "Get CS2 Tutorials with Game Filter",
+            "GET",
+            "content/tutorials?game=cs2",
+            200
+        )
+        
+        if success2:
+            cs2_tutorials = response2 if isinstance(response2, list) else []
+            if len(cs2_tutorials) == 12:
+                self.log(f"  ✅ CS2 game filter returns 12 tutorials")
+            else:
+                self.log(f"  ❌ CS2 game filter returns {len(cs2_tutorials)} tutorials (expected 12)", "ERROR")
+        
+        # Test 3: Test difficulty level filtering
+        difficulty_tests = []
+        for level in ["beginner", "intermediate", "expert"]:
+            success_level, response_level = self.run_test(
+                f"Get {level.title()} Tutorials",
+                "GET",
+                f"content/tutorials?level={level}",
+                200
+            )
+            
+            if success_level:
+                level_tutorials = response_level if isinstance(response_level, list) else []
+                level_count = len(level_tutorials)
+                self.log(f"  {level.title()} tutorials: {level_count}")
+                
+                # Check that all are CS2 and have correct sort_order
+                all_cs2 = all(t.get('game') == 'cs2' for t in level_tutorials)
+                expected_sort_order = {"beginner": 1, "intermediate": 2, "expert": 3}[level]
+                correct_sort_order = all(t.get('sort_order') == expected_sort_order for t in level_tutorials)
+                
+                if all_cs2:
+                    self.log(f"    ✅ All {level} tutorials are CS2")
+                else:
+                    self.log(f"    ❌ Some {level} tutorials are not CS2", "ERROR")
+                
+                if correct_sort_order:
+                    self.log(f"    ✅ All {level} tutorials have correct sort_order ({expected_sort_order})")
+                else:
+                    self.log(f"    ❌ Some {level} tutorials have incorrect sort_order", "ERROR")
+                
+                difficulty_tests.append(success_level and all_cs2 and correct_sort_order)
+            else:
+                difficulty_tests.append(False)
+        
+        # Test 4: Verify other games return empty/404
+        other_games = ["lol", "wow", "sc2", "minecraft"]
+        other_games_tests = []
+        
+        for game in other_games:
+            success_game, response_game = self.run_test(
+                f"Verify {game.upper()} Tutorials Removed",
+                "GET",
+                f"content/tutorials/by-game/{game}",
+                200
+            )
+            
+            if success_game:
+                game_data = response_game
+                total_for_game = game_data.get('total_tutorials', 0)
+                
+                if total_for_game == 0:
+                    self.log(f"  ✅ {game.upper()}: 0 tutorials (correctly removed)")
+                    other_games_tests.append(True)
+                else:
+                    self.log(f"  ❌ {game.upper()}: {total_for_game} tutorials found (should be 0)", "ERROR")
+                    other_games_tests.append(False)
+            else:
+                # 404 or other error is also acceptable for removed games
+                self.log(f"  ✅ {game.upper()}: No tutorials endpoint (correctly removed)")
+                other_games_tests.append(True)
+        
+        # Test 5: Verify CS2 by-game endpoint works correctly
+        success5, response5 = self.run_test(
+            "Get CS2 Tutorials by Game Endpoint",
+            "GET",
+            "content/tutorials/by-game/cs2",
+            200
+        )
+        
+        cs2_by_game_success = False
+        if success5:
+            cs2_data = response5
+            total_cs2 = cs2_data.get('total_tutorials', 0)
+            tutorials_by_level = cs2_data.get('tutorials_by_level', {})
+            
+            self.log(f"  CS2 by-game total: {total_cs2}")
+            self.log(f"  CS2 by-game levels: {list(tutorials_by_level.keys())}")
+            
+            for level, tuts in tutorials_by_level.items():
+                self.log(f"    {level}: {len(tuts)} tutorials")
+            
+            if total_cs2 == 12:
+                self.log("  ✅ CS2 by-game endpoint returns 12 tutorials")
+                cs2_by_game_success = True
+            else:
+                self.log(f"  ❌ CS2 by-game endpoint returns {total_cs2} tutorials (expected 12)", "ERROR")
+        
+        # Test 6: Verify all tutorials are published and accessible
+        success6 = True
+        if success1 and response1:
+            tutorials = response1 if isinstance(response1, list) else []
+            unpublished_count = 0
+            
+            for tutorial in tutorials:
+                if not tutorial.get('is_published', False):
+                    unpublished_count += 1
+            
+            if unpublished_count == 0:
+                self.log("  ✅ All tutorials are published and accessible")
+            else:
+                self.log(f"  ❌ Found {unpublished_count} unpublished tutorials", "ERROR")
+                success6 = False
+        
+        # Final summary for CS2 cleanup
+        self.log("\n" + "="*50)
+        self.log("🔍 CS2 TUTORIAL CLEANUP SUMMARY:")
+        self.log("="*50)
+        
+        cleanup_success = (
+            success1 and total_tutorials == 12 and cs2_count == 12 and other_games_count == 0 and
+            success2 and all(difficulty_tests) and all(other_games_tests) and 
+            cs2_by_game_success and success6
+        )
+        
+        if cleanup_success:
+            self.log("✅ CS2 TUTORIAL CLEANUP FULLY SUCCESSFUL", "SUCCESS")
+            self.log("  - Exactly 12 CS2 tutorials remain", "SUCCESS")
+            self.log("  - All other games' tutorials removed (48 deleted)", "SUCCESS")
+            self.log("  - Proper difficulty classification (sort_order 1,2,3)", "SUCCESS")
+            self.log("  - All tutorials published and accessible", "SUCCESS")
+        else:
+            self.log("❌ CS2 TUTORIAL CLEANUP HAS ISSUES", "ERROR")
+            if total_tutorials != 12:
+                self.log(f"  - Wrong total count: {total_tutorials} (expected 12)", "ERROR")
+            if cs2_count != 12:
+                self.log(f"  - Wrong CS2 count: {cs2_count} (expected 12)", "ERROR")
+            if other_games_count > 0:
+                self.log(f"  - Other games not fully removed: {other_games_count} remain", "ERROR")
+        
+        return cleanup_success
+
     def run_all_tests(self):
         """Run all API tests"""
         self.log("🚀 Starting Oupafamilly API Tests - NEW FEATURES FOCUS")
