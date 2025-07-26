@@ -274,15 +274,6 @@ const ProfilMembre = () => {
                     </span>
                   </div>
                   <div className="info-item">
-                    <span className="info-label">Jeux favoris :</span>
-                    <span className="info-value games-value">
-                      {memberProfile.profile?.favorite_games && memberProfile.profile.favorite_games.length > 0
-                        ? memberProfile.profile.favorite_games.map(game => getGameDisplay(game)).join(', ')
-                        : 'Aucun jeu spécifié'
-                      }
-                    </span>
-                  </div>
-                  <div className="info-item">
                     <span className="info-label">Steam :</span>
                     <span className="info-value steam-value">
                       {memberProfile.profile?.steam_profile || 'Non spécifié'}
