@@ -214,8 +214,8 @@ const Communaute = () => {
 
       const headers = { 'Authorization': `Bearer ${token}` };
       
-      // Fetch tournaments
-      const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments?limit=20`, { headers });
+      // Fetch tournaments from betting API
+      const tournamentsResponse = await fetch(`${API_BASE_URL}/betting/tournaments`, { headers });
       if (tournamentsResponse.ok) {
         const tournamentsData = await tournamentsResponse.json();
         setTournaments(tournamentsData);
