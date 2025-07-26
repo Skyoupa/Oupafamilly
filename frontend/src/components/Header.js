@@ -10,6 +10,7 @@ const Header = () => {
   const [authModalMode, setAuthModalMode] = useState('login');
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleOpenAuthModal = (event) => {
