@@ -6,183 +6,55 @@ import './ProfilMembre.css';
 
 const ProfilMembre = () => {
   const { memberId } = useParams();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   
-  // Get API base URL from environment
-  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-  
-  // Get current user from localStorage (simple auth check)
-  const [currentUser, setCurrentUser] = useState(null);
-  
-  // Profile data
-  const [memberProfile, setMemberProfile] = useState(null);
-  const [memberStats, setMemberStats] = useState({});
-  
-  // Comments system
-  const [comments, setComments] = useState([]);
+  // Simple mock data for testing
+  const mockProfile = {
+    display_name: `Membre ${memberId}`,
+    bio: 'Membre actif de la communauté Oupafamilly',
+    level: 5,
+    coins: 250,
+    total_tournaments: 12,
+    tournaments_won: 3,
+    favorite_games: ['cs2', 'lol'],
+    discord_username: 'player#1234',
+    steam_profile: 'steamuser',
+    user_id: memberId,
+    average_rating: 4.2,
+    total_ratings: 8,
+    trophies_1v1: 2,
+    trophies_5v5: 1
+  };
+
+  const [memberProfile] = useState(mockProfile);
+  const [comments] = useState([
+    {
+      id: '1',
+      author_name: 'TestUser',
+      rating: 5,
+      content: 'Excellent joueur, très bon esprit d\'équipe !',
+      created_at: new Date(),
+      author_id: 'test_user'
+    },
+    {
+      id: '2', 
+      author_name: 'Player2',
+      rating: 4,
+      content: 'Bon niveau, communication au top.',
+      created_at: new Date(),
+      author_id: 'player2'
+    }
+  ]);
+
+  const [commentStats] = useState({
+    total_comments: 2,
+    average_rating: 4.5
+  });
+
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(5);
-  const [commentStats, setCommentStats] = useState({});
-  
-  // UI state
   const [showCommentForm, setShowCommentForm] = useState(false);
-
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Simple user object - in real app you'd decode the token
-      setCurrentUser({ id: 'current_user_id', role: 'user' });
-    }
-    
-    if (memberId) {
-      fetchMemberProfile();
-      fetchComments();
-    }
-  }, [memberId]);
-
-  const fetchMemberProfile = async () => {
-    try {
-      setLoading(true);
-      
-      // Pour le moment, utilisons l'API communauté pour obtenir les infos du membre
-      const membersResponse = await fetch(`${API_BASE_URL}/api/community/members`);
-      if (membersResponse.ok) {
-        const membersData = await membersResponse.json();
-        const member = membersData.members?.find(m => m.id === memberId);
-        
-        if (member) {
-          setMemberProfile(member.profile || {
-            display_name: member.username,
-            bio: 'Aucune biographie renseignée',
-            level: 1,
-            coins: 0,
-            total_tournaments: 0,
-            tournaments_won: 0,
-            favorite_games: [],
-            discord_username: '',
-            steam_profile: '',
-            user_id: member.id
-          });
-        } else {
-          setError('Profil membre non trouvé');
-        }
-      } else {
-        setError('Impossible de charger les données du membre');
-      }
-
-    } catch (error) {
-      console.error('Erreur chargement profil:', error);
-      setError('Erreur lors du chargement du profil');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchComments = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-
-      // Get comments
-      const commentsResponse = await fetch(`${API_BASE_URL}/api/comments/user/${memberId}`, { headers });
-      if (commentsResponse.ok) {
-        const commentsData = await commentsResponse.json();
-        setComments(commentsData);
-      }
-
-      // Get comment stats
-      const statsResponse = await fetch(`${API_BASE_URL}/api/comments/stats/user/${memberId}`, { headers });
-      if (statsResponse.ok) {
-        const statsData = await statsResponse.json();
-        setCommentStats(statsData);
-      }
-
-    } catch (error) {
-      console.error('Erreur chargement commentaires:', error);
-      // Not critical - continue without comments
-    }
-  };
-
-  const submitComment = async () => {
-    if (!newComment.trim()) {
-      alert('Veuillez écrire un commentaire');
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Vous devez être connecté pour commenter');
-        return;
-      }
-
-      const response = await fetch(`${API_BASE_URL}/api/comments/user`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          target_user_id: memberId,
-          content: newComment,
-          rating: newRating
-        })
-      });
-
-      if (response.ok) {
-        alert('Commentaire ajouté avec succès !');
-        setNewComment('');
-        setNewRating(5);
-        setShowCommentForm(false);
-        fetchComments(); // Refresh comments
-      } else {
-        const errorData = await response.json();
-        alert(errorData.detail || 'Erreur lors de l\'ajout du commentaire');
-      }
-
-    } catch (error) {
-      console.error('Erreur ajout commentaire:', error);
-      alert('Erreur lors de l\'ajout du commentaire');
-    }
-  };
-
-  const deleteComment = async (commentId) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const response = await fetch(`${API_BASE_URL}/api/comments/user/${commentId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        alert('Commentaire supprimé');
-        fetchComments(); // Refresh comments
-      } else {
-        const errorData = await response.json();
-        alert(errorData.detail || 'Erreur lors de la suppression');
-      }
-
-    } catch (error) {
-      console.error('Erreur suppression commentaire:', error);
-      alert('Erreur lors de la suppression');
-    }
-  };
-
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <span key={i} className={`star ${i < rating ? 'filled' : 'empty'}`}>
-        ⭐
-      </span>
-    ));
-  };
+  const [currentUser] = useState({ id: 'current_user', role: 'user' });
 
   const getGameDisplay = (game) => {
     const games = {
@@ -193,6 +65,27 @@ const ProfilMembre = () => {
       'minecraft': 'Minecraft'
     };
     return games[game] || game;
+  };
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <span key={i} className={`star ${i < rating ? 'filled' : 'empty'}`}>
+        ⭐
+      </span>
+    ));
+  };
+
+  const submitComment = () => {
+    if (newComment.trim()) {
+      alert('Fonctionnalité de commentaire en cours de développement !');
+      setShowCommentForm(false);
+      setNewComment('');
+      setNewRating(5);
+    }
+  };
+
+  const canDeleteComment = () => {
+    return true; // Simplified for demo
   };
 
   if (loading) {
@@ -207,48 +100,6 @@ const ProfilMembre = () => {
       </div>
     );
   }
-
-  if (error) {
-    return (
-      <div className="app">
-        <Header />
-        <div className="error-container">
-          <h2>❌ Erreur</h2>
-          <p>{error}</p>
-          <Link to="/communaute" className="btn-primary-pro">
-            ← Retour à la communauté
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (!memberProfile) {
-    return (
-      <div className="app">
-        <Header />
-        <div className="error-container">
-          <h2>👤 Profil non trouvé</h2>
-          <p>Ce membre n'existe pas ou son profil n'est pas accessible.</p>
-          <Link to="/communaute" className="btn-primary-pro">
-            ← Retour à la communauté
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  const canDeleteComment = (comment) => {
-    return (
-      currentUser && (
-        comment.author_id === currentUser.id || // Author can delete
-        memberProfile?.user_id === currentUser.id || // Profile owner can delete
-        currentUser.role === 'admin' // Admin can delete
-      )
-    );
-  };
 
   return (
     <div className="app">
@@ -269,28 +120,28 @@ const ProfilMembre = () => {
               
               <div className="profile-details">
                 <h1 className="profile-name">{memberProfile.display_name}</h1>
-                <p className="profile-bio">{memberProfile.bio || 'Aucune biographie renseignée'}</p>
+                <p className="profile-bio">{memberProfile.bio}</p>
                 
                 <div className="profile-stats-bar">
                   <div className="stat-item">
-                    <span className="stat-value">Niv. {memberProfile.level || 1}</span>
+                    <span className="stat-value">Niv. {memberProfile.level}</span>
                     <span className="stat-label">Niveau</span>
                   </div>
                   <div className="stat-item">
-                    <span className="stat-value">{memberProfile.coins || 0}</span>
+                    <span className="stat-value">{memberProfile.coins}</span>
                     <span className="stat-label">💰 Coins</span>
                   </div>
                   <div className="stat-item">
-                    <span className="stat-value">{memberProfile.total_tournaments || 0}</span>
+                    <span className="stat-value">{memberProfile.total_tournaments}</span>
                     <span className="stat-label">🏆 Tournois</span>
                   </div>
                   <div className="stat-item">
-                    <span className="stat-value">{commentStats.total_comments || 0}</span>
+                    <span className="stat-value">{commentStats.total_comments}</span>
                     <span className="stat-label">💬 Commentaires</span>
                   </div>
                   <div className="stat-item">
                     <span className="stat-value">
-                      {commentStats.average_rating ? commentStats.average_rating.toFixed(1) : '0.0'} ⭐
+                      {commentStats.average_rating.toFixed(1)} ⭐
                     </span>
                     <span className="stat-label">Note moyenne</span>
                   </div>
@@ -318,22 +169,16 @@ const ProfilMembre = () => {
                   <div className="info-item">
                     <span className="info-label">Jeux favoris :</span>
                     <span className="info-value">
-                      {memberProfile.favorite_games && memberProfile.favorite_games.length > 0
-                        ? memberProfile.favorite_games.map(game => getGameDisplay(game)).join(', ')
-                        : 'Non renseigné'}
+                      {memberProfile.favorite_games.map(game => getGameDisplay(game)).join(', ')}
                     </span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Discord :</span>
-                    <span className="info-value">
-                      {memberProfile.discord_username || 'Non renseigné'}
-                    </span>
+                    <span className="info-value">{memberProfile.discord_username}</span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Steam :</span>
-                    <span className="info-value">
-                      {memberProfile.steam_profile || 'Non renseigné'}
-                    </span>
+                    <span className="info-value">{memberProfile.steam_profile}</span>
                   </div>
                 </div>
               </div>
@@ -343,19 +188,19 @@ const ProfilMembre = () => {
                 <h3>📊 Statistiques Tournois</h3>
                 <div className="stats-grid">
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.tournaments_won || 0}</div>
+                    <div className="stat-number">{memberProfile.tournaments_won}</div>
                     <div className="stat-label">Victoires</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.total_tournaments || 0}</div>
+                    <div className="stat-number">{memberProfile.total_tournaments}</div>
                     <div className="stat-label">Participations</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.trophies_1v1 || 0}</div>
+                    <div className="stat-number">{memberProfile.trophies_1v1}</div>
                     <div className="stat-label">Trophées 1v1</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.trophies_5v5 || 0}</div>
+                    <div className="stat-number">{memberProfile.trophies_5v5}</div>
                     <div className="stat-label">Trophées 5v5</div>
                   </div>
                 </div>
@@ -417,51 +262,42 @@ const ProfilMembre = () => {
 
                 {/* Comments List */}
                 <div className="comments-list">
-                  {comments.length === 0 ? (
-                    <div className="no-comments">
-                      <p>💭 Aucun commentaire pour le moment</p>
-                      <p>Soyez le premier à laisser un commentaire sur ce profil !</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="comments-summary">
-                        <p>
-                          {commentStats.total_comments} commentaire(s) • 
-                          Note moyenne : {commentStats.average_rating ? commentStats.average_rating.toFixed(1) : '0.0'} ⭐
-                        </p>
-                      </div>
-                      
-                      {comments.map(comment => (
-                        <div key={comment.id} className="comment-card">
-                          <div className="comment-header">
-                            <div className="comment-author">
-                              <strong>{comment.author_name}</strong>
-                              <div className="comment-rating">
-                                {renderStars(comment.rating)}
-                              </div>
-                            </div>
-                            <div className="comment-meta">
-                              <span className="comment-date">
-                                {new Date(comment.created_at).toLocaleDateString('fr-FR')}
-                              </span>
-                              {canDeleteComment(comment) && (
-                                <button
-                                  onClick={() => deleteComment(comment.id)}
-                                  className="delete-comment-btn"
-                                  title="Supprimer le commentaire"
-                                >
-                                  🗑️
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          <div className="comment-content">
-                            {comment.content}
+                  <div className="comments-summary">
+                    <p>
+                      {commentStats.total_comments} commentaire(s) • 
+                      Note moyenne : {commentStats.average_rating.toFixed(1)} ⭐
+                    </p>
+                  </div>
+                  
+                  {comments.map(comment => (
+                    <div key={comment.id} className="comment-card">
+                      <div className="comment-header">
+                        <div className="comment-author">
+                          <strong>{comment.author_name}</strong>
+                          <div className="comment-rating">
+                            {renderStars(comment.rating)}
                           </div>
                         </div>
-                      ))}
-                    </>
-                  )}
+                        <div className="comment-meta">
+                          <span className="comment-date">
+                            {new Date(comment.created_at).toLocaleDateString('fr-FR')}
+                          </span>
+                          {canDeleteComment(comment) && (
+                            <button
+                              onClick={() => alert('Fonction de suppression en développement')}
+                              className="delete-comment-btn"
+                              title="Supprimer le commentaire"
+                            >
+                              🗑️
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <div className="comment-content">
+                        {comment.content}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
