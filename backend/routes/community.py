@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from typing import List, Optional
 from models import User, News, NewsCreate, Team
 from auth import get_current_active_user, is_admin, is_moderator_or_admin
+from cache import cached, invalidate
 from datetime import datetime
 import logging
 import uuid
