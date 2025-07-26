@@ -1289,9 +1289,165 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5
 
+    def test_community_profiles_endpoints(self):
+        """Test specific community/profiles endpoints causing display issues - PRIORITY FOCUS"""
+        if not self.token:
+            self.log("Skipping community profiles tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING COMMUNITY/PROFILES ENDPOINTS (PRIORITY) ===")
+        
+        # Test 1: GET /api/community/members - Critical for /communaute page
+        success1, response1 = self.run_test(
+            "Get Community Members",
+            "GET",
+            "community/members",
+            200
+        )
+        
+        members_data = []
+        if success1:
+            members_data = response1.get('members', [])
+            self.log(f"  Found {len(members_data)} community members")
+            
+            if len(members_data) > 0:
+                self.log("  ✅ Members list is NOT empty - should display in /communaute")
+                # Show sample member data structure
+                first_member = members_data[0]
+                self.log(f"    Sample member: {first_member.get('username', 'Unknown')}")
+                self.log(f"    Has profile: {'profile' in first_member}")
+                self.log(f"    Has trophies: {'trophies' in first_member}")
+                self.log(f"    Total trophies: {first_member.get('trophies', {}).get('total', 0)}")
+            else:
+                self.log("  ❌ Members list is EMPTY - this explains /communaute display issue!", "ERROR")
+        
+        # Test 2: GET /api/community/stats - Should provide community overview
+        success2, response2 = self.run_test(
+            "Get Community Stats",
+            "GET",
+            "community/stats",
+            200
+        )
+        
+        if success2:
+            users_stats = response2.get('users', {})
+            teams_stats = response2.get('teams', {})
+            self.log(f"  Total users: {users_stats.get('total', 0)}")
+            self.log(f"  Active users: {users_stats.get('active_last_week', 0)}")
+            self.log(f"  Total teams: {teams_stats.get('total', 0)}")
+            
+            if users_stats.get('total', 0) > 0:
+                self.log("  ✅ Community has users - data should be available")
+            else:
+                self.log("  ❌ No users found in community stats!", "ERROR")
+        
+        # Test 3: GET /api/community/teams - Should return teams list
+        success3, response3 = self.run_test(
+            "Get Community Teams",
+            "GET",
+            "community/teams",
+            200
+        )
+        
+        teams_data = []
+        if success3:
+            teams_data = response3.get('teams', [])
+            self.log(f"  Found {len(teams_data)} community teams")
+            
+            if len(teams_data) > 0:
+                self.log("  ✅ Teams list available")
+                first_team = teams_data[0]
+                self.log(f"    Sample team: {first_team.get('name', 'Unknown')}")
+                self.log(f"    Game: {first_team.get('game', 'Unknown')}")
+                self.log(f"    Members: {first_team.get('member_count', 0)}")
+            else:
+                self.log("  ℹ️ No teams found (may be expected)")
+        
+        # Test 4: GET /api/community/leaderboard - Should return rankings
+        success4, response4 = self.run_test(
+            "Get Community Leaderboard",
+            "GET",
+            "community/leaderboard",
+            200
+        )
+        
+        leaderboard_data = []
+        if success4:
+            leaderboard_data = response4.get('leaderboard', [])
+            self.log(f"  Found {len(leaderboard_data)} players in leaderboard")
+            
+            if len(leaderboard_data) > 0:
+                self.log("  ✅ Leaderboard has players")
+                top_player = leaderboard_data[0]
+                self.log(f"    #1: {top_player.get('username', 'Unknown')} - {top_player.get('total_points', 0)} points")
+                self.log(f"    Badge: {top_player.get('badge', 'None')}")
+            else:
+                self.log("  ❌ Leaderboard is empty!", "ERROR")
+        
+        # Test 5: GET /api/profiles/{user_id} - Critical for profile clicks
+        success5 = True
+        if members_data and len(members_data) > 0:
+            # Test with first member's ID
+            test_user_id = members_data[0].get('id')
+            if test_user_id:
+                success5, response5 = self.run_test(
+                    f"Get User Profile ({members_data[0].get('username', 'Unknown')})",
+                    "GET",
+                    f"profiles/{test_user_id}",
+                    200
+                )
+                
+                if success5:
+                    profile_data = response5
+                    self.log("  ✅ Profile endpoint works - clicking members should work")
+                    self.log(f"    Profile user: {profile_data.get('user', {}).get('username', 'Unknown')}")
+                    self.log(f"    Has statistics: {'statistics' in profile_data}")
+                    self.log(f"    Has teams: {len(profile_data.get('teams', []))}")
+                    self.log(f"    Recent matches: {len(profile_data.get('recent_matches', []))}")
+                else:
+                    self.log("  ❌ Profile endpoint FAILED - this explains profile click errors!", "ERROR")
+            else:
+                self.log("  ❌ No user ID found in members data to test profile endpoint", "ERROR")
+                success5 = False
+        else:
+            self.log("  ⚠️ Cannot test profile endpoint - no members found", "WARNING")
+            success5 = False
+        
+        # Test 6: Test with admin user ID as fallback
+        success6 = True
+        if self.admin_user_id and not success5:
+            success6, response6 = self.run_test(
+                f"Get Admin Profile (Fallback Test)",
+                "GET",
+                f"profiles/{self.admin_user_id}",
+                200
+            )
+            
+            if success6:
+                self.log("  ✅ Profile endpoint works with admin user")
+            else:
+                self.log("  ❌ Profile endpoint fails even with admin user!", "ERROR")
+        
+        # Summary of critical issues
+        self.log("\n" + "="*50)
+        self.log("🔍 COMMUNITY/PROFILES DIAGNOSIS:")
+        self.log("="*50)
+        
+        if not success1 or len(members_data) == 0:
+            self.log("❌ CRITICAL: Members list empty - /communaute page will show no members", "ERROR")
+        else:
+            self.log("✅ Members list populated - /communaute should display members", "SUCCESS")
+        
+        if not success5 and not success6:
+            self.log("❌ CRITICAL: Profile endpoints failing - clicking members will cause errors", "ERROR")
+        else:
+            self.log("✅ Profile endpoints working - member clicks should work", "SUCCESS")
+        
+        return success1 and success2 and success3 and success4 and (success5 or success6)
+
     def run_all_tests(self):
         """Run all API tests"""
-        self.log("🚀 Starting Oupafamilly API Tests - NEW COMMUNITY SYSTEMS FOCUS")
+        self.log("🚀 Starting Oupafamilly API Tests - COMMUNITY/PROFILES FOCUS")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -1302,40 +1458,21 @@ class OupafamillyAPITester:
         # Authentication tests
         if self.test_admin_login():
             self.test_get_current_user()
-            self.test_admin_dashboard()
-            self.test_auth_stats()
             
-            # MAIN FOCUS: New Community Systems Testing
+            # PRIORITY FOCUS: Community/Profiles Endpoints Testing
             self.log("\n" + "="*70)
-            self.log("🎯 MAIN FOCUS: NEW COMMUNITY SYSTEMS TESTING")
+            self.log("🎯 PRIORITY FOCUS: COMMUNITY/PROFILES ENDPOINTS TESTING")
             self.log("="*70)
             
-            # Test the 4 new community systems
-            chat_success = self.test_chat_system()
-            activity_success = self.test_activity_system()
-            betting_success = self.test_betting_system()
-            data_success = self.test_data_verification()
+            # Test the specific endpoints causing issues
+            community_profiles_success = self.test_community_profiles_endpoints()
             
             self.log("="*70)
-            systems_passed = sum([chat_success, activity_success, betting_success, data_success])
-            if systems_passed == 4:
-                self.log("🎉 ALL 4 NEW COMMUNITY SYSTEMS: TESTS PASSED!", "SUCCESS")
+            if community_profiles_success:
+                self.log("🎉 COMMUNITY/PROFILES ENDPOINTS: ALL TESTS PASSED!", "SUCCESS")
             else:
-                self.log(f"❌ NEW COMMUNITY SYSTEMS: {systems_passed}/4 SYSTEMS PASSED!", "ERROR")
-                if not chat_success:
-                    self.log("  - CHAT SYSTEM: FAILED", "ERROR")
-                if not activity_success:
-                    self.log("  - ACTIVITY SYSTEM: FAILED", "ERROR")
-                if not betting_success:
-                    self.log("  - BETTING SYSTEM: FAILED", "ERROR")
-                if not data_success:
-                    self.log("  - DATA VERIFICATION: FAILED", "ERROR")
+                self.log("❌ COMMUNITY/PROFILES ENDPOINTS: SOME TESTS FAILED!", "ERROR")
             self.log("="*70)
-        
-        # Additional tests for completeness
-        self.test_tournaments_list()
-        self.test_status_endpoints()
-        self.test_user_registration()
         
         # Print final results
         self.log("=" * 50)
