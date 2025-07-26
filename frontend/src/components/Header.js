@@ -253,6 +253,78 @@ const Header = () => {
       />
 
       <style jsx>{`
+        /* Theme Toggle Styles */
+        .theme-toggle-btn {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 36px;
+          height: 36px;
+        }
+
+        .theme-toggle-btn:hover {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.4);
+          transform: translateY(-1px);
+        }
+
+        .theme-icon {
+          color: #fbbf24;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover .theme-icon {
+          transform: rotate(15deg);
+        }
+
+        .theme-toggle-mobile {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 15px;
+          padding-bottom: 15px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle-btn-mobile {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          padding: 12px 16px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: white;
+          font-size: 14px;
+          font-weight: 500;
+        }
+
+        .theme-toggle-btn-mobile:hover {
+          background: rgba(255, 255, 255, 0.2);
+          transform: translateY(-1px);
+        }
+
+        .theme-icon-mobile {
+          color: #fbbf24;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .theme-text-mobile {
+          color: white;
+        }
+
         .auth-section-desktop {
           display: flex;
           align-items: center;
