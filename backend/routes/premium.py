@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
-from auth import get_current_user, get_current_admin_user
+from auth import get_current_user, get_admin_user
 from database import db
 from monitoring import app_logger, log_user_action
 import stripe
@@ -579,7 +579,7 @@ async def get_premium_usage_stats(current_user: dict = Depends(get_current_user)
 async def get_all_premium_subscriptions(
     page: int = 1,
     limit: int = 50,
-    admin_user: dict = Depends(get_current_admin_user)
+    admin_user: dict = Depends(get_admin_user)
 ):
     """👑 Liste tous les abonnements premium (admin)"""
     try:
