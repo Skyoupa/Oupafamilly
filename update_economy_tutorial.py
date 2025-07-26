@@ -51,27 +51,27 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 ### 🏆 Méthodes des Équipes Professionnelles
 
 #### **Système Astralis** (Discipline Économique)
-- **Patience Économique** : Sacrifier un round pour un meilleur buy
-- **Utility Maximization** : Prioriser les grenades sur les armes
-- **Calculated Risks** : Force-buys uniquement avec avantage tactique
+- **Patience Économique** : Sacrifier un round pour un meilleur achat
+- **Maximisation Utility** : Prioriser les grenades sur les armes
+- **Risques Calculés** : Force-buys uniquement avec avantage tactique
 
 #### **Système FaZe** (Économie Agressive)
-- **Star Player Economy** : Prioriser l'équipement des stars
-- **Opportunistic Forces** : Force-buys basés sur les momentum
-- **Weapon Drops** : Partage d'armes pour optimiser l'équipe
+- **Économie Star Player** : Prioriser l'équipement des stars
+- **Forces Opportunistes** : Force-buys basés sur les momentum
+- **Drops d'Armes** : Partage d'armes pour optimiser l'équipe
 
 #### **Système NAVI** (Flexibilité Économique)
-- **Adaptive Economy** : Ajustement selon l'adversaire
-- **Information-Based Buying** : Achats basés sur les lectures
-- **Eco Disruption** : Perturbation de l'économie adverse
+- **Économie Adaptive** : Ajustement selon l'adversaire
+- **Achats Basés Information** : Achats basés sur les lectures
+- **Perturbation Eco** : Perturbation de l'économie adverse
 
 ### 📊 Patterns Économiques Professionnels
 
 #### **Cycle Économique Standard**
-1. **Pistol Round** : Investissement initial crucial
-2. **Conversion Round** : Capitaliser sur la victoire pistol
-3. **Force/Eco Decision** : Choix stratégique après défaite
-4. **Full Buy** : Maximiser les chances avec équipement complet
+1. **Round Pistol** : Investissement initial crucial
+2. **Round Conversion** : Capitaliser sur la victoire pistol
+3. **Décision Force/Eco** : Choix stratégique après défaite
+4. **Achat Complet** : Maximiser les chances avec équipement complet
 
 #### **Gestion des Bonus de Défaite**
 - **1ère défaite** : 1 400$ → Possible force-buy
