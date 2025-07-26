@@ -221,6 +221,25 @@ const Communaute = () => {
           <p className="page-subtitle-pro">
             Découvrez les membres, équipes et champions de la Oupafamilly
           </p>
+          
+          {/* User Status Bar */}
+          <div className="user-status-bar">
+            <div className="status-item">
+              <span className="status-icon">💰</span>
+              <span className="status-value">{userProfile.balance || 0}</span>
+              <span className="status-label">Coins</span>
+            </div>
+            <div className="status-item">
+              <span className="status-icon">⭐</span>
+              <span className="status-value">Niv. {userProfile.level || 1}</span>
+              <span className="status-label">Niveau</span>
+            </div>
+            <div className="status-item">
+              <span className="status-icon">📧</span>
+              <span className="status-value">{unreadCount}</span>
+              <span className="status-label">Messages</span>
+            </div>
+          </div>
         </div>
       </section>
 
