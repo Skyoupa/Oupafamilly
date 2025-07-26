@@ -225,7 +225,7 @@ async def get_tutorials_by_game(game: Game):
                 "game": game,
                 "level": level,
                 "is_published": True
-            }).sort("created_at", -1).to_list(None)
+            }).sort([("sort_order", 1), ("created_at", -1)]).to_list(None)
             
             result[level] = [Tutorial(**tutorial) for tutorial in tutorials]
         
