@@ -204,32 +204,32 @@
   margin-bottom: 0.3rem;
 }
 
-/* Special styling for important values - more compact */
+/* Professional styling for important values */
 .info-value.username-value,
 .info-value.games-value,
 .info-value.steam-value,
 .info-value.member-since-value {
-  background: linear-gradient(135deg, #fef9e7, #fef3c7);
-  color: #000000;
-  font-weight: 900;
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  color: #0f172a;
+  font-weight: 600;
   font-size: 1.1rem;
-  border: 2px solid #d97706;
-  text-shadow: 0 1px 2px rgba(255,255,255,0.9);
-  letter-spacing: 0.3px;
-  padding: 0.4rem 0.6rem;
+  border: 2px solid #e2e8f0;
+  border-left: 4px solid #10b981;
+  padding: 0.6rem 0.8rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .info-value {
-  font-weight: 900;
-  color: #000000;
-  font-size: 1.1rem;
-  text-shadow: 0 2px 4px rgba(255,255,255,0.9);
-  background: linear-gradient(135deg, #ffffff, #f8fafc);
-  padding: 0.4rem 0.6rem;
-  border-radius: 4px;
-  border: 2px solid #475569;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  font-family: 'Arial Black', Arial, sans-serif;
+  font-weight: 500;
+  color: #374151;
+  font-size: 1rem;
+  background: #ffffff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.4;
 }
 
 .user-id {
