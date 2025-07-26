@@ -338,34 +338,34 @@
 }
 
 .stat-box {
-  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-  border: 2px solid #94a3b8;
-  border-radius: 6px;
-  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.2rem;
   text-align: center;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .stat-box:hover {
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-  border-color: #7c3aed;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: #3b82f6;
 }
 
 .stat-number {
-  font-size: 1.6rem;
-  font-weight: 900;
-  color: #0f172a;
-  text-shadow: 0 2px 4px rgba(255,255,255,0.8);
-  margin-bottom: 0.3rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: #0f172a;
-  font-weight: 800;
-  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 /* Comments Section */
