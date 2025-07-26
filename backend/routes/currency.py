@@ -101,11 +101,17 @@ async def reward_tournament_participants(tournament_id: str, participants: List[
     except Exception as e:
         logger.error(f"Erreur lors de la distribution des récompenses tournoi: {str(e)}")
 
+from pydantic import BaseModel
+from typing import List, Optional
+
+class TournamentRewardsRequest(BaseModel):
+    participants: List[str]
+    winner_id: Optional[str] = None
+
 @router.post("/tournament-rewards/{tournament_id}")
 async def distribute_tournament_rewards(
     tournament_id: str,
-    participants: List[str],
-    winner_id: Optional[str] = None,
+    request: TournamentRewardsRequest,
     current_user: User = Depends(get_current_active_user)
 ):
     """Distribuer les récompenses d'un tournoi (admin seulement)."""
@@ -116,12 +122,12 @@ async def distribute_tournament_rewards(
                 detail="Seuls les admins peuvent distribuer les récompenses"
             )
         
-        await reward_tournament_participants(tournament_id, participants, winner_id)
+        await reward_tournament_participants(tournament_id, request.participants, request.winner_id)
         
         return {
             "message": "Récompenses distribuées avec succès",
-            "participants_rewarded": len(participants),
-            "winner": winner_id
+            "participants_rewarded": len(request.participants),
+            "winner": request.winner_id
         }
         
     except HTTPException:
