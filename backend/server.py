@@ -52,7 +52,10 @@ async def root():
             "community": "/api/community",
             "profiles": "/api/profiles",
             "currency": "/api/currency",
-            "comments": "/api/comments"
+            "comments": "/api/comments",
+            "chat": "/api/chat",
+            "activity": "/api/activity",
+            "betting": "/api/betting"
         }
     }
 
