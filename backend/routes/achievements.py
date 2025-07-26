@@ -84,6 +84,7 @@ async def get_user_badges_public(
         
         return {
             "user_id": user_id,
+            "username": username,
             "badges": public_badges,
             "total_badges": len(public_badges)
         }
