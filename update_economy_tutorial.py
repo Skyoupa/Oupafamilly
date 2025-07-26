@@ -190,15 +190,15 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 
 ### 🏆 Stratégies Avancées
 
-#### **Economic Warfare**
-- **Eco Disruption** : Forcer l'adversaire en eco
-- **Money Denial** : Limiter les kill rewards adverses
-- **Weapon Control** : Récupérer les armes ennemies
+#### **Guerre Économique**
+- **Perturbation Eco** : Forcer l'adversaire en eco
+- **Déni d'Argent** : Limiter les kill rewards adverses
+- **Contrôle d'Armes** : Récupérer les armes ennemies
 
-#### **Team Economy Management**
-- **Role-Based Buying** : Prioriser selon les rôles
-- **Weapon Sharing** : Drops stratégiques d'armes
-- **Utility Distribution** : Répartition optimale des grenades
+#### **Gestion Économique d'Équipe**
+- **Achats par Rôle** : Prioriser selon les rôles
+- **Partage d'Armes** : Drops stratégiques d'armes
+- **Distribution Utility** : Répartition optimale des grenades
 
 ---
 
