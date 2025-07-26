@@ -73,6 +73,19 @@ class UserProfile(BaseModel):
     trophies_2v2: int = 0
     trophies_5v5: int = 0
     total_points: int = 0
+    # Système de monnaie virtuelle
+    coins: int = 100  # 100 coins de départ pour nouveaux membres
+    total_coins_earned: int = 100  # Total des coins gagnés dans l'historique
+    # XP et niveau
+    experience_points: int = 0
+    level: int = 1
+    # Badges et achievements
+    badges: List[str] = []  # Liste des badges obtenus
+    achievements: List[str] = []  # Liste des achievements
+    # Statistiques sociales
+    comments_received: int = 0
+    average_rating: float = 0.0  # Moyenne des évaluations reçues
+    total_ratings: int = 0  # Nombre total d'évaluations
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
