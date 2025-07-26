@@ -300,31 +300,84 @@ class OupafamillyAPITester:
         """Test tutorial endpoints - MAIN FOCUS FOR VALIDATION"""
         self.log("=== TESTING TUTORIALS ENDPOINTS ===")
         
-        # Test getting all tutorials
+        # Test getting all tutorials with limit 100 (key requirement)
         success1, response1 = self.run_test(
-            "Get All Tutorials",
+            "Get All Tutorials (Limit 100)",
             "GET",
-            "content/tutorials",
+            "content/tutorials?limit=100",
             200
         )
         
+        total_tutorials = 0
+        games_count = {}
+        
         if success1:
             tutorials = response1 if isinstance(response1, list) else []
-            self.log(f"  Found {len(tutorials)} tutorials total")
+            total_tutorials = len(tutorials)
+            self.log(f"  Found {total_tutorials} tutorials total")
             
-            # Check for different games
+            # Count tutorials per game
             games_found = set()
             levels_found = set()
             for tutorial in tutorials:
                 if 'game' in tutorial:
-                    games_found.add(tutorial['game'])
+                    game = tutorial['game']
+                    games_found.add(game)
+                    games_count[game] = games_count.get(game, 0) + 1
                 if 'level' in tutorial:
                     levels_found.add(tutorial['level'])
             
             self.log(f"  Games found: {sorted(games_found)}")
             self.log(f"  Levels found: {sorted(levels_found)}")
+            self.log(f"  Tutorials per game: {games_count}")
             
-            # Test specific tutorial if available
+            # Validate expected 12 tutorials per game
+            expected_games = ['cs2', 'wow', 'lol', 'sc2', 'minecraft']
+            for game in expected_games:
+                count = games_count.get(game, 0)
+                if count == 12:
+                    self.log(f"  ✅ {game.upper()}: {count} tutorials (CORRECT)")
+                else:
+                    self.log(f"  ❌ {game.upper()}: {count} tutorials (EXPECTED 12)", "ERROR")
+            
+            # Validate total is 60 (12 × 5 games)
+            if total_tutorials == 60:
+                self.log(f"  ✅ Total tutorials: {total_tutorials} (CORRECT)")
+            else:
+                self.log(f"  ❌ Total tutorials: {total_tutorials} (EXPECTED 60)", "ERROR")
+        
+        # Test each game individually using by-game endpoint
+        expected_games = ['cs2', 'wow', 'lol', 'sc2', 'minecraft']
+        game_tests_success = True
+        
+        for game in expected_games:
+            success_game, response_game = self.run_test(
+                f"Get {game.upper()} Tutorials by Game",
+                "GET",
+                f"content/tutorials/by-game/{game}",
+                200
+            )
+            
+            if success_game:
+                total_for_game = response_game.get('total_tutorials', 0)
+                tutorials_by_level = response_game.get('tutorials_by_level', {})
+                
+                if total_for_game == 12:
+                    self.log(f"  ✅ {game.upper()} by-game endpoint: {total_for_game} tutorials (CORRECT)")
+                else:
+                    self.log(f"  ❌ {game.upper()} by-game endpoint: {total_for_game} tutorials (EXPECTED 12)", "ERROR")
+                    game_tests_success = False
+                
+                # Show level distribution
+                for level, tuts in tutorials_by_level.items():
+                    self.log(f"    {level}: {len(tuts)} tutorials")
+            else:
+                game_tests_success = False
+        
+        # Test tutorial detail endpoint with first tutorial if available
+        success_detail = True
+        if success1 and response1:
+            tutorials = response1 if isinstance(response1, list) else []
             if tutorials:
                 first_tutorial = tutorials[0]
                 tutorial_id = first_tutorial.get('id')
@@ -337,47 +390,24 @@ class OupafamillyAPITester:
                     )
                     if success_detail:
                         self.log(f"  Tutorial detail: {response_detail.get('title', 'No title')}")
+                        self.log(f"  Game: {response_detail.get('game', 'No game')}")
+                        self.log(f"  Level: {response_detail.get('level', 'No level')}")
                         self.log(f"  Content length: {len(response_detail.get('content', ''))}")
+                        self.log(f"  Has image: {'image' in response_detail and response_detail['image']}")
         
-        # Test filtering by game (CS2 priority)
-        success2, response2 = self.run_test(
-            "Get CS2 Tutorials",
-            "GET",
-            "content/tutorials?game=cs2",
-            200
-        )
-        
-        if success2:
-            cs2_tutorials = response2 if isinstance(response2, list) else []
-            self.log(f"  CS2 tutorials found: {len(cs2_tutorials)}")
-        
-        # Test filtering by level
-        success3, response3 = self.run_test(
+        # Test filtering capabilities
+        success_filter, response_filter = self.run_test(
             "Get Beginner Tutorials",
             "GET",
             "content/tutorials?level=beginner",
             200
         )
         
-        if success3:
-            beginner_tutorials = response3 if isinstance(response3, list) else []
+        if success_filter:
+            beginner_tutorials = response_filter if isinstance(response_filter, list) else []
             self.log(f"  Beginner tutorials found: {len(beginner_tutorials)}")
         
-        # Test tutorials by game endpoint
-        success4, response4 = self.run_test(
-            "Get Tutorials by Game (CS2)",
-            "GET",
-            "content/tutorials/by-game/cs2",
-            200
-        )
-        
-        if success4:
-            self.log(f"  CS2 tutorials by level structure: {response4.get('total_tutorials', 0)} total")
-            tutorials_by_level = response4.get('tutorials_by_level', {})
-            for level, tuts in tutorials_by_level.items():
-                self.log(f"    {level}: {len(tuts)} tutorials")
-        
-        return success1 and success2 and success3 and success4
+        return success1 and game_tests_success and success_detail and success_filter
 
     def test_content_stats(self):
         """Test content statistics endpoint"""
