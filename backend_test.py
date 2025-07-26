@@ -2338,8 +2338,8 @@ class OupafamillyAPITester:
         return cleanup_success
 
     def run_all_tests(self):
-        """Run all API tests"""
-        self.log("🚀 Starting Oupafamilly API Tests - NEW FEATURES FOCUS")
+        """Run all API tests with CS2 tutorial cleanup as main focus"""
+        self.log("🚀 Starting Oupafamilly API Tests - CS2 TUTORIAL CLEANUP VERIFICATION")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -2351,84 +2351,38 @@ class OupafamillyAPITester:
         if self.test_admin_login():
             self.test_get_current_user()
             
-            # NEW FEATURES TESTING - MAIN FOCUS
+            # MAIN FOCUS: CS2 TUTORIAL CLEANUP VERIFICATION
             self.log("\n" + "="*70)
-            self.log("🎯 MAIN FOCUS: NEW FEATURES TESTING")
+            self.log("🎯 MAIN FOCUS: CS2 TUTORIAL CLEANUP VERIFICATION")
             self.log("="*70)
             
-            # Test 1: Tournament Rewards System
+            # Test CS2 tutorial cleanup - this is the primary objective
             self.log("\n" + "="*50)
-            self.log("🏆 TESTING TOURNAMENT REWARDS SYSTEM")
+            self.log("🧹 TESTING CS2 TUTORIAL CLEANUP")
             self.log("="*50)
-            tournament_rewards_success = self.test_new_tournament_rewards_system()
+            cs2_cleanup_success = self.test_cs2_tutorial_cleanup_verification()
             
-            # Test 2: Professional Betting System
-            self.log("\n" + "="*50)
-            self.log("🎲 TESTING PROFESSIONAL BETTING SYSTEM")
-            self.log("="*50)
-            betting_system_success = self.test_new_professional_betting_system()
-            
-            # Test 3: Admin Economy Dashboard
-            self.log("\n" + "="*50)
-            self.log("💰 TESTING ADMIN ECONOMY DASHBOARD")
-            self.log("="*50)
-            admin_economy_success = self.test_new_admin_economy_dashboard()
-            
-            # Test 4: Marketplace with Customs
-            self.log("\n" + "="*50)
-            self.log("🛍️ TESTING MARKETPLACE WITH CUSTOMS")
-            self.log("="*50)
-            marketplace_customs_success = self.test_new_marketplace_customs()
-            
-            # Test 5: Match Scheduling System
-            self.log("\n" + "="*50)
-            self.log("📅 TESTING MATCH SCHEDULING SYSTEM")
-            self.log("="*50)
-            match_scheduling_success = self.test_match_scheduling_system()
-            
-            # Summary of new features testing
+            # Summary of CS2 cleanup testing
             self.log("\n" + "="*70)
-            self.log("📊 NEW FEATURES TESTING SUMMARY")
+            self.log("📊 CS2 TUTORIAL CLEANUP VERIFICATION SUMMARY")
             self.log("="*70)
             
-            if tournament_rewards_success:
-                self.log("✅ Tournament Rewards System: WORKING", "SUCCESS")
+            if cs2_cleanup_success:
+                self.log("✅ CS2 Tutorial Cleanup: FULLY VERIFIED ✅", "SUCCESS")
+                self.log("  ✅ Exactly 12 CS2 tutorials remain", "SUCCESS")
+                self.log("  ✅ 48 tutorials from other games successfully deleted", "SUCCESS")
+                self.log("  ✅ Proper difficulty classification (1=beginner, 2=intermediate, 3=expert)", "SUCCESS")
+                self.log("  ✅ All tutorials published and accessible", "SUCCESS")
+                self.log("  ✅ All API endpoints working correctly", "SUCCESS")
             else:
-                self.log("❌ Tournament Rewards System: FAILED", "ERROR")
-            
-            if betting_system_success:
-                self.log("✅ Professional Betting System: WORKING", "SUCCESS")
-            else:
-                self.log("❌ Professional Betting System: FAILED", "ERROR")
-            
-            if admin_economy_success:
-                self.log("✅ Admin Economy Dashboard: WORKING", "SUCCESS")
-            else:
-                self.log("❌ Admin Economy Dashboard: FAILED", "ERROR")
-            
-            if marketplace_customs_success:
-                self.log("✅ Marketplace with Customs: WORKING", "SUCCESS")
-            else:
-                self.log("❌ Marketplace with Customs: FAILED", "ERROR")
-            
-            if match_scheduling_success:
-                self.log("✅ Match Scheduling System: WORKING", "SUCCESS")
-            else:
-                self.log("❌ Match Scheduling System: FAILED", "ERROR")
-            
-            all_new_features_success = (
-                tournament_rewards_success and 
-                betting_system_success and 
-                admin_economy_success and 
-                marketplace_customs_success and
-                match_scheduling_success
-            )
+                self.log("❌ CS2 Tutorial Cleanup: ISSUES DETECTED ❌", "ERROR")
+                self.log("  ⚠️ Review the detailed logs above for specific issues", "ERROR")
             
             self.log("="*70)
-            if all_new_features_success:
-                self.log("🎉 ALL NEW FEATURES: WORKING PERFECTLY!", "SUCCESS")
+            if cs2_cleanup_success:
+                self.log("🎉 CS2 TUTORIAL CLEANUP VERIFICATION: SUCCESSFUL!", "SUCCESS")
             else:
-                self.log("❌ SOME NEW FEATURES: NEED ATTENTION!", "ERROR")
+                self.log("❌ CS2 TUTORIAL CLEANUP VERIFICATION: NEEDS ATTENTION!", "ERROR")
             self.log("="*70)
         
         # Print final results
