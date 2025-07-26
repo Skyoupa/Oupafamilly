@@ -193,6 +193,16 @@ const ProfilMembre = () => {
       <section className="profile-header">
         <div className="profile-header-bg">
           <div className="profile-overlay"></div>
+          {/* Bannière équipée */}
+          {memberProfile.profile?.equipped_banner && (
+            <div className="equipped-banner">
+              <img 
+                src={memberProfile.profile.equipped_banner.image_url || '/images/default-banner.jpg'} 
+                alt="Bannière de profil"
+                className="banner-image"
+              />
+            </div>
+          )}
         </div>
           
           <div className="container-pro">
