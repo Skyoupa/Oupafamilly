@@ -10,7 +10,7 @@ import Tournois from './pages/Tournois';
 import TournamentDetail from './pages/TournamentDetail';
 import TournamentBracket from './pages/TournamentBracket';
 import Communaute from './pages/Communaute';
-import Community from './pages/Community';
+
 import APropos from './pages/APropos';
 import News from './pages/News';
 import Profil from './pages/Profil';
