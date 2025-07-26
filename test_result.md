@@ -222,8 +222,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "ProfilMembre.js functionality"
-    - "Community members display"
+    - "Système de récompenses pour tournois"
+    - "Système de paris professionnel"
+    - "Dashboard Admin Économie (nouveaux endpoints)"
+    - "Marketplace avec customs"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
