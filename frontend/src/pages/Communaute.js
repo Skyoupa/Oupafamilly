@@ -215,11 +215,13 @@ const Communaute = () => {
 
       const headers = { 'Authorization': `Bearer ${token}` };
       
-      // Fetch tournaments from betting API
-      const tournamentsResponse = await fetch(`${API_BASE_URL}/betting/tournaments`, { headers });
+      // Fetch tournaments from correct API
+      const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments?limit=20`, { headers });
       if (tournamentsResponse.ok) {
         const tournamentsData = await tournamentsResponse.json();
         setTournaments(tournamentsData);
+      } else {
+        console.error('Erreur lors de la récupération des tournois:', tournamentsResponse.status);
       }
 
       // Fetch upcoming matches
@@ -227,6 +229,8 @@ const Communaute = () => {
       if (upcomingResponse.ok) {
         const upcomingData = await upcomingResponse.json();
         setUpcomingMatches(upcomingData);
+      } else {
+        console.error('Erreur lors de la récupération des matchs à venir:', upcomingResponse.status);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des tournois:', error);
