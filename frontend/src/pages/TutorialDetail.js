@@ -543,14 +543,6 @@ const TutorialDetail = () => {
               tutorialTitle={tutorial.title}
             />
 
-            {/* Hub Recommandations IA - Système intelligent */}
-            <AIRecommendationsHub 
-              game={gameId}
-              tutorialTitle={tutorial.title}
-              tutorialLevel={tutorial.level}
-              tutorialTags={tutorial.tags}
-            />
-
             {/* Stats du tutoriel */}
             <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <h3 className="text-white text-lg font-bold mb-4">📊 Statistiques</h3>
