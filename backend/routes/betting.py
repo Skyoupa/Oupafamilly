@@ -30,6 +30,7 @@ class BettingMarket(BaseModel):
     closes_at: datetime
     settles_at: Optional[datetime] = None
     winning_option: Optional[str] = None
+    match_id: Optional[str] = None  # Pour les paris sur matches individuels
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -40,6 +41,7 @@ class BettingMarketCreate(BaseModel):
     description: str
     options: List[Dict[str, Any]]
     closes_at: datetime
+    match_id: Optional[str] = None
 
 class Bet(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
