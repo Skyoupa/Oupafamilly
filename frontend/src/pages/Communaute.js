@@ -59,6 +59,7 @@ const Communaute = () => {
     fetchCommunityData();
     fetchUserProfile();
     fetchCommunityFeatures();
+    fetchTournamentData();
   }, []);
 
   const fetchCommunityData = async () => {
