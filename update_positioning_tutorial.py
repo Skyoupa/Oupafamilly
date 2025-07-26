@@ -7,7 +7,7 @@ db = client['oupafamilly_db']
 collection = db['tutorials']
 
 # Get the existing tutorial to keep the same image
-existing_tutorial = collection.find_one({'title': 'Positionnement et angles sur cartes'})
+existing_tutorial = collection.find_one({'title': 'Positionnement et angles avancés'})
 if existing_tutorial:
     cs2_image = existing_tutorial.get('image', '')
     print(f'Found existing tutorial with image: {len(cs2_image)} characters')
