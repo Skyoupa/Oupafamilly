@@ -775,24 +775,44 @@ const Communaute = () => {
               </div>
               
               <div className="marketplace-grid">
-                {marketplaceItems.map(item => (
-                  <div key={item.id} className="marketplace-item">
-                    <div className="item-header">
-                      <h3>{item.name}</h3>
-                      {item.is_premium && <span className="premium-badge">⭐ Premium</span>}
-                    </div>
-                    <p className="item-description">{item.description}</p>
-                    <div className="item-footer">
-                      <span className="item-price">💰 {item.price} coins</span>
-                      <button 
-                        className="btn-secondary-pro"
-                        onClick={() => buyMarketplaceItem(item.id, item.name, item.price)}
-                      >
-                        Acheter
-                      </button>
-                    </div>
+                {marketplaceItems.length === 0 ? (
+                  <div className="no-items-message">
+                    <p>Aucun article disponible pour le moment. Veuillez réessayer plus tard.</p>
+                    <button 
+                      className="btn-secondary-pro"
+                      onClick={fetchData}
+                    >
+                      🔄 Actualiser
+                    </button>
                   </div>
-                ))}
+                ) : (
+                  marketplaceItems.map(item => (
+                    <div key={item.id} className="marketplace-item">
+                      <div className="item-header">
+                        <h3>{item.name}</h3>
+                        {item.is_premium && <span className="premium-badge">⭐ Premium</span>}
+                        {item.rarity && item.rarity !== 'common' && (
+                          <span className={`rarity-badge rarity-${item.rarity}`}>
+                            {item.rarity.toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      <p className="item-description">{item.description}</p>
+                      <div className="item-type-badge">
+                        <span>📦 {item.item_type}</span>
+                      </div>
+                      <div className="item-footer">
+                        <span className="item-price">💰 {item.price} coins</span>
+                        <button 
+                          className="btn-secondary-pro"
+                          onClick={() => buyMarketplaceItem(item.id, item.name, item.price)}
+                        >
+                          Acheter
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}
