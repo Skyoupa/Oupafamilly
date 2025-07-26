@@ -114,9 +114,15 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[
+        "http://localhost:3000",  # Développement local
+        "http://127.0.0.1:3000",  # Développement local alternative
+        # Ajoutez vos domaines de production ici :
+        # "https://votre-domaine.com",
+        # "https://www.votre-domaine.com"
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "User-Agent"],
 )
 
 # Configure logging
