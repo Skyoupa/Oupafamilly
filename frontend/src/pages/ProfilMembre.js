@@ -196,15 +196,12 @@ const ProfilMembre = () => {
   }
 
   return (
-    <div className="app">
-      <Header />
-      
-      <main className="profil-membre-container">
-        {/* Profile Header */}
-        <section className="profile-header">
-          <div className="profile-header-bg">
-            <div className="profile-overlay"></div>
-          </div>
+    <div className="profil-membre-container">
+      {/* Profile Header */}
+      <section className="profile-header">
+        <div className="profile-header-bg">
+          <div className="profile-overlay"></div>
+        </div>
           
           <div className="container-pro">
             <div className="profile-info-main">
