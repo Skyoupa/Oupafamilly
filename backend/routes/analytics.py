@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
-from auth import get_current_admin_user
+from auth import get_admin_user
 from database import db
 from monitoring import app_logger
 import asyncio
@@ -58,7 +58,7 @@ class AchievementMetrics(BaseModel):
 # ===============================================
 
 @router.get("/overview")
-async def get_analytics_overview(admin_user: dict = Depends(get_current_admin_user)):
+async def get_analytics_overview(admin_user: dict = Depends(get_admin_user)):
     """📊 Vue d'ensemble des analytics Oupafamilly"""
     try:
         app_logger.info(f"📊 Admin {admin_user['username']} accède aux analytics")
@@ -99,7 +99,7 @@ async def get_analytics_overview(admin_user: dict = Depends(get_current_admin_us
 @router.get("/users/engagement")
 async def get_user_engagement_analytics(
     days: int = 30,
-    admin_user: dict = Depends(get_current_admin_user)
+    admin_user: dict = Depends(get_admin_user)
 ):
     """👥 Analytics détaillées d'engagement utilisateur"""
     try:
@@ -189,7 +189,7 @@ async def get_user_engagement_analytics(
 @router.get("/gaming/performance")
 async def get_gaming_performance_analytics(
     days: int = 30,
-    admin_user: dict = Depends(get_current_admin_user)
+    admin_user: dict = Depends(get_admin_user)
 ):
     """🎮 Analytics de performance gaming"""
     try:
@@ -269,7 +269,7 @@ async def get_gaming_performance_analytics(
 @router.get("/economy/insights")
 async def get_economy_insights(
     days: int = 30,
-    admin_user: dict = Depends(get_current_admin_user)
+    admin_user: dict = Depends(get_admin_user)
 ):
     """💰 Insights économiques avancés"""
     try:
@@ -361,7 +361,7 @@ async def get_economy_insights(
 @router.get("/achievements/progress")
 async def get_achievement_progress_analytics(
     days: int = 30,
-    admin_user: dict = Depends(get_current_admin_user)
+    admin_user: dict = Depends(get_admin_user)
 ):
     """🏆 Analytics de progression des achievements"""
     try:
@@ -448,7 +448,7 @@ async def get_achievement_progress_analytics(
         raise HTTPException(status_code=500, detail="Erreur lors de l'analyse des achievements")
 
 @router.get("/performance/system")
-async def get_system_performance_analytics(admin_user: dict = Depends(get_current_admin_user)):
+async def get_system_performance_analytics(admin_user: dict = Depends(get_admin_user)):
     """⚡ Analytics de performance système"""
     try:
         # Statistiques de base de données
