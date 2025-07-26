@@ -101,6 +101,9 @@ api_router.include_router(community.router)
 api_router.include_router(profiles.router)
 api_router.include_router(currency.router)
 api_router.include_router(comments.router)
+api_router.include_router(chat.router)
+api_router.include_router(activity.router)
+api_router.include_router(betting.router)
 
 # Include the router in the main app
 app.include_router(api_router)
