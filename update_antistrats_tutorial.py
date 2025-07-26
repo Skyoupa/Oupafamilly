@@ -77,11 +77,11 @@ Les **anti-strats** et **counter-tactical play** sont l'essence de la domination
 - **Adaptation** : Calls mid-round instantanés
 - **Impact** : Contrôle rythme du match
 
-#### **Team Coordination**
-- **Communication Système** : Protocoles adaptation
-- **Role Flexibility** : Changements rôles
-- **Timing Mastery** : Synchronisation parfaite
-- **Backup Plans** : Plans alternatifs prêts
+#### **Coordination Équipe**
+- **Système Communication** : Protocoles adaptation
+- **Flexibilité Rôles** : Changements rôles
+- **Maîtrise Timing** : Synchronisation parfaite
+- **Plans Secours** : Plans alternatifs prêts
 
 ### 🎛️ Intelligence Magisk : Support Adaptatif
 
