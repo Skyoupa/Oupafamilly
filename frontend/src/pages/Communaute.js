@@ -37,6 +37,8 @@ const Communaute = () => {
 
   useEffect(() => {
     fetchCommunityData();
+    fetchUserProfile();
+    fetchCommunityFeatures();
   }, []);
 
   const fetchCommunityData = async () => {
@@ -75,6 +77,71 @@ const Communaute = () => {
       setError('Erreur lors du chargement des données communautaires');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/currency/balance`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserProfile(data);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement du profil:', error);
+    }
+  };
+
+  const fetchCommunityFeatures = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const headers = { 'Authorization': `Bearer ${token}` };
+
+      // Fetch marketplace items
+      const marketResponse = await fetch(`${API_BASE_URL}/currency/marketplace`, { headers });
+      if (marketResponse.ok) {
+        const marketData = await marketResponse.json();
+        setMarketplaceItems(marketData.slice(0, 4)); // Show only 4 items
+      }
+
+      // Fetch betting markets
+      const bettingResponse = await fetch(`${API_BASE_URL}/betting/markets?status=open`, { headers });
+      if (bettingResponse.ok) {
+        const bettingData = await bettingResponse.json();
+        setBettingMarkets(bettingData.slice(0, 3)); // Show only 3 markets
+      }
+
+      // Fetch user bets
+      const userBetsResponse = await fetch(`${API_BASE_URL}/betting/bets/my-bets?limit=3`, { headers });
+      if (userBetsResponse.ok) {
+        const userBetsData = await userBetsResponse.json();
+        setUserBets(userBetsData);
+      }
+
+      // Fetch messages
+      const messagesResponse = await fetch(`${API_BASE_URL}/chat/private?limit=5`, { headers });
+      if (messagesResponse.ok) {
+        const messagesData = await messagesResponse.json();
+        setMessages(messagesData);
+      }
+
+      // Fetch unread count
+      const unreadResponse = await fetch(`${API_BASE_URL}/chat/private/unread-count`, { headers });
+      if (unreadResponse.ok) {
+        const unreadData = await unreadResponse.json();
+        setUnreadCount(unreadData.unread_count);
+      }
+
+    } catch (error) {
+      console.error('Erreur lors du chargement des fonctionnalités communautaires:', error);
     }
   };
 
