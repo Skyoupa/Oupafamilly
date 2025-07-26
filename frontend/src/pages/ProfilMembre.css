@@ -152,13 +152,14 @@
 }
 
 .profile-section h3 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin-bottom: 1.5rem;
   color: #000000;
-  font-weight: 800;
+  font-weight: 900;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Gaming Info */
