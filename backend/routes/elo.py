@@ -303,6 +303,7 @@ async def get_elo_global_statistics():
             },
             {
                 "$project": {
+                    "_id": 0,  # Exclude MongoDB ObjectId
                     "user_id": 1,
                     "username": {"$arrayElemAt": ["$user_info.username", 0]},
                     "rating": 1,
