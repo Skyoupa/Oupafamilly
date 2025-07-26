@@ -377,6 +377,7 @@ async def get_community_members():
         )
 
 @router.get("/teams")
+@cached(ttl=300, key_prefix="community_teams")  # Cache for 5 minutes
 async def get_community_teams():
     """Get community teams with rankings."""
     try:
