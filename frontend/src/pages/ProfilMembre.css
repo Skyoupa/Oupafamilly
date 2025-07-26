@@ -172,8 +172,8 @@
 
 /* Gaming Info */
 .gaming-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 0.8rem;
   margin-top: 0.8rem;
 }
