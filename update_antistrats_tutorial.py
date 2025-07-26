@@ -135,17 +135,17 @@ Les **anti-strats** et **counter-tactical play** sont l'essence de la domination
 
 ### ⚡ Adaptation Instantanée
 
-#### **Read and React Protocols**
-- **Information Processing** : Traitement intel rapide
-- **Decision Making** : Prise décision instantanée
-- **Team Communication** : Communication efficace
-- **Execution Speed** : Vitesse exécution
+#### **Protocoles Lecture et Réaction**
+- **Traitement Information** : Traitement intel rapide
+- **Prise de Décision** : Prise décision instantanée
+- **Communication Équipe** : Communication efficace
+- **Vitesse Exécution** : Vitesse exécution
 
 #### **Changements Tactiques**
-- **Position Swaps** : Échanges positions
-- **Strategy Pivots** : Changements stratégie
-- **Utility Reallocation** : Redistribution grenades
-- **Timing Adjustments** : Ajustements timing
+- **Échanges Positions** : Échanges positions
+- **Pivots Stratégiques** : Changements stratégie
+- **Redistribution Utility** : Redistribution grenades
+- **Ajustements Timing** : Ajustements timing
 
 ### 🔄 Adaptation Patterns
 
