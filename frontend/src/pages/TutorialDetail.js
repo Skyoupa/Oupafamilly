@@ -28,8 +28,8 @@ const TutorialDetail = () => {
       .toLowerCase()
       .normalize('NFD') // Décomposer les caractères accentués
       .replace(/[\u0300-\u036f]/g, '') // Supprimer les marques diacritiques
-      .replace(/[^a-z0-9\s-']/g, '') // Supprimer les caractères spéciaux sauf l'apostrophe
-      .replace(/'/g, '') // Supprimer les apostrophes après pour éviter les problèmes
+      .replace(/'/g, ' ') // Remplacer les apostrophes par des espaces
+      .replace(/[^a-z0-9\s-]/g, '') // Supprimer les caractères spéciaux
       .replace(/\s+/g, '-') // Remplacer les espaces par des tirets
       .replace(/-+/g, '-') // Supprimer les tirets multiples
       .trim();
