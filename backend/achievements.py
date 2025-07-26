@@ -1151,6 +1151,21 @@ class AchievementEngine:
                     participation = user_data.get("special_events", {}).get("anniversary_2024", False)
                     if not participation:
                         return False
+                
+                # 🆕 CRITÈRES BADGES MYTHIQUES ÉLITE
+                
+                elif criterion == "perfect_streak":
+                    # Streak parfaite (wins + précision)
+                    stats = user_data.get("gaming_stats", {})
+                    perfect_streak = stats.get("perfect_match_streak", 0)
+                    if perfect_streak < required_value:
+                        return False
+                
+                elif criterion == "transactions_made":
+                    # Total transactions effectuées
+                    transaction_count = await db.transactions.count_documents({"user_id": user_id})
+                    if transaction_count < required_value:
+                        return False
             
             return True
             
