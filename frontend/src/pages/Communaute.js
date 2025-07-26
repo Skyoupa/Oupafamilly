@@ -740,6 +740,163 @@ const Communaute = () => {
               </div>
             </div>
           )}
+
+          {/* Marketplace View */}
+          {activeView === 'marketplace' && (
+            <div className="marketplace-section">
+              <div className="marketplace-header">
+                <h2>🛒 Marketplace Communautaire</h2>
+                <p>Utilisez vos coins pour acheter des objets exclusifs</p>
+                <button className="btn-primary-pro" onClick={handleDailyBonus}>
+                  🎁 Bonus Quotidien
+                </button>
+              </div>
+              
+              <div className="marketplace-grid">
+                {marketplaceItems.map(item => (
+                  <div key={item.id} className="marketplace-item">
+                    <div className="item-header">
+                      <h3>{item.name}</h3>
+                      {item.is_premium && <span className="premium-badge">⭐ Premium</span>}
+                    </div>
+                    <p className="item-description">{item.description}</p>
+                    <div className="item-footer">
+                      <span className="item-price">💰 {item.price} coins</span>
+                      <button 
+                        className="btn-secondary-pro"
+                        onClick={() => buyMarketplaceItem(item.id, item.name, item.price)}
+                      >
+                        Acheter
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Betting View */}
+          {activeView === 'paris' && (
+            <div className="betting-section">
+              <div className="betting-header">
+                <h2>🎲 Paris Communautaires</h2>
+                <p>Pariez vos coins sur les événements de la communauté</p>
+              </div>
+              
+              <div className="betting-markets">
+                {bettingMarkets.map(market => (
+                  <div key={market.id} className="betting-market">
+                    <h3>{market.title}</h3>
+                    <p>{market.description}</p>
+                    <div className="market-info">
+                      <span>🎮 {market.game.toUpperCase()}</span>
+                      <span>💰 Pool: {market.total_pool} coins</span>
+                      <span>📅 Ferme: {new Date(market.closes_at).toLocaleDateString()}</span>
+                    </div>
+                    <div className="betting-options">
+                      {market.options.map(option => (
+                        <div key={option.option_id} className="betting-option">
+                          <span className="option-name">{option.name}</span>
+                          <span className="option-odds">Cote: {option.odds}x</span>
+                          <button 
+                            className="btn-outline-pro"
+                            onClick={() => {
+                              const amount = prompt('Montant à parier (coins):');
+                              if (amount && !isNaN(amount) && amount > 0) {
+                                placeBet(market.id, option.option_id, parseInt(amount));
+                              }
+                            }}
+                          >
+                            Parier
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {userBets.length > 0 && (
+                <div className="user-bets">
+                  <h3>Mes Paris Récents</h3>
+                  {userBets.map(bet => (
+                    <div key={bet.id} className="bet-item">
+                      <span>{bet.option_name}</span>
+                      <span>{bet.amount} coins</span>
+                      <span className={`bet-status ${bet.status}`}>
+                        {bet.status === 'active' ? 'En cours' : bet.status === 'won' ? 'Gagné' : 'Perdu'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Messaging View */}
+          {activeView === 'messagerie' && (
+            <div className="messaging-section">
+              <div className="messaging-header">
+                <h2>📧 Boîte de Réception</h2>
+                <p>Communiquez directement avec les autres membres</p>
+              </div>
+              
+              <div className="messaging-content">
+                <div className="message-compose">
+                  <h3>Envoyer un message</h3>
+                  <select id="recipient-select">
+                    <option value="">Choisir un destinataire</option>
+                    {members.map(member => (
+                      <option key={member.id} value={member.id}>
+                        {member.profile?.display_name || member.username}
+                      </option>
+                    ))}
+                  </select>
+                  <textarea 
+                    id="message-content" 
+                    placeholder="Votre message..."
+                    rows="3"
+                  />
+                  <button 
+                    className="btn-primary-pro"
+                    onClick={() => {
+                      const recipient = document.getElementById('recipient-select').value;
+                      const content = document.getElementById('message-content').value;
+                      if (recipient && content.trim()) {
+                        sendMessage(recipient, content);
+                        document.getElementById('message-content').value = '';
+                        document.getElementById('recipient-select').value = '';
+                      }
+                    }}
+                  >
+                    Envoyer
+                  </button>
+                </div>
+                
+                <div className="message-list">
+                  <h3>Messages Récents</h3>
+                  {messages.length === 0 ? (
+                    <p className="no-messages">Aucun message pour le moment</p>
+                  ) : (
+                    messages.map(message => (
+                      <div key={message.id} className="message-item">
+                        <div className="message-header">
+                          <span className="message-sender">
+                            {message.sender_id === userProfile.user_id ? 'Vous → Destinataire' : 'Expéditeur → Vous'}
+                          </span>
+                          <span className="message-date">
+                            {new Date(message.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="message-content">{message.content}</div>
+                        {!message.is_read && <span className="unread-indicator">Nouveau</span>}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
