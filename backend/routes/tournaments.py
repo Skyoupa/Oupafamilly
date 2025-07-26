@@ -45,6 +45,7 @@ async def create_tournament(
         )
 
 @router.get("/", response_model=List[Tournament])
+@cached(ttl=300, key_prefix="tournaments")  # Cache for 5 minutes
 async def get_tournaments(
     tournament_status: Optional[TournamentStatus] = None,
     game: Optional[Game] = None,
