@@ -121,16 +121,16 @@ backend:
         comment: "🎉 SYSTÈME ACHIEVEMENTS/BADGES VALIDÉ À 100% - Tests complets réussis sur tous les 8 endpoints prioritaires : ✅ GET /api/achievements/my-badges fonctionne parfaitement (12 badges obtenus par admin) ✅ GET /api/achievements/available opérationnel (21 badges disponibles avec filtres par catégorie/rareté) ✅ GET /api/achievements/progress/{badge_id} fonctionnel (progression détaillée avec critères) ✅ POST /api/achievements/check opérationnel (vérification manuelle achievements) ✅ GET /api/achievements/leaderboard fonctionne (classement par nombre de badges) ✅ GET /api/achievements/stats opérationnel (statistiques globales système) ✅ GET /api/achievements/user/{user_id}/badges fonctionne (7 badges publics visibles) ✅ GET /api/achievements/admin/all-user-badges opérationnel (vue admin globale) ✅ Système de rareté complet : common, rare, epic, legendary, mythic ✅ 7 catégories fonctionnelles : gaming, community, economic, social, competitive, loyalty, special ✅ 21 badges prédéfinis avec critères intelligents ✅ Récompenses automatiques (XP + coins) opérationnelles ✅ Badges cachés jusqu'à obtention fonctionnels ✅ Progression détaillée avec pourcentages ✅ Leaderboard par nombre de badges opérationnel ✅ Authentification requise sur tous endpoints ✅ Autorisation admin fonctionnelle ✅ Performance acceptable (< 2s par endpoint). Corrections appliquées : import create_transaction, ObjectId serialization, Badge() validation. Système 100% prêt pour production et intégration frontend."
 
   - task: "Système de quêtes quotidiennes"
-    implemented: false
+    implemented: true
     working: false
-    file: "/app/backend/achievements.py"
+    file: "/app/backend/achievements.py, /app/backend/routes/achievements.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: false
         agent: "main"
-        comment: "🔄 À IMPLÉMENTER - Système de quêtes quotidiennes prévu dans le modèle Quest existing, besoin d'implémenter les endpoints API et la logique de génération/rotation quotidienne."
+        comment: "🆕 NOUVELLEMENT IMPLÉMENTÉ - Système de quêtes quotidiennes créé avec succès ! ✅ QuestEngine avec 16 quêtes prédéfinies ✅ 4 nouveaux endpoints API : /quests/daily, /quests/{id}/claim, /quests/my-progress, /quests/leaderboard ✅ Algorithme intelligent de sélection quotidienne (5-6 quêtes par jour, seed basée sur date) ✅ 7 catégories de quêtes (gaming, economic, community, competitive, special, loyalty) ✅ Quêtes spéciales selon jour semaine (lundi motivation, week-end warrior) ✅ Système de récompenses (coins, XP, badges bonus) ✅ Progression détaillée avec pourcentages ✅ Streak de jours consécutifs ✅ Collections MongoDB créées avec index optimisés ✅ Script d'initialisation exécuté. PRÊT POUR TESTING BACKEND."
 
   - task: "Système ELO automatique"
     implemented: false
