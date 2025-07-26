@@ -28,17 +28,17 @@ async def reward_tournament_participants(tournament_id: str, participants: List[
         max_participants = tournament.get("max_participants", 8)
         tournament_name = tournament.get("title", "Tournoi")
         
-        # Récompenses de base
-        participation_reward = 20  # 20 coins pour participer
-        victory_reward = 100       # 100 coins pour gagner
+        # Récompenses de base (réduites pour équilibrer l'économie)
+        participation_reward = 15  # 15 coins pour participer (au lieu de 20)
+        victory_reward = 75        # 75 coins pour gagner (au lieu de 100)
         
         # Bonus selon la taille du tournoi
         if max_participants >= 16:
-            participation_reward = 30
-            victory_reward = 200
-        elif max_participants >= 8:
-            participation_reward = 25
+            participation_reward = 25  # Récompense augmentée pour gros tournois
             victory_reward = 150
+        elif max_participants >= 8:
+            participation_reward = 20
+            victory_reward = 100
         
         # Récompenser tous les participants
         for participant_id in participants:
