@@ -269,13 +269,13 @@ const ProfilMembre = () => {
                 <div className="gaming-info-grid">
                   <div className="info-item">
                     <span className="info-label">Nom d'utilisateur :</span>
-                    <span className="info-value">
+                    <span className="info-value username-value">
                       {memberProfile.user?.username || 'Non spécifié'}
                     </span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Jeux favoris :</span>
-                    <span className="info-value">
+                    <span className="info-value games-value">
                       {memberProfile.profile?.favorite_games && memberProfile.profile.favorite_games.length > 0
                         ? memberProfile.profile.favorite_games.map(game => getGameDisplay(game)).join(', ')
                         : 'Aucun jeu spécifié'
@@ -284,13 +284,13 @@ const ProfilMembre = () => {
                   </div>
                   <div className="info-item">
                     <span className="info-label">Steam :</span>
-                    <span className="info-value">
+                    <span className="info-value steam-value">
                       {memberProfile.profile?.steam_profile || 'Non spécifié'}
                     </span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Membre depuis :</span>
-                    <span className="info-value">
+                    <span className="info-value member-since-value">
                       {new Date(memberProfile.user?.created_at).toLocaleDateString('fr-FR', { 
                         year: 'numeric', 
                         month: 'long' 
