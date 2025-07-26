@@ -14,7 +14,9 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:prod": "serve -s build -l 3000",
+    "deploy": "yarn build && yarn start:prod"
   },
   "browserslist": {
     "production": [
