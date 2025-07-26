@@ -211,25 +211,43 @@ const ProfilMembre = () => {
           <div className="container-pro">
             <div className="profile-info-main">
               <div className="profile-avatar-large">
-                {memberProfile.display_name.charAt(0).toUpperCase()}
+                {memberProfile.profile?.avatar_url ? (
+                  <img 
+                    src={memberProfile.profile.avatar_url} 
+                    alt={memberProfile.profile.display_name || memberProfile.user.username}
+                    className="avatar-image"
+                  />
+                ) : (
+                  (memberProfile.profile?.display_name || memberProfile.user?.username || 'U').charAt(0).toUpperCase()
+                )}
               </div>
               
               <div className="profile-details">
-                <h1 className="profile-name">{memberProfile.display_name}</h1>
-                <p className="profile-bio">{memberProfile.bio}</p>
+                <h1 className="profile-name">
+                  {memberProfile.profile?.display_name || memberProfile.user?.username || 'Utilisateur'}
+                </h1>
+                <p className="profile-bio">
+                  {memberProfile.profile?.bio || 'Aucune biographie disponible'}
+                </p>
                 
                 <div className="profile-stats-bar">
                   <div className="stat-item">
-                    <span className="stat-value">Niv. {memberProfile.level}</span>
+                    <span className="stat-value">
+                      {memberProfile.statistics?.ranking?.level || 'Novice'}
+                    </span>
                     <span className="stat-label">Niveau</span>
                   </div>
                   <div className="stat-item">
-                    <span className="stat-value">{memberProfile.coins}</span>
-                    <span className="stat-label">💰 Coins</span>
+                    <span className="stat-value">
+                      {memberProfile.statistics?.ranking?.total_points || 0}
+                    </span>
+                    <span className="stat-label">🏆 Points</span>
                   </div>
                   <div className="stat-item">
-                    <span className="stat-value">{memberProfile.total_tournaments}</span>
-                    <span className="stat-label">🏆 Tournois</span>
+                    <span className="stat-value">
+                      {memberProfile.statistics?.tournaments?.total || 0}
+                    </span>
+                    <span className="stat-label">🎯 Tournois</span>
                   </div>
                   <div className="stat-item">
                     <span className="stat-value">{commentStats.total_comments}</span>
@@ -237,7 +255,7 @@ const ProfilMembre = () => {
                   </div>
                   <div className="stat-item">
                     <span className="stat-value">
-                      {commentStats.average_rating.toFixed(1)} ⭐
+                      {commentStats.average_rating > 0 ? commentStats.average_rating.toFixed(1) : '0.0'} ⭐
                     </span>
                     <span className="stat-label">Note moyenne</span>
                   </div>
