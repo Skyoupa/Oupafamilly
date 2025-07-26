@@ -13,7 +13,7 @@ from datetime import datetime
 from database import db, client
 
 # Import route modules
-from routes import auth, tournaments, teams, matches, content, admin, community, profiles
+from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments
 
 # Create the main app without a prefix
 app = FastAPI(
