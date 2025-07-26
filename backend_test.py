@@ -3489,8 +3489,8 @@ class OupafamillyAPITester:
         return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8 and success9 and success10
 
     def run_all_tests(self):
-        """Run API tests with ELO system as main focus"""
-        self.log("🚀 Starting Oupafamilly API Tests - ELO SYSTEM TESTING")
+        """Run API tests with ENRICHED ACHIEVEMENTS SYSTEM as main focus"""
+        self.log("🚀 Starting Oupafamilly API Tests - ENRICHED ACHIEVEMENTS SYSTEM TESTING")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -3502,49 +3502,69 @@ class OupafamillyAPITester:
         if self.test_admin_login():
             self.test_get_current_user()
             
-            # MAIN FOCUS: ELO SYSTEM TESTING
-            self.log("\n" + "="*70)
-            self.log("🎯 MAIN FOCUS: ELO SYSTEM TESTING")
-            self.log("="*70)
+            # MAIN FOCUS: ENRICHED ACHIEVEMENTS SYSTEM TESTING
+            self.log("\n" + "="*80)
+            self.log("🏆 MAIN FOCUS: ENRICHED ACHIEVEMENTS SYSTEM TESTING (54+ BADGES)")
+            self.log("="*80)
             
-            # Test ELO system - this is the primary objective
-            self.log("\n" + "="*50)
-            self.log("🏆 TESTING ELO SYSTEM")
-            self.log("="*50)
-            elo_success = self.test_elo_system()
+            # Test enriched achievements system - this is the primary objective
+            self.log("\n" + "="*60)
+            self.log("🎯 TESTING ENRICHED ACHIEVEMENTS SYSTEM")
+            self.log("="*60)
+            enriched_achievements_success = self.test_enriched_achievements_system()
             
-            # Summary of ELO testing
-            self.log("\n" + "="*70)
-            self.log("📊 ELO SYSTEM TEST SUMMARY")
-            self.log("="*70)
+            # SECONDARY FOCUS: Daily Quests System
+            self.log("\n" + "="*60)
+            self.log("🎮 SECONDARY: DAILY QUESTS SYSTEM")
+            self.log("="*60)
+            daily_quests_success = self.test_daily_quests_system()
             
-            if elo_success:
-                self.log("✅ ELO System: ALL ENDPOINTS WORKING ✅", "SUCCESS")
-                self.log("  ✅ All 9 ELO endpoints tested successfully", "SUCCESS")
-                self.log("  ✅ 8-tier system operational (Bronze to Challenger)", "SUCCESS")
-                self.log("  ✅ Intelligent ELO calculations with adaptive K-factor", "SUCCESS")
-                self.log("  ✅ Multi-game and multi-mode support functional", "SUCCESS")
-                self.log("  ✅ Leaderboards with filtering operational", "SUCCESS")
-                self.log("  ✅ Match history tracking working", "SUCCESS")
-                self.log("  ✅ Global statistics and tier distribution working", "SUCCESS")
-                self.log("  ✅ Admin match processing and ELO reset functional", "SUCCESS")
-                self.log("  ➡️ ELO system ready for production", "SUCCESS")
+            # Summary of main testing
+            self.log("\n" + "="*80)
+            self.log("📊 ENRICHED ACHIEVEMENTS SYSTEM TEST SUMMARY")
+            self.log("="*80)
+            
+            if enriched_achievements_success:
+                self.log("✅ ENRICHED ACHIEVEMENTS: ALL TESTS PASSED ✅", "SUCCESS")
+                self.log("  ✅ 54+ badges confirmed in system", "SUCCESS")
+                self.log("  ✅ New specialized badge types detected", "SUCCESS")
+                self.log("  ✅ Enriched rewards system (up to 1200 XP, 800 coins)", "SUCCESS")
+                self.log("  ✅ Hidden badges system operational", "SUCCESS")
+                self.log("  ✅ Achievement checking system working", "SUCCESS")
+                self.log("  ✅ Performance acceptable with 54+ badges", "SUCCESS")
+                self.log("  ✅ All badge categories and rarities present", "SUCCESS")
+                self.log("  ➡️ Enriched achievements system ready for production", "SUCCESS")
             else:
-                self.log("❌ ELO System: ISSUES DETECTED ❌", "ERROR")
+                self.log("❌ ENRICHED ACHIEVEMENTS: ISSUES DETECTED ❌", "ERROR")
                 self.log("  ⚠️ Review the detailed logs above for specific issues", "ERROR")
-                self.log("  ➡️ Backend ELO system needs fixes", "ERROR")
+                self.log("  ➡️ Backend achievements system needs fixes", "ERROR")
             
-            self.log("="*70)
-            if elo_success:
-                self.log("🎉 ELO SYSTEM: FULLY OPERATIONAL!", "SUCCESS")
-                self.log("🔧 RECOMMENDATION: System ready for frontend integration", "SUCCESS")
+            if daily_quests_success:
+                self.log("✅ DAILY QUESTS: SYSTEM OPERATIONAL ✅", "SUCCESS")
+                self.log("  ✅ Daily quest generation working (5-6 quests per day)", "SUCCESS")
+                self.log("  ✅ Quest progress tracking operational", "SUCCESS")
+                self.log("  ✅ Quest leaderboard system working", "SUCCESS")
+                self.log("  ✅ Quest reward claiming functional", "SUCCESS")
+                self.log("  ➡️ Daily quests system ready for production", "SUCCESS")
             else:
-                self.log("❌ ELO SYSTEM: NEEDS FIXES!", "ERROR")
+                self.log("❌ DAILY QUESTS: ISSUES DETECTED ❌", "ERROR")
+                self.log("  ⚠️ Review the detailed logs above for specific issues", "ERROR")
+                self.log("  ➡️ Daily quests system needs fixes", "ERROR")
+            
+            self.log("="*80)
+            if enriched_achievements_success and daily_quests_success:
+                self.log("🎉 ENRICHED ACHIEVEMENTS & QUESTS: FULLY OPERATIONAL!", "SUCCESS")
+                self.log("🔧 RECOMMENDATION: Systems ready for frontend integration", "SUCCESS")
+            elif enriched_achievements_success:
+                self.log("🎉 ENRICHED ACHIEVEMENTS: OPERATIONAL! (Quests need fixes)", "SUCCESS")
+                self.log("🔧 RECOMMENDATION: Main system ready, fix quests system", "SUCCESS")
+            else:
+                self.log("❌ ENRICHED ACHIEVEMENTS: NEEDS FIXES!", "ERROR")
                 self.log("🔧 RECOMMENDATION: Fix backend issues before frontend integration", "ERROR")
-            self.log("="*70)
+            self.log("="*80)
         
         # Print final results
-        self.log("=" * 50)
+        self.log("=" * 60)
         self.log(f"📊 FINAL RESULTS:")
         self.log(f"Tests Run: {self.tests_run}")
         self.log(f"Tests Passed: {self.tests_passed}")
