@@ -256,7 +256,8 @@
 
 .comment-form h4 {
   margin-bottom: 1.5rem;
-  color: var(--text-white-bg-primary);
+  color: #1a202c;
+  font-weight: 700;
 }
 
 .rating-selector {
