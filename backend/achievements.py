@@ -1073,6 +1073,26 @@ class AchievementEngine:
             app_logger.error(f"Erreur vérification critères badge: {str(e)}")
             return False
     
+    def _check_rank_progression(self, elo_history: List[Dict], start_rank: str, end_rank: str) -> bool:
+        """Vérifie si l'utilisateur a progressé d'un rang à un autre"""
+        if not elo_history or len(elo_history) < 2:
+            return False
+        
+        rank_values = {
+            "bronze": 0, "silver": 1000, "gold": 1200, 
+            "platinum": 1400, "diamond": 1600, "master": 1800,
+            "grandmaster": 2000, "challenger": 2200
+        }
+        
+        start_value = rank_values.get(start_rank, 0)
+        end_value = rank_values.get(end_rank, 9999)
+        
+        # Chercher le point le plus bas et le plus haut
+        min_elo = min(entry.get("elo", 0) for entry in elo_history)
+        max_elo = max(entry.get("elo", 0) for entry in elo_history)
+        
+        return min_elo <= start_value and max_elo >= end_value
+    
     async def _give_rewards(self, user_id: str, badge: Badge):
         """Donne les récompenses du badge"""
         try:
