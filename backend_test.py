@@ -2130,6 +2130,12 @@ class OupafamillyAPITester:
             self.log("="*50)
             marketplace_customs_success = self.test_new_marketplace_customs()
             
+            # Test 5: Match Scheduling System
+            self.log("\n" + "="*50)
+            self.log("📅 TESTING MATCH SCHEDULING SYSTEM")
+            self.log("="*50)
+            match_scheduling_success = self.test_match_scheduling_system()
+            
             # Summary of new features testing
             self.log("\n" + "="*70)
             self.log("📊 NEW FEATURES TESTING SUMMARY")
@@ -2155,11 +2161,17 @@ class OupafamillyAPITester:
             else:
                 self.log("❌ Marketplace with Customs: FAILED", "ERROR")
             
+            if match_scheduling_success:
+                self.log("✅ Match Scheduling System: WORKING", "SUCCESS")
+            else:
+                self.log("❌ Match Scheduling System: FAILED", "ERROR")
+            
             all_new_features_success = (
                 tournament_rewards_success and 
                 betting_system_success and 
                 admin_economy_success and 
-                marketplace_customs_success
+                marketplace_customs_success and
+                match_scheduling_success
             )
             
             self.log("="*70)
