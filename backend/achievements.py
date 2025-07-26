@@ -337,6 +337,381 @@ class AchievementEngine:
                 xp_reward=150,
                 coins_reward=75
             ),
+            
+            # 🚀 NOUVEAUX BADGES ÉLITE - EXTENSIONS
+            
+            # 🎯 BADGES PRÉCISION GAMING
+            "sharpshooter": Badge(
+                name="Tireur d'Élite",
+                description="Maintiens 70%+ de précision sur 10 matchs",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.EPIC,
+                icon="🎯",
+                criteria={"accuracy_matches": 10, "min_accuracy": 70},
+                xp_reward=350,
+                coins_reward=200
+            ),
+            
+            "headshot_king": Badge(
+                name="Roi du Headshot",
+                description="Réalise 100 headshots au total",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.RARE,
+                icon="💀",
+                criteria={"total_headshots": 100},
+                xp_reward=250,
+                coins_reward=150
+            ),
+            
+            "clutch_master": Badge(
+                name="Maître du Clutch",
+                description="Gagne 5 situations 1v3+",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="⚡",
+                criteria={"clutch_wins": 5},
+                xp_reward=500,
+                coins_reward=300,
+                hidden=True
+            ),
+            
+            "ace_collector": Badge(
+                name="Collectionneur d'Ace",
+                description="Réalise 10 Ace (5 kills/rond)",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="🃏",
+                criteria={"total_aces": 10},
+                xp_reward=400,
+                coins_reward=250,
+                hidden=True
+            ),
+            
+            # 💰 BADGES ÉCONOMIQUES AVANCÉS
+            "coin_saver": Badge(
+                name="Économe",
+                description="Accumule 1000 coins sans dépenser",
+                category=BadgeCategory.ECONOMIC,
+                rarity=BadgeRarity.RARE,
+                icon="🪙",
+                criteria={"max_coins_saved": 1000},
+                xp_reward=200,
+                coins_reward=100
+            ),
+            
+            "big_spender": Badge(
+                name="Gros Dépensier",
+                description="Dépense 5000 coins au total",
+                category=BadgeCategory.ECONOMIC,
+                rarity=BadgeRarity.EPIC,
+                icon="💸",
+                criteria={"total_coins_spent": 5000},
+                xp_reward=300,
+                coins_reward=200
+            ),
+            
+            "marketplace_mogul": Badge(
+                name="Magnat du Marché",
+                description="Achète 25 objets différents",
+                category=BadgeCategory.ECONOMIC,
+                rarity=BadgeRarity.EPIC,
+                icon="🏪",
+                criteria={"unique_items_bought": 25},
+                xp_reward=350,
+                coins_reward=250
+            ),
+            
+            "daily_bonus_streak": Badge(
+                name="Fidèle Collecteur",
+                description="Collecte le bonus quotidien 30 jours d'affilée",
+                category=BadgeCategory.ECONOMIC,
+                rarity=BadgeRarity.RARE,
+                icon="🗓️",
+                criteria={"daily_bonus_streak": 30},
+                xp_reward=250,
+                coins_reward=200
+            ),
+            
+            # 🏆 BADGES COMPÉTITIFS AVANCÉS
+            "tournament_destroyer": Badge(
+                name="Destructeur de Tournoi",
+                description="Gagne 3 tournois consécutifs",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.MYTHIC,
+                icon="🏆",
+                criteria={"consecutive_tournament_wins": 3},
+                xp_reward=800,
+                coins_reward=500,
+                hidden=True
+            ),
+            
+            "bracket_buster": Badge(
+                name="Briseur de Bracket",
+                description="Élimine le favori #1 du tournoi",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="💥",
+                criteria={"upset_victories": 1},
+                xp_reward=400,
+                coins_reward=300
+            ),
+            
+            "underdog_hero": Badge(
+                name="Héros de l'Underdog",
+                description="Gagne en étant classé dernier",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.EPIC,
+                icon="🦸",
+                criteria={"underdog_wins": 1},
+                xp_reward=350,
+                coins_reward=250
+            ),
+            
+            "comeback_king": Badge(
+                name="Roi du Comeback",
+                description="Remonte de 10+ points de retard",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.RARE,
+                icon="📈",
+                criteria={"comeback_victories": 5},
+                xp_reward=300,
+                coins_reward=200
+            ),
+            
+            # 👥 BADGES SOCIAUX COMMUNAUTAIRES
+            "mentor": Badge(
+                name="Mentor de la Communauté",
+                description="Aide 10 nouveaux joueurs",
+                category=BadgeCategory.SOCIAL,
+                rarity=BadgeRarity.EPIC,
+                icon="🎓",
+                criteria={"players_mentored": 10},
+                xp_reward=400,
+                coins_reward=250
+            ),
+            
+            "party_starter": Badge(
+                name="Lanceur de Soirée",
+                description="Organise 5 événements communautaires",
+                category=BadgeCategory.SOCIAL,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="🎉",
+                criteria={"events_organized": 5},
+                xp_reward=500,
+                coins_reward=350
+            ),
+            
+            "peace_maker": Badge(
+                name="Pacificateur",
+                description="Résous 3 conflits communautaires",
+                category=BadgeCategory.SOCIAL,
+                rarity=BadgeRarity.RARE,
+                icon="🕊️",
+                criteria={"conflicts_resolved": 3},
+                xp_reward=250,
+                coins_reward=150
+            ),
+            
+            "wingman": Badge(
+                name="Ailier Parfait",
+                description="Forme 5 équipes qui gagnent ensemble",
+                category=BadgeCategory.SOCIAL,
+                rarity=BadgeRarity.EPIC,
+                icon="🤝",
+                criteria={"successful_team_formations": 5},
+                xp_reward=350,
+                coins_reward=200
+            ),
+            
+            # 🔥 BADGES STREAKS & PERFORMANCES
+            "unstoppable": Badge(
+                name="Inarrêtable",
+                description="Gagne 15 matchs consécutifs",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="🔥",
+                criteria={"match_win_streak": 15},
+                xp_reward=600,
+                coins_reward=400,
+                hidden=True
+            ),
+            
+            "flawless_victory": Badge(
+                name="Victoire Parfaite",
+                description="Gagne un match sans mourir",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.RARE,
+                icon="✨",
+                criteria={"flawless_matches": 1},
+                xp_reward=200,
+                coins_reward=100
+            ),
+            
+            "marathon_gamer": Badge(
+                name="Gamer Marathon",
+                description="Joue 12h en une journée",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.EPIC,
+                icon="⏰",
+                criteria={"daily_playtime_hours": 12},
+                xp_reward=300,
+                coins_reward=200
+            ),
+            
+            "night_owl": Badge(
+                name="Oiseau de Nuit",
+                description="Joue entre 2h et 6h du matin",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.COMMON,
+                icon="🦉",
+                criteria={"night_sessions": 10},
+                xp_reward=150,
+                coins_reward=75
+            ),
+            
+            # 💎 BADGES RARETÉ ULTIME
+            "legendary_status": Badge(
+                name="Statut Légendaire",
+                description="Atteins le niveau 50",
+                category=BadgeCategory.ACHIEVEMENT,
+                rarity=BadgeRarity.MYTHIC,
+                icon="👑",
+                criteria={"user_level": 50},
+                xp_reward=1000,
+                coins_reward=750,
+                hidden=True
+            ),
+            
+            "badge_collector": Badge(
+                name="Collectionneur Ultime",
+                description="Obtiens 50 badges différents",
+                category=BadgeCategory.ACHIEVEMENT,
+                rarity=BadgeRarity.MYTHIC,
+                icon="🏅",
+                criteria={"unique_badges": 50},
+                xp_reward=1200,
+                coins_reward=800,
+                hidden=True
+            ),
+            
+            # 🎨 BADGES CRÉATIVITÉ
+            "content_creator": Badge(
+                name="Créateur de Contenu",
+                description="Écris 25 guides/tutoriels",
+                category=BadgeCategory.COMMUNITY,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="📝",
+                criteria={"guides_written": 25},
+                xp_reward=500,
+                coins_reward=350
+            ),
+            
+            "screenshot_artist": Badge(
+                name="Artiste Screenshot",
+                description="Partage 50 captures d'écran",
+                category=BadgeCategory.COMMUNITY,
+                rarity=BadgeRarity.RARE,
+                icon="📸",
+                criteria={"screenshots_shared": 50},
+                xp_reward=200,
+                coins_reward=100
+            ),
+            
+            # 🌟 BADGES ÉVÉNEMENTS SPÉCIAUX
+            "holiday_champion": Badge(
+                name="Champion des Fêtes",
+                description="Gagne un tournoi spécial fêtes",
+                category=BadgeCategory.SPECIAL,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="🎄",
+                criteria={"holiday_tournament_wins": 1},
+                xp_reward=400,
+                coins_reward=300
+            ),
+            
+            "anniversary_veteran": Badge(
+                name="Vétéran Anniversaire",
+                description="Présent lors du 1er anniversaire",
+                category=BadgeCategory.SPECIAL,
+                rarity=BadgeRarity.MYTHIC,
+                icon="🎂",
+                criteria={"anniversary_participation": 1},
+                xp_reward=500,
+                coins_reward=400,
+                hidden=True
+            ),
+            
+            # 🎯 BADGES PRÉCISION AVANCÉE
+            "spray_control_master": Badge(
+                name="Maître du Spray Control",
+                description="Maintiens 95%+ de précision spray",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="🎪",
+                criteria={"spray_control_accuracy": 95},
+                xp_reward=450,
+                coins_reward=300,
+                hidden=True
+            ),
+            
+            "reaction_time_god": Badge(
+                name="Dieu du Temps de Réaction",
+                description="Temps de réaction moyen < 200ms",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.MYTHIC,
+                icon="⚡",
+                criteria={"avg_reaction_time": 200},
+                xp_reward=800,
+                coins_reward=500,
+                hidden=True
+            ),
+            
+            # 💪 BADGES ENDURANCE & PROGRESSION
+            "iron_will": Badge(
+                name="Volonté de Fer",
+                description="Joue malgré 10 défaites consécutives",
+                category=BadgeCategory.LOYALTY,
+                rarity=BadgeRarity.RARE,
+                icon="🛡️",
+                criteria={"perseverance_losses": 10},
+                xp_reward=300,
+                coins_reward=200
+            ),
+            
+            "phoenix": Badge(
+                name="Phénix",
+                description="Remonte de Bronze à Gold en une saison",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.EPIC,
+                icon="🔥",
+                criteria={"rank_improvement": "bronze_to_gold"},
+                xp_reward=400,
+                coins_reward=300
+            ),
+            
+            # 🎲 BADGES CHANCE & STATISTIQUES
+            "lucky_seven": Badge(
+                name="Sept Chanceux",
+                description="Gagne 7 paris avec cote 7:1+",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.LEGENDARY,
+                icon="🍀",
+                criteria={"high_odds_wins": 7},
+                xp_reward=500,
+                coins_reward=400,
+                hidden=True
+            ),
+            
+            "statistician": Badge(
+                name="Statisticien",
+                description="Analyse 100 matchs en détail",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.RARE,
+                icon="📊",
+                criteria={"matches_analyzed": 100},
+                xp_reward=250,
+                coins_reward=150
+            ),
         }
     
     async def check_and_award_badges(self, user_id: str, trigger_event: str = None, event_data: Dict[str, Any] = None):
