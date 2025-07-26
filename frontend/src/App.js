@@ -22,6 +22,78 @@ import ProfilMembre from './pages/ProfilMembre';
 import './App.css';
 
 function App() {
+  useEffect(() => {
+    // Remove Emergent badge dynamically
+    const removeEmergentBadge = () => {
+      // Wait a bit for the badge to load
+      setTimeout(() => {
+        // Find and remove all potential Emergent badges
+        const selectors = [
+          '[data-testid*="emergent"]',
+          '[class*="emergent"]', 
+          '[id*="emergent"]',
+          'div[style*="position: fixed"][style*="bottom"][style*="right"]',
+          'div[style*="position: absolute"][style*="bottom"][style*="right"]',
+          'button[style*="position: fixed"]',
+          '*[title*="Made with Emergent"]',
+          '*[alt*="Made with Emergent"]'
+        ];
+        
+        selectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+              const text = element.textContent || element.innerText || '';
+              const title = element.title || '';
+              const alt = element.alt || '';
+              
+              if (text.includes('Made with Emergent') || 
+                  text.includes('Emergent') || 
+                  title.includes('Made with Emergent') ||
+                  alt.includes('Made with Emergent') ||
+                  element.classList.toString().includes('emergent') ||
+                  element.id.includes('emergent')) {
+                element.remove();
+                console.log('Removed Emergent badge element');
+              }
+            });
+          } catch (e) {
+            // Ignore selector errors
+          }
+        });
+        
+        // Also try to find elements by text content
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(element => {
+          const text = element.textContent || '';
+          if (text.trim() === 'Made with Emergent' || 
+              (text.includes('Made with Emergent') && text.length < 50)) {
+            element.remove();
+            console.log('Removed Emergent badge by text content');
+          }
+        });
+      }, 500);
+    };
+    
+    // Run immediately and also set up interval to catch dynamically added badges
+    removeEmergentBadge();
+    const interval = setInterval(removeEmergentBadge, 2000);
+    
+    // Also run when page visibility changes
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        setTimeout(removeEmergentBadge, 100);
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <Router>
