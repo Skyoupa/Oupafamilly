@@ -212,7 +212,6 @@
 
 /* Professional styling for important values */
 .info-value.username-value,
-.info-value.games-value,
 .info-value.steam-value,
 .info-value.member-since-value {
   background: linear-gradient(135deg, #ffffff, #f8fafc);
