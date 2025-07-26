@@ -214,6 +214,18 @@ frontend:
         agent: "main"
         comment: "✅ CORRIGÉ: Remplacé données mock par appels API réels vers /profiles/{memberId}. Ajouté gestion d'erreurs, loading states, et intégration complète avec le système de commentaires. Corrigé routes conflictuelles dans App.js."
 
+  - task: "Interface de planification des matchs de tournoi"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/Communaute.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "🆕 NOUVELLEMENT IMPLÉMENTÉ - Interface complète de planification des matchs ajoutée dans page Communauté : ✅ Nouvel onglet 'TOURNOIS' avec navigation ✅ Sélecteur de tournois avec statuts ✅ Vue détaillée des matchs par tournoi avec planification ✅ Modal de programmation avec date/heure locale navigateur ✅ Liste des matchs à venir (7 jours) ✅ Cartes matchs avec statuts visuels ✅ Fonctions API intégrées (schedule, update, upcoming) ✅ Styles CSS complets et responsifs ajoutés. NÉCESSITE TESTING FRONTEND."
+
   - task: "Community Members Display"
     implemented: true
     working: true
