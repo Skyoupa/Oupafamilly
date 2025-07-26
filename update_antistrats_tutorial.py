@@ -123,11 +123,11 @@ Les **anti-strats** et **counter-tactical play** sont l'essence de la domination
 - **Adaptation Drills** : Entraînement adaptation
 - **Contingency Plans** : Plans urgence
 
-#### **Team Preparation**
-- **Role Assignment** : Attribution rôles
-- **Communication Setup** : Système communication
-- **Practice Scenarios** : Entraînement scénarios
-- **Backup Strategies** : Stratégies alternatives
+#### **Préparation Équipe**
+- **Attribution Rôles** : Attribution rôles
+- **Configuration Communication** : Système communication
+- **Entraînement Scénarios** : Entraînement scénarios
+- **Stratégies Secours** : Stratégies alternatives
 
 ---
 
