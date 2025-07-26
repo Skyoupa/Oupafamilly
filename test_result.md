@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Debug the `ProfilMembre.js` page to resolve the 'members not showing' issue and the runtime errors when attempting to view a profile."
+user_problem_statement: "Je viens de mettre en place plusieurs améliorations majeures au système et j'ai besoin de les tester complètement : Système de récompenses pour tournois, Système de paris professionnel, Dashboard Admin Économie (nouveaux endpoints), Marketplace avec customs. Tests prioritaires : Vérifier que les nouveaux endpoints admin/economy sont accessibles, Confirmer présence des articles customs dans marketplace, Tester création automatique de marchés de paris pour tournois, Vérifier que le système de récompenses tournoi fonctionne."
 
 backend:
   - task: "Community Members API endpoint"
