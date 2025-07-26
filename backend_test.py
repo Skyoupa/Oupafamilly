@@ -2117,6 +2117,154 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8
 
+    def test_tournament_selector_issue(self):
+        """Test tournament endpoints specifically for empty selector issue - PRIORITY FOCUS"""
+        if not self.token:
+            self.log("Skipping tournament selector tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING TOURNAMENT SELECTOR ISSUE (PRIORITY) ===")
+        
+        # Test 1: GET /api/tournaments (main endpoint used by frontend)
+        success1, response1 = self.run_test(
+            "Get All Tournaments (Main Endpoint)",
+            "GET",
+            "tournaments/",
+            200
+        )
+        
+        tournaments_found = []
+        if success1:
+            tournaments_found = response1 if isinstance(response1, list) else []
+            self.log(f"  Found {len(tournaments_found)} tournaments")
+            
+            if len(tournaments_found) >= 2:
+                self.log("  ✅ Expected tournaments found (2+)")
+                
+                # Check for specific test tournaments mentioned by user
+                cs2_championship_found = False
+                weekly_cs2_cup_found = False
+                
+                for tournament in tournaments_found:
+                    title = tournament.get('title', '')
+                    game = tournament.get('game', '')
+                    status = tournament.get('status', '')
+                    tournament_type = tournament.get('tournament_type', '')
+                    
+                    self.log(f"    Tournament: {title}")
+                    self.log(f"      Game: {game}, Status: {status}, Type: {tournament_type}")
+                    self.log(f"      ID: {tournament.get('id', 'No ID')}")
+                    
+                    if "CS2 Championship 2025" in title:
+                        cs2_championship_found = True
+                        self.log(f"      ✅ Found CS2 Championship 2025")
+                    elif "Weekly CS2 Cup" in title:
+                        weekly_cs2_cup_found = True
+                        self.log(f"      ✅ Found Weekly CS2 Cup")
+                
+                if cs2_championship_found and weekly_cs2_cup_found:
+                    self.log("  ✅ Both expected test tournaments found!")
+                elif cs2_championship_found or weekly_cs2_cup_found:
+                    self.log("  ⚠️ Only one of the expected test tournaments found", "WARNING")
+                else:
+                    self.log("  ❌ Neither expected test tournament found", "ERROR")
+                    
+            else:
+                self.log(f"  ❌ Not enough tournaments: {len(tournaments_found)} (expected 2+)", "ERROR")
+        
+        # Test 2: GET /api/tournaments?limit=20 (with limit parameter as used in frontend)
+        success2, response2 = self.run_test(
+            "Get Tournaments with Limit 20",
+            "GET",
+            "tournaments/?limit=20",
+            200
+        )
+        
+        if success2:
+            tournaments_limited = response2 if isinstance(response2, list) else []
+            self.log(f"  With limit=20: Found {len(tournaments_limited)} tournaments")
+            
+            if len(tournaments_limited) == len(tournaments_found):
+                self.log("  ✅ Limit parameter working correctly")
+            else:
+                self.log(f"  ⚠️ Limit parameter may have affected results", "WARNING")
+        
+        # Test 3: GET /api/tournaments?game=cs2 (filter by CS2 game)
+        success3, response3 = self.run_test(
+            "Get CS2 Tournaments Only",
+            "GET",
+            "tournaments/?game=cs2",
+            200
+        )
+        
+        if success3:
+            cs2_tournaments = response3 if isinstance(response3, list) else []
+            self.log(f"  CS2 tournaments only: Found {len(cs2_tournaments)} tournaments")
+            
+            if len(cs2_tournaments) >= 2:
+                self.log("  ✅ CS2 tournaments found (should include test tournaments)")
+            else:
+                self.log(f"  ❌ Not enough CS2 tournaments: {len(cs2_tournaments)}", "ERROR")
+        
+        # Test 4: Check authentication requirement
+        # Test without token to see if authentication is required
+        temp_token = self.token
+        self.token = None  # Remove token temporarily
+        
+        success4, response4 = self.run_test(
+            "Get Tournaments Without Authentication",
+            "GET",
+            "tournaments/",
+            200  # Tournaments should be public
+        )
+        
+        self.token = temp_token  # Restore token
+        
+        if success4:
+            self.log("  ✅ Tournaments endpoint is public (no auth required)")
+        else:
+            self.log("  ❌ Tournaments endpoint requires authentication - this could cause frontend issues!", "ERROR")
+        
+        # Test 5: Check tournament data structure for frontend compatibility
+        if tournaments_found:
+            first_tournament = tournaments_found[0]
+            required_fields = ['id', 'title', 'game', 'status', 'tournament_type']
+            missing_fields = []
+            
+            for field in required_fields:
+                if field not in first_tournament:
+                    missing_fields.append(field)
+            
+            if not missing_fields:
+                self.log("  ✅ Tournament data structure has all required fields for frontend")
+            else:
+                self.log(f"  ❌ Missing required fields: {missing_fields}", "ERROR")
+            
+            # Show sample tournament structure
+            self.log(f"  Sample tournament structure:")
+            for key, value in first_tournament.items():
+                if key in required_fields:
+                    self.log(f"    {key}: {value}")
+        
+        # Summary of tournament selector diagnosis
+        self.log("\n" + "="*50)
+        self.log("🔍 TOURNAMENT SELECTOR DIAGNOSIS:")
+        self.log("="*50)
+        
+        if not success1 or len(tournaments_found) == 0:
+            self.log("❌ CRITICAL: No tournaments returned - selector will be empty!", "ERROR")
+        elif len(tournaments_found) < 2:
+            self.log("❌ CRITICAL: Less than 2 tournaments found - missing test tournaments!", "ERROR")
+        else:
+            self.log("✅ Tournaments are being returned by API", "SUCCESS")
+        
+        if not success4:
+            self.log("❌ CRITICAL: Authentication required for tournaments - frontend may not have token!", "ERROR")
+        else:
+            self.log("✅ Tournaments endpoint is public - no auth issues", "SUCCESS")
+        
+        return success1 and success2 and success3 and success4
+
     def test_cs2_tutorial_cleanup_verification(self):
         """Test CS2 tutorial cleanup - MAIN FOCUS FOR CURRENT REVIEW"""
         self.log("=== TESTING CS2 TUTORIAL CLEANUP VERIFICATION ===")
