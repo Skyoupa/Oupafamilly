@@ -3153,20 +3153,13 @@ class OupafamillyAPITester:
             user2_id = leaderboard_data[1].get('user_id')
             
             if user1_id and user2_id:
+                # Use query parameters instead of JSON body
+                query_params = f"winner_id={user1_id}&loser_id={user2_id}&game=cs2&is_tournament=true&tournament_id=test-tournament-123&match_id=test-match-456&importance=1.5"
                 success9, response9 = self.run_test(
                     "Admin Process Match",
                     "POST",
-                    "elo/admin/process-match",
-                    200,
-                    data={
-                        "winner_id": user1_id,
-                        "loser_id": user2_id,
-                        "game": "cs2",
-                        "is_tournament": True,
-                        "tournament_id": "test-tournament-123",
-                        "match_id": "test-match-456",
-                        "importance": 1.5
-                    }
+                    f"elo/admin/process-match?{query_params}",
+                    200
                 )
                 
                 if success9:
@@ -3186,15 +3179,13 @@ class OupafamillyAPITester:
             test_user_id = leaderboard_data[-1].get('user_id')  # Use last player to minimize impact
             
             if test_user_id:
+                # Use query parameters instead of JSON body
+                query_params = f"user_id={test_user_id}&new_rating=1300"
                 success10, response10 = self.run_test(
                     "Admin Reset User ELO",
                     "POST",
-                    "elo/admin/reset-user-elo",
-                    200,
-                    data={
-                        "user_id": test_user_id,
-                        "new_rating": 1300
-                    }
+                    f"elo/admin/reset-user-elo?{query_params}",
+                    200
                 )
                 
                 if success10:
