@@ -320,7 +320,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Nettoyage des tutoriels CS2"
+    - "Système d'achievements/badges"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
