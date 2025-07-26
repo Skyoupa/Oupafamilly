@@ -310,18 +310,18 @@ L'**économie CS2** n'est pas juste de l'argent - c'est un **système stratégiq
                 'type': 'Guide Économique',
                 'author': 'Oupafamilly Pro Team',
                 'objectives': [
-                    'Comprendre parfaitement le système économique CS2 2025',
-                    'Maîtriser les stratégies de force-buy et save rounds des équipes Tier 1',
-                    'Développer la lecture économique adverse et l\'adaptation',
-                    'Optimiser la gestion budgétaire d\'équipe et les drops d\'armes',
-                    'Calculer rapidement les décisions économiques en situation de match'
+                    'Maîtriser parfaitement le système économique CS2 avec revenus et bonus',
+                    'Comprendre les cycles économiques et la gestion des bonus de défaite',
+                    'Développer les stratégies de Force-Buy et Save rounds des équipes Tier 1',
+                    'Apprendre à lire l\'économie adverse et adapter ses décisions d\'achat',
+                    'Optimiser la gestion budgétaire d\'équipe et le partage d\'armes stratégique'
                 ],
                 'tips': [
-                    'Calculez toujours l\'économie adverse avant vos achats',
-                    'Priorisez les SMGs sur les eco rounds pour maximiser les kill rewards',
-                    'Étudiez les patterns économiques des équipes Tier 1',
-                    'Entraînez-vous aux calculs économiques rapides quotidiennement',
-                    'Adaptez votre stratégie d\'achat selon le score et la situation'
+                    'Analysez toujours l\'économie adverse avant vos décisions d\'achat',
+                    'Utilisez les SMGs lors des eco rounds pour maximiser les kill rewards',
+                    'Étudiez les patterns économiques d\'Astralis, FaZe et NAVI',
+                    'Maîtrisez les calculs économiques rapides pour les décisions instantanées',
+                    'Coordonnez les achats d\'équipe selon les rôles et priorités tactiques'
                 ],
                 'image': cs2_image
             }
