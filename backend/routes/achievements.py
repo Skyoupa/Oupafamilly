@@ -16,6 +16,332 @@ from datetime import datetime
 
 router = APIRouter(prefix="/achievements", tags=["Achievements & Badges"])
 
+# =====================================================
+# QUEST/DAILY CHALLENGE ENDPOINTS
+# =====================================================
+
+@router.get("/quests/daily")
+async def get_daily_quests(current_user: User = Depends(get_current_active_user)):
+    """Récupère les quêtes quotidiennes actives pour l'utilisateur"""
+    try:
+        from achievements import QuestEngine
+        from datetime import datetime, timedelta
+        
+        # Initialiser le moteur de quêtes
+        quest_engine = QuestEngine()
+        
+        # Récupérer les quêtes quotidiennes pour aujourd'hui
+        today = datetime.utcnow().date()
+        daily_quests = await quest_engine.get_daily_quests_for_date(today)
+        
+        # Récupérer la progression de l'utilisateur pour ces quêtes
+        user_quests = []
+        for quest in daily_quests:
+            progress = await quest_engine.get_user_quest_progress(current_user.id, quest.id)
+            quest_dict = quest.dict()
+            quest_dict.update({
+                "user_progress": progress.get("progress", {}),
+                "completed": progress.get("completed", False),
+                "rewards_claimed": progress.get("rewards_claimed", False),
+                "completion_percentage": progress.get("completion_percentage", 0.0)
+            })
+            user_quests.append(quest_dict)
+        
+        # Statistiques globales des quêtes
+        completed_today = sum(1 for q in user_quests if q["completed"])
+        total_rewards_available = sum(
+            quest["rewards"].get("coins", 0) + quest["rewards"].get("xp", 0)
+            for quest in user_quests
+        )
+        
+        return {
+            "daily_quests": user_quests,
+            "date": today.isoformat(),
+            "total_quests": len(user_quests),
+            "completed_quests": completed_today,
+            "completion_rate": completed_today / max(len(user_quests), 1),
+            "total_rewards_available": total_rewards_available,
+            "next_reset": f"{(datetime.utcnow() + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()}Z"
+        }
+        
+    except Exception as e:
+        app_logger.error(f"Erreur récupération quêtes quotidiennes: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la récupération des quêtes quotidiennes"
+        )
+
+@router.post("/quests/{quest_id}/claim")
+async def claim_quest_rewards(
+    quest_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Réclamer les récompenses d'une quête terminée"""
+    try:
+        from achievements import QuestEngine
+        
+        quest_engine = QuestEngine()
+        
+        # Vérifier que la quête est terminée et que les récompenses ne sont pas déjà réclamées
+        progress = await quest_engine.get_user_quest_progress(current_user.id, quest_id)
+        
+        if not progress:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Quête non trouvée ou pas commencée"
+            )
+        
+        if not progress.get("completed", False):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cette quête n'est pas encore terminée"
+            )
+        
+        if progress.get("rewards_claimed", False):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Les récompenses ont déjà été réclamées pour cette quête"
+            )
+        
+        # Réclamer les récompenses
+        claimed_rewards = await quest_engine.claim_quest_rewards(current_user.id, quest_id)
+        
+        log_user_action(current_user.id, "quest_rewards_claimed", {
+            "quest_id": quest_id,
+            "rewards": claimed_rewards
+        })
+        
+        return {
+            "message": "Récompenses réclamées avec succès !",
+            "rewards": claimed_rewards,
+            "quest_id": quest_id
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        app_logger.error(f"Erreur réclamation récompenses quête: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la réclamation des récompenses"
+        )
+
+@router.get("/quests/my-progress")
+async def get_my_quest_progress(current_user: User = Depends(get_current_active_user)):
+    """Récupère l'historique et la progression de toutes les quêtes de l'utilisateur"""
+    try:
+        from database import db
+        from datetime import datetime, timedelta
+        
+        # Récupérer l'historique des quêtes (7 derniers jours)
+        seven_days_ago = datetime.utcnow() - timedelta(days=7)
+        
+        pipeline = [
+            {
+                "$match": {
+                    "user_id": current_user.id,
+                    "started_at": {"$gte": seven_days_ago}
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "quests",
+                    "localField": "quest_id",
+                    "foreignField": "id",
+                    "as": "quest_info"
+                }
+            },
+            {
+                "$sort": {"started_at": -1}
+            }
+        ]
+        
+        user_quests = await db.user_quests.aggregate(pipeline).to_list(100)
+        
+        # Enrichir avec les informations des quêtes
+        enriched_quests = []
+        for user_quest in user_quests:
+            quest_info = user_quest.get("quest_info", [{}])[0] if user_quest.get("quest_info") else {}
+            
+            enriched_quests.append({
+                "quest_id": user_quest["quest_id"],
+                "quest_name": quest_info.get("name", "Quête inconnue"),
+                "quest_description": quest_info.get("description", ""),
+                "difficulty": quest_info.get("difficulty", "common"),
+                "progress": user_quest.get("progress", {}),
+                "completed": user_quest.get("completed", False),
+                "completed_at": user_quest.get("completed_at"),
+                "rewards_claimed": user_quest.get("rewards_claimed", False),
+                "started_at": user_quest["started_at"],
+                "quest_date": user_quest["started_at"].date().isoformat() if "started_at" in user_quest else None
+            })
+        
+        # Statistiques globales
+        total_completed = sum(1 for q in enriched_quests if q["completed"])
+        total_rewards_claimed = sum(1 for q in enriched_quests if q["rewards_claimed"])
+        
+        # Streak de jours consécutifs avec quêtes complétées
+        quest_streak = await _calculate_quest_streak(current_user.id)
+        
+        return {
+            "quest_history": enriched_quests,
+            "statistics": {
+                "total_quests_started": len(enriched_quests),
+                "total_completed": total_completed,
+                "total_rewards_claimed": total_rewards_claimed,
+                "completion_rate": total_completed / max(len(enriched_quests), 1),
+                "current_streak": quest_streak,
+                "last_7_days": len(enriched_quests)
+            }
+        }
+        
+    except Exception as e:
+        app_logger.error(f"Erreur récupération progression quêtes: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la récupération de la progression"
+        )
+
+@router.get("/quests/leaderboard")
+async def get_quest_leaderboard(
+    period: str = Query("week", regex="^(daily|week|month|all)$"),
+    limit: int = Query(50, ge=1, le=100),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Classement des joueurs par quêtes complétées"""
+    try:
+        from database import db
+        from datetime import datetime, timedelta
+        
+        # Définir la période
+        now = datetime.utcnow()
+        if period == "daily":
+            start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        elif period == "week":
+            start_date = now - timedelta(days=7)
+        elif period == "month":
+            start_date = now - timedelta(days=30)
+        else:  # all
+            start_date = datetime.min
+        
+        # Pipeline d'agrégation pour le classement
+        pipeline = [
+            {
+                "$match": {
+                    "completed": True,
+                    "completed_at": {"$gte": start_date}
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$user_id",
+                    "quests_completed": {"$sum": 1},
+                    "last_completion": {"$max": "$completed_at"},
+                    "rewards_claimed_count": {"$sum": {"$cond": ["$rewards_claimed", 1, 0]}}
+                }
+            },
+            {"$sort": {"quests_completed": -1, "last_completion": -1}},
+            {"$limit": limit}
+        ]
+        
+        leaderboard_data = await db.user_quests.aggregate(pipeline).to_list(limit)
+        
+        # Enrichir avec les informations utilisateur
+        enriched_leaderboard = []
+        for i, entry in enumerate(leaderboard_data):
+            user_data = await db.users.find_one({"id": entry["_id"]})
+            if user_data:
+                enriched_leaderboard.append({
+                    "rank": i + 1,
+                    "user_id": entry["_id"],
+                    "username": user_data.get("username", "Inconnu"),
+                    "quests_completed": entry["quests_completed"],
+                    "rewards_claimed": entry["rewards_claimed_count"],
+                    "last_completion": entry["last_completion"],
+                    "level": user_data.get("level", 1),
+                    "is_current_user": entry["_id"] == current_user.id
+                })
+        
+        # Trouver le rang de l'utilisateur actuel
+        current_user_rank = None
+        for entry in enriched_leaderboard:
+            if entry["is_current_user"]:
+                current_user_rank = entry["rank"]
+                break
+        
+        return {
+            "leaderboard": enriched_leaderboard,
+            "period": period,
+            "current_user_rank": current_user_rank,
+            "total_players": len(enriched_leaderboard)
+        }
+        
+    except Exception as e:
+        app_logger.error(f"Erreur génération leaderboard quêtes: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la génération du classement"
+        )
+
+async def _calculate_quest_streak(user_id: str) -> int:
+    """Calcule le nombre de jours consécutifs avec quêtes complétées"""
+    try:
+        from database import db
+        from datetime import datetime, timedelta
+        
+        # Récupérer les quêtes complétées par jour, triées par date décroissante
+        pipeline = [
+            {
+                "$match": {
+                    "user_id": user_id,
+                    "completed": True
+                }
+            },
+            {
+                "$group": {
+                    "_id": {
+                        "$dateToString": {
+                            "format": "%Y-%m-%d",
+                            "date": "$completed_at"
+                        }
+                    },
+                    "quests_completed": {"$sum": 1}
+                }
+            },
+            {"$sort": {"_id": -1}}
+        ]
+        
+        daily_completions = await db.user_quests.aggregate(pipeline).to_list(365)
+        
+        if not daily_completions:
+            return 0
+        
+        # Calculer le streak
+        streak = 0
+        current_date = datetime.utcnow().date()
+        
+        for daily_data in daily_completions:
+            completion_date_str = daily_data["_id"]
+            completion_date = datetime.strptime(completion_date_str, "%Y-%m-%d").date()
+            
+            # Vérifier si c'est le jour actuel ou le jour suivant dans le streak
+            expected_date = current_date - timedelta(days=streak)
+            
+            if completion_date == expected_date:
+                streak += 1
+            else:
+                break
+        
+        return streak
+        
+    except Exception as e:
+        app_logger.error(f"Erreur calcul streak quêtes: {str(e)}")
+        return 0
+
+# =====================================================
+# ACHIEVEMENT/BADGE ENDPOINTS (existing)
+# =====================================================
+
 @router.get("/my-badges")
 async def get_my_badges(current_user: User = Depends(get_current_active_user)):
     """Récupère tous les badges de l'utilisateur connecté"""
