@@ -27,30 +27,77 @@ from database import db
 
 @router.post("/register", response_model=UserResponse)
 @limiter.limit("3/minute")  # Limite à 3 créations de compte par minute
+@log_performance("user_registration", threshold_ms=2000)
 async def register_user(request: Request, user_data: UserCreate):
-    """Register a new user."""
+    """Create a new user account with enhanced security validation."""
     try:
+        # Validate input security
+        request_dict = {
+            "username": user_data.username,
+            "email": user_data.email,
+            "full_name": getattr(user_data, 'full_name', '') or getattr(user_data, 'display_name', '') or "",
+        }
+        
+        validation_result = validate_request_security(request_dict)
+        if not validation_result["valid"]:
+            log_security_event("registration_validation_failed", details={
+                "issues": validation_result["issues"],
+                "ip": request.client.host if request.client else "unknown"
+            })
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Input validation failed: {', '.join(validation_result['issues'])}"
+            )
+        
+        # Advanced email validation
+        email_validation = SecurityValidator.validate_email_advanced(user_data.email)
+        if not email_validation["valid"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=email_validation["error"]
+            )
+        
+        # Username validation
+        username_validation = SecurityValidator.validate_username(user_data.username)
+        if not username_validation["valid"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=username_validation["error"]
+            )
+        
+        # Password strength validation
+        password_validation = SecurityValidator.validate_password(user_data.password)
+        if not password_validation["valid"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=password_validation["error"]
+            )
+        
         # Check if user already exists
-        existing_user = await get_user_by_email(db, user_data.email)
+        existing_user = await get_user_by_email(db, email_validation["sanitized"])
         if existing_user:
+            log_security_event("duplicate_registration_attempt", details={
+                "email": email_validation["sanitized"],
+                "ip": request.client.host if request.client else "unknown"
+            })
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered"
             )
         
         # Check if username already exists
-        existing_username = await db.users.find_one({"username": user_data.username})
+        existing_username = await db.users.find_one({"username": username_validation["sanitized"]})
         if existing_username:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Username already taken"
             )
         
-        # Create new user
+        # Create new user with sanitized data
         hashed_password = get_password_hash(user_data.password)
         new_user = User(
-            username=user_data.username,
-            email=user_data.email,
+            username=username_validation["sanitized"],
+            email=email_validation["sanitized"],
             hashed_password=hashed_password,
             role=UserRole.MEMBER,
             status=UserStatus.ACTIVE  # For a starting community, auto-activate users
@@ -59,14 +106,22 @@ async def register_user(request: Request, user_data: UserCreate):
         # Insert user into database
         await db.users.insert_one(new_user.dict())
         
-        # Create user profile
+        # Create user profile with sanitized data
+        display_name = getattr(user_data, 'display_name', None) or username_validation["sanitized"]
         user_profile = UserProfile(
             user_id=new_user.id,
-            display_name=user_data.display_name
+            display_name=SecurityValidator.sanitize_html(display_name, allow_tags=False)
         )
         await db.user_profiles.insert_one(user_profile.dict())
         
-        logger.info(f"New user registered: {user_data.email}")
+        # Log successful registration
+        log_user_action(new_user.id, "account_created", {
+            "username": username_validation["sanitized"],
+            "email_domain": email_validation["sanitized"].split('@')[1],
+            "ip": request.client.host if request.client else "unknown"
+        })
+        
+        logger.info(f"New user registered: {email_validation['sanitized']}")
         
         return UserResponse(
             id=new_user.id,
@@ -84,7 +139,7 @@ async def register_user(request: Request, user_data: UserCreate):
         logger.error(f"Error registering user: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error creating user"
+            detail="Registration failed"
         )
 
 @router.post("/login", response_model=Token)
