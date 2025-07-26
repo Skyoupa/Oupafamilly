@@ -70,7 +70,7 @@ async def get_tournaments(
                     "title": tournament_data.get("title", ""),
                     "description": tournament_data.get("description", ""),
                     "game": tournament_data.get("game", "cs2"),
-                    "tournament_type": tournament_data.get("type", "elimination"),
+                    "tournament_type": map_tournament_type(tournament_data.get("type", "elimination")),
                     "max_participants": tournament_data.get("max_participants", 16),
                     "entry_fee": tournament_data.get("entry_fee", 0.0),
                     "prize_pool": tournament_data.get("prize_pool", 0.0),
