@@ -177,13 +177,24 @@
 }
 
 .info-label {
-  font-weight: 600;
-  color: var(--text-white-bg-secondary);
+  font-weight: 700;
+  color: #1a202c;
+  font-size: 0.95rem;
 }
 
 .info-value {
-  font-weight: 500;
-  color: var(--text-white-bg-primary);
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.user-id {
+  font-family: 'Courier New', monospace;
+  background: #f7fafc;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.85rem;
 }
 
 /* Tournament Stats */
