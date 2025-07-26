@@ -105,6 +105,53 @@
 user_problem_statement: "Je viens de mettre en place plusieurs améliorations majeures au système et j'ai besoin de les tester complètement : Système de récompenses pour tournois, Système de paris professionnel, Dashboard Admin Économie (nouveaux endpoints), Marketplace avec customs. Tests prioritaires : Vérifier que les nouveaux endpoints admin/economy sont accessibles, Confirmer présence des articles customs dans marketplace, Tester création automatique de marchés de paris pour tournois, Vérifier que le système de récompenses tournoi fonctionne."
 
 backend:
+  - task: "Système d'achievements/badges"
+    implemented: true
+    working: false
+    file: "/app/backend/routes/achievements.py, /app/backend/achievements.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "🆕 NOUVELLEMENT IMPLÉMENTÉ - Système d'achievements/badges complet créé : ✅ Modèles Badge, UserBadge, Quest, UserQuest dans achievements.py ✅ Moteur d'achievements intelligent avec 20+ badges prédéfinis ✅ 8 endpoints API complets dans routes/achievements.py (my-badges, available, progress, check, leaderboard, stats, admin) ✅ Support badges par catégorie (gaming, community, economic, social, competitive, loyalty, special) ✅ 5 niveaux de rareté (common à mythic) ✅ Système de récompenses automatiques (XP + coins) ✅ Router enregistré dans server.py ✅ Badges cachés et progression détaillée ✅ Leaderboard et statistiques globales ✅ Interface admin pour attribution manuelle. NÉCESSITE TESTING BACKEND."
+
+  - task: "Système de quêtes quotidiennes"
+    implemented: false
+    working: false
+    file: "/app/backend/achievements.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "🔄 À IMPLÉMENTER - Système de quêtes quotidiennes prévu dans le modèle Quest existing, besoin d'implémenter les endpoints API et la logique de génération/rotation quotidienne."
+
+  - task: "Système ELO automatique"
+    implemented: false
+    working: false
+    file: "/app/backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "🔄 À IMPLÉMENTER - Système ELO pour calcul automatique du classement des joueurs basé sur performances tournois, intégré dans profils membres."
+
+  - task: "Mode sombre professionnel"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "🔄 À IMPLÉMENTER - Toggle mode sombre dans header existant sans modification layout, style CSS professionnel."
   - task: "Nettoyage des tutoriels CS2"
     implemented: true
     working: true
