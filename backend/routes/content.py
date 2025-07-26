@@ -142,7 +142,7 @@ async def get_tutorials(
         if level:
             filter_dict["level"] = level
         
-        tutorials = await db.tutorials.find(filter_dict).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+        tutorials = await db.tutorials.find(filter_dict).sort([("sort_order", 1), ("created_at", -1)]).skip(skip).limit(limit).to_list(limit)
         return [Tutorial(**tutorial) for tutorial in tutorials]
         
     except Exception as e:
