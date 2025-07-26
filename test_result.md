@@ -194,10 +194,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Augmentation limite affichage tutoriels à 100"
-    - "Finalisation tutoriels Minecraft"
-    - "Complétion tutoriels LoL et StarCraft II"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
