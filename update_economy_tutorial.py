@@ -283,7 +283,7 @@ L'**économie CS2** n'est pas juste de l'argent - c'est un **système stratégiq
 ### 🎯 Points Clés à Retenir
 - **Discipline Économique** : Chaque achat doit avoir une raison stratégique
 - **Lecture Adverse** : Anticiper les décisions économiques adverses
-- **Optimisation Team** : Maximiser l'efficacité collective
+- **Optimisation Équipe** : Maximiser l'efficacité collective
 - **Adaptation Constante** : Ajuster selon les situations
 
 ### 🚀 Prochaines Étapes
