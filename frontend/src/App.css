@@ -6887,19 +6887,42 @@ body {
 div:has-text("Made with Emergent"),
 div:has-text("Emergent"),
 *[title*="Made with Emergent"],
-*[alt*="Made with Emergent"] {
+*[alt*="Made with Emergent"],
+*[aria-label*="Made with Emergent"],
+*[data-label*="Made with Emergent"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   position: absolute !important;
   left: -9999px !important;
+  top: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  z-index: -9999 !important;
 }
 
-/* More specific selectors for bottom-right badges */
+/* More aggressive selectors for bottom-right badges */
 div[style*="position: fixed"][style*="bottom"][style*="right"],
 div[style*="position: absolute"][style*="bottom"][style*="right"],
 .emergent-badge,
-.emergent-watermark {
+.emergent-watermark,
+*[class*="made-with"],
+*[id*="made-with"],
+button[style*="position: fixed"],
+div[role="button"][style*="position: fixed"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide any element containing "Made with" or "Emergent" text */
+*:has-text("Made with") {
+  display: none !important;
+}
+
+/* Target specific common badge patterns */
+div[style*="z-index"][style*="fixed"][style*="bottom"],
+div[style*="z-index"][style*="absolute"][style*="bottom"] {
   display: none !important;
 }
 
