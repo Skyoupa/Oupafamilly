@@ -19,7 +19,7 @@ from database import db, client
 from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments, chat, activity, betting, admin_economy, match_scheduling, monitoring
 
 # Configure structured logging and monitoring
-from monitoring import configure_structured_logging, app_logger
+from monitoring import configure_structured_logging, app_logger, RequestLoggingMiddleware
 configure_structured_logging()
 
 # Create rate limiter
@@ -31,6 +31,9 @@ app = FastAPI(
     description="API pour la communauté multigaming Oupafamilly",
     version="1.0.0"
 )
+
+# Add request logging middleware
+app.add_middleware(RequestLoggingMiddleware)
 
 # Add rate limiting state
 app.state.limiter = limiter
