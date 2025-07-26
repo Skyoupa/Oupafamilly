@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oupafamilly - Hors Ligne</title>
+    <link rel="icon" href="/icons/icon-72x72.png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .offline-container {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px 20px;
+        }
+        
+        .offline-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            display: block;
+        }
+        
+        .offline-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #3b82f6;
+        }
+        
+        .offline-message {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+        
+        .offline-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+        
+        .btn-secondary:hover {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .offline-tips {
+            margin-top: 48px;
+            padding: 24px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .offline-tips h3 {
+            margin: 0 0 16px 0;
+            color: #3b82f6;
+        }
+        
+        .offline-tips ul {
+            text-align: left;
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        .offline-tips li {
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 480px) {
+            .offline-container {
+                padding: 20px 16px;
+            }
+            
+            .offline-title {
+                font-size: 24px;
+            }
+            
+            .offline-message {
+                font-size: 16px;
+            }
+            
+            .offline-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <span class="offline-icon">🌐❌</span>
+        
+        <h1 class="offline-title">Vous êtes hors ligne</h1>
+        
+        <p class="offline-message">
+            Désolé, vous semblez être déconnecté d'Internet. 
+            Certaines fonctionnalités d'Oupafamilly ne sont pas disponibles en mode hors ligne.
+        </p>
+        
+        <div class="offline-actions">
+            <button class="btn btn-primary" onclick="location.reload()">
+                🔄 Réessayer
+            </button>
+            <a href="/" class="btn btn-secondary">
+                🏠 Accueil
+            </a>
+        </div>
+        
+        <div class="offline-tips">
+            <h3>💡 Conseils pour une meilleure expérience</h3>
+            <ul>
+                <li>Vérifiez votre connexion Internet</li>
+                <li>Actualisez la page quand vous êtes de nouveau en ligne</li>
+                <li>Certaines pages visitées récemment peuvent être disponibles hors ligne</li>
+                <li>Les données seront synchronisées dès la reconnexion</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Vérification automatique de la connexion
+        function checkConnection() {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }
+        
+        // Écouter les changements de statut de connexion
+        window.addEventListener('online', checkConnection);
+        
+        // Vérifier toutes les 30 secondes
+        setInterval(checkConnection, 30000);
+        
+        console.log('📱 Page offline Oupafamilly chargée');
+    </script>
+</body>
+</html>
