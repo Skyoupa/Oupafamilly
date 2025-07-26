@@ -1901,6 +1901,33 @@ class OupafamillyAPITester:
                     if matches:
                         match_id = matches[0].get("id")
                         self.log(f"  Using match ID: {match_id}")
+                    else:
+                        # No matches found, try to generate bracket
+                        self.log("  No matches found, attempting to generate bracket...")
+                        bracket_success, bracket_response = self.run_test(
+                            "Generate Tournament Bracket",
+                            "POST",
+                            f"matches/tournament/{tournament_id}/generate-bracket",
+                            200
+                        )
+                        
+                        if bracket_success:
+                            self.log("  ✅ Bracket generated successfully")
+                            # Try to get matches again
+                            matches_success2, matches_response2 = self.run_test(
+                                "Get Matches After Bracket Generation",
+                                "GET",
+                                f"matches/tournament/{tournament_id}",
+                                200
+                            )
+                            
+                            if matches_success2 and matches_response2:
+                                matches = matches_response2 if isinstance(matches_response2, list) else []
+                                if matches:
+                                    match_id = matches[0].get("id")
+                                    self.log(f"  Using match ID after bracket generation: {match_id}")
+                        else:
+                            self.log("  ❌ Failed to generate bracket", "ERROR")
         
         if not tournament_id:
             self.log("  ❌ No tournaments found for testing match scheduling", "ERROR")
