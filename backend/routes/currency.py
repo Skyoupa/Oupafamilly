@@ -377,7 +377,7 @@ async def claim_daily_bonus(current_user: User = Depends(get_current_active_user
             detail="Erreur lors de la réclamation du bonus quotidien"
         )
 
-@router.get("/marketplace", response_model=List[MarketplaceItem])
+@router.get("/marketplace")
 async def get_marketplace_items(
     item_type: Optional[str] = None,
     limit: int = Query(20, le=100),
@@ -391,7 +391,25 @@ async def get_marketplace_items(
         
         items = await db.marketplace_items.find(filter_dict).skip(skip).limit(limit).to_list(limit)
         
-        return [MarketplaceItem(**item) for item in items]
+        # Convertir en format simple pour éviter les erreurs de modèle
+        marketplace_items = []
+        for item in items:
+            marketplace_item = {
+                "id": item.get("id"),
+                "name": item.get("name"),
+                "description": item.get("description"),
+                "item_type": item.get("item_type"),
+                "price": item.get("price"),
+                "image_url": item.get("image_url"),
+                "is_available": item.get("is_available", True),
+                "is_premium": item.get("is_premium", False),
+                "rarity": item.get("rarity", "common"),
+                "custom_data": item.get("custom_data", {}),
+                "created_at": item.get("created_at")
+            }
+            marketplace_items.append(marketplace_item)
+        
+        return marketplace_items
         
     except Exception as e:
         logger.error(f"Erreur lors de la récupération des articles marketplace: {str(e)}")
