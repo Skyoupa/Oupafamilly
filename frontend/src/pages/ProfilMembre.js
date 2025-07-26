@@ -372,6 +372,9 @@ const ProfilMembre = () => {
                       ✏️ Laisser un commentaire
                     </button>
                   )}
+                  {!currentUser && (
+                    <p className="login-required">Connectez-vous pour laisser un commentaire</p>
+                  )}
                 </div>
 
                 {/* Comment Form */}
