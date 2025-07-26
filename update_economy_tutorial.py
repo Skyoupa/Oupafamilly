@@ -84,46 +84,46 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 
 ## 🔫 3. Types de Rounds Économiques
 
-### 💪 Full Buy Rounds
+### 💪 Rounds Achat Complet
 
 #### **Équipement Standard T-Side**
-- **Rifles** : AK-47 (2 700$) pour tous
-- **Armor** : Kevlar + Casque (1 000$)
+- **Fusils** : AK-47 (2 700$) pour tous
+- **Armure** : Kevlar + Casque (1 000$)
 - **Utilities** : Smoke (300$), Flash (200$), HE (300$), Molotov (400$)
 - **Total par joueur** : ~4 900$
 
 #### **Équipement Standard CT-Side**
-- **Rifles** : M4A4/M4A1-S (3 100$) + 1 AWP (4 750$)
-- **Armor** : Kevlar + Casque (1 000$)
+- **Fusils** : M4A4/M4A1-S (3 100$) + 1 AWP (4 750$)
+- **Armure** : Kevlar + Casque (1 000$)
 - **Utilities** : Smoke (300$), Flash (200$), HE (300$), Incendiary (600$)
-- **Kit** : Defuse Kit (400$)
+- **Kit** : Kit de Désamorçage (400$)
 - **Total par joueur** : ~5 500$
 
-### 🎯 Force Buy Rounds
+### 🎯 Rounds Force Buy
 
 #### **Force Buy T-Side**
 - **Galil AR** (2 000$) ou **FAMAS** (2 050$)
-- **Armor** : Kevlar seul (650$)
+- **Armure** : Kevlar seul (650$)
 - **Utilities limitées** : 1-2 grenades maximum
 - **Total par joueur** : ~3 000$
 
 #### **Force Buy CT-Side**
 - **UMP-45** (1 200$) ou **MP9** (1 250$)
-- **Armor** : Kevlar + Casque (1 000$)
+- **Armure** : Kevlar + Casque (1 000$)
 - **Utilities** : Smoke + Flash (500$)
 - **Total par joueur** : ~2 750$
 
-### 💡 Eco Rounds
+### 💡 Rounds Eco
 
 #### **Eco Strict**
 - **Pistolet de base** : Glock/USP-S (0$)
-- **Armor optionnel** : Kevlar (650$)
+- **Armure optionnelle** : Kevlar (650$)
 - **Utilities minimales** : 1 grenade maximum
 - **Total par joueur** : 0-950$
 
-#### **Eco Upgraded**
+#### **Eco Amélioré**
 - **Pistolet amélioré** : P250 (300$) ou Five-SeveN (500$)
-- **Armor** : Kevlar (650$)
+- **Armure** : Kevlar (650$)
 - **Utilities** : 1-2 grenades
 - **Total par joueur** : 1 200-1 500$
 
