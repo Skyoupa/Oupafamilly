@@ -215,7 +215,7 @@ const Communaute = () => {
       
       // Fetch tournaments from correct API (public endpoint)
       console.log('Fetching tournaments...');
-      const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments?limit=20`, { headers });
+      const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments/`, { headers });
       console.log('Tournaments response status:', tournamentsResponse.status);
       
       if (tournamentsResponse.ok) {
