@@ -1848,7 +1848,7 @@ Votre première nuit détermine votre succès Minecraft. Préparez-vous méthodi
         print(f"   📚 TOTAL: {len(all_tutorials)} tutoriels professionnels")
         
         print("\n🎉 Base de données tutoriels Oupafamilly créée !")
-        print("🔗 Interface disponible : https://930bf8e6-a843-45ec-9c19-5f3f2be5fa5c.preview.emergentagent.com/tutoriels")
+        print("🔗 Interface disponible : https://bb92492e-ed19-4f17-8a23-4bc20c416fbd.preview.emergentagent.com/tutoriels")
         
     except Exception as e:
         print(f"❌ Erreur lors de la création des tutoriels: {str(e)}")

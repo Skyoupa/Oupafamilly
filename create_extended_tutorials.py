@@ -2237,7 +2237,7 @@ League of Legends est un jeu de stratégie d'équipe - maîtrisez votre rôle et
             print(f"      └─ Débutant: {beginner} | Intermédiaire: {intermediate} | Expert: {expert}")
         
         print(f"\n📚 TOTAL: {len(all_tutorials)} tutoriels professionnels créés")
-        print("🔗 Interface disponible : https://930bf8e6-a843-45ec-9c19-5f3f2be5fa5c.preview.emergentagent.com/tutoriels")
+        print("🔗 Interface disponible : https://bb92492e-ed19-4f17-8a23-4bc20c416fbd.preview.emergentagent.com/tutoriels")
         
     except Exception as e:
         print(f"❌ Erreur lors de la création des tutoriels: {str(e)}")
