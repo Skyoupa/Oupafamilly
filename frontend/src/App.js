@@ -35,6 +35,7 @@ function App() {
               <Route path="/tournois" element={<Tournois />} />
               <Route path="/tournois/:id" element={<TournamentDetail />} />
               <Route path="/tournois/:id/bracket" element={<TournamentBracket />} />
+              <Route path="/profil/:memberId" element={<ProfilMembre />} />
               <Route path="/communaute" element={<Communaute />} />
               <Route path="/a-propos" element={<APropos />} />
               <Route path="/news" element={<News />} />
