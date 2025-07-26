@@ -101,3 +101,98 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Compléter le système de tutoriels Oupafamilly avec 12 tutoriels professionnels par jeu (CS2, WoW, LoL, SC2, Minecraft), tous traduits en français avec images uniques et système de difficulté coloré."
+
+backend:
+  - task: "Augmentation limite affichage tutoriels à 100"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Limite changée de 20 à 100 dans l'endpoint GET /tutorials pour assurer l'affichage de tous les tutoriels"
+
+  - task: "Finalisation tutoriels Minecraft"
+    implemented: true
+    working: "NA"
+    file: "/app/finalize_minecraft_tutorials.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "12 tutoriels Minecraft ajoutés avec succès, couvrant débutant à expert, en français avec images"
+
+  - task: "Complétion tutoriels LoL et StarCraft II"
+    implemented: true
+    working: "NA"
+    file: "/app/complete_remaining_tutorials.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "2 tutoriels LoL et 3 tutoriels SC2 ajoutés pour atteindre exactement 12 tutoriels par jeu. Système équilibré à 60 tutoriels total"
+
+  - task: "API endpoint tutoriels par jeu"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/content.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Endpoint /tutorials/by-game/{game} fonctionne correctement pour récupérer tutoriels par jeu"
+
+frontend:
+  - task: "Affichage tutoriels avec badges colorés"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Tutoriels.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Badges de difficulté colorés (vert/jaune/rouge) fonctionnent correctement"
+
+  - task: "Navigation vers détails tutoriels"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/TutorialDetail.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Navigation vers pages de détail des tutoriels fonctionne avec gameId et tutorialId"
+
+metadata:
+  created_by: "main_agent"
+  version: "2.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Augmentation limite affichage tutoriels à 100"
+    - "Finalisation tutoriels Minecraft"
+    - "Complétion tutoriels LoL et StarCraft II"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Complété avec succès l'objectif principal : 12 tutoriels professionnels par jeu (60 total). Modifié la limite d'affichage à 100. Prêt pour tests backend pour vérifier la récupération correcte de tous les tutoriels."
