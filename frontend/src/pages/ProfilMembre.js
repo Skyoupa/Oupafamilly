@@ -360,7 +360,7 @@ const ProfilMembre = () => {
               <div className="profile-section comments-section">
                 <div className="comments-header">
                   <h3>💬 Commentaires & Évaluations</h3>
-                  {user && user.id !== memberProfile.user_id && (
+                  {currentUser && currentUser.id !== memberProfile?.user_id && (
                     <button 
                       className="btn-primary-pro"
                       onClick={() => setShowCommentForm(!showCommentForm)}
