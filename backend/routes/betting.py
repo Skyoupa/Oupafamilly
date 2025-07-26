@@ -73,6 +73,143 @@ class BettingStats(BaseModel):
     best_bet: Dict[str, Any] = {}
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
+# Fonctions pour créer automatiquement les marchés de paris
+
+async def create_tournament_betting_markets(tournament_id: str):
+    """Créer automatiquement les marchés de paris pour un tournoi et ses matches."""
+    try:
+        # Récupérer le tournoi
+        tournament = await db.tournaments.find_one({"id": tournament_id})
+        if not tournament:
+            return
+        
+        tournament_name = tournament.get("title", "Tournoi")
+        game = tournament.get("game", "esports")
+        
+        # 1. Marché principal : Gagnant du tournoi
+        participants = tournament.get("participants", [])
+        if len(participants) >= 2:
+            winner_options = []
+            base_odds = 2.0  # Cotes de base
+            
+            for participant_id in participants:
+                # Récupérer le nom du participant (équipe ou joueur)
+                participant_name = await get_participant_name(participant_id)
+                winner_options.append({
+                    "option_id": participant_id,
+                    "name": participant_name,
+                    "odds": base_odds + (len(participants) * 0.1)  # Cotes ajustées selon nb participants
+                })
+            
+            # Créer le marché gagnant
+            winner_market = BettingMarket(
+                tournament_id=tournament_id,
+                tournament_name=tournament_name,
+                game=game,
+                market_type="winner",
+                title=f"Gagnant du tournoi: {tournament_name}",
+                description=f"Qui remportera le tournoi {tournament_name} ?",
+                options=winner_options,
+                closes_at=tournament.get("start_date", datetime.utcnow() + timedelta(hours=1))
+            )
+            
+            await db.betting_markets.insert_one(winner_market.dict())
+            logger.info(f"Marché gagnant créé pour tournoi {tournament_id}")
+        
+        # 2. Marchés pour les matches individuels
+        matches = await db.matches.find({"tournament_id": tournament_id}).to_list(100)
+        
+        for match in matches:
+            if match.get("status") == "scheduled":
+                # Créer marché pour ce match
+                match_options = []
+                player1_name = await get_participant_name(match.get("player1_id"))
+                player2_name = await get_participant_name(match.get("player2_id"))
+                
+                match_options.extend([
+                    {
+                        "option_id": match.get("player1_id"),
+                        "name": player1_name,
+                        "odds": 1.8
+                    },
+                    {
+                        "option_id": match.get("player2_id"), 
+                        "name": player2_name,
+                        "odds": 1.8
+                    }
+                ])
+                
+                match_market = BettingMarket(
+                    tournament_id=tournament_id,
+                    tournament_name=tournament_name,
+                    game=game,
+                    market_type="match_result",
+                    title=f"Match: {player1_name} vs {player2_name}",
+                    description=f"Qui gagnera ce match du tournoi {tournament_name} ?",
+                    options=match_options,
+                    match_id=match.get("id"),
+                    closes_at=match.get("scheduled_at", datetime.utcnow() + timedelta(hours=1))
+                )
+                
+                await db.betting_markets.insert_one(match_market.dict())
+                logger.info(f"Marché match créé pour {player1_name} vs {player2_name}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Erreur création marchés tournoi {tournament_id}: {str(e)}")
+        return False
+
+async def get_participant_name(participant_id: str) -> str:
+    """Récupérer le nom d'un participant (équipe ou joueur)."""
+    try:
+        # Chercher d'abord dans les équipes
+        team = await db.teams.find_one({"id": participant_id})
+        if team:
+            return team.get("name", f"Équipe {participant_id[:8]}")
+        
+        # Sinon chercher dans les utilisateurs
+        user = await db.users.find_one({"id": participant_id})
+        if user:
+            return user.get("username", f"Joueur {participant_id[:8]}")
+        
+        return f"Participant {participant_id[:8]}"
+        
+    except:
+        return f"Participant {participant_id[:8]}"
+
+@router.post("/markets/tournament/{tournament_id}")
+async def create_tournament_markets(
+    tournament_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Créer les marchés de paris pour un tournoi (admin seulement)."""
+    try:
+        if not is_admin(current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Seuls les admins peuvent créer des marchés de paris"
+            )
+        
+        success = await create_tournament_betting_markets(tournament_id)
+        
+        if success:
+            return {"message": "Marchés de paris créés avec succès pour le tournoi"}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Erreur lors de la création des marchés"
+            )
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erreur création marchés: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la création des marchés"
+        )
+
 # Endpoints des marchés de paris
 
 @router.get("/markets", response_model=List[BettingMarket])
