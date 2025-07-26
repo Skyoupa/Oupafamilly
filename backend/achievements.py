@@ -499,13 +499,14 @@ class AchievementEngine:
                 )
                 
                 # Enregistrer transaction
-                from routes.currency import create_transaction
-                await create_transaction(
-                    user_id, 
-                    badge.coins_reward, 
-                    f"Badge obtenu : {badge.name}",
-                    "badge_reward"
+                from models import CoinTransaction
+                transaction = CoinTransaction(
+                    user_id=user_id,
+                    amount=badge.coins_reward,
+                    transaction_type="badge_reward",
+                    description=f"Badge obtenu : {badge.name}"
                 )
+                await db.coin_transactions.insert_one(transaction.dict())
             
         except Exception as e:
             app_logger.error(f"Erreur attribution récompenses: {str(e)}")
