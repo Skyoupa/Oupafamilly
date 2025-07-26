@@ -29,6 +29,9 @@ const Tutoriels = () => {
       try {
         setLoading(true);
         const response = await axios.get(`${API}/content/tutorials?limit=50`);
+        console.log('Tutorials loaded:', response.data.length);
+        console.log('First tutorial image:', response.data[0]?.image);
+        console.log('First tutorial level:', response.data[0]?.level);
         setTutorials(response.data);
         setError(null);
       } catch (err) {
