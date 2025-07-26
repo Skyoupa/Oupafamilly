@@ -7,6 +7,7 @@ from models import (
 from auth import get_current_active_user, is_admin, is_moderator_or_admin
 from datetime import datetime, timedelta
 import logging
+import uuid
 
 logger = logging.getLogger(__name__)
 
