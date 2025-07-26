@@ -1245,6 +1245,236 @@ const Communaute = () => {
               </div>
             </div>
           )}
+
+          {/* Tournament Scheduling View */}
+          {activeView === 'tournois' && (
+            <div className="tournaments-section">
+              <div className="tournaments-header">
+                <h2 className="section-title-pro">🏆 Planification des Tournois</h2>
+                <p className="section-subtitle-pro">
+                  Gérez les horaires des matchs et suivez les tournois en cours
+                </p>
+              </div>
+
+              {/* Tournament Selector */}
+              <div className="tournament-selector-card">
+                <div className="selector-header">
+                  <h3>📅 Sélectionner un Tournoi</h3>
+                  <p>Choisissez un tournoi pour voir et gérer la planification de ses matchs</p>
+                </div>
+                
+                <div className="tournament-select-container">
+                  <select 
+                    value={selectedTournament} 
+                    onChange={(e) => {
+                      setSelectedTournament(e.target.value);
+                      if (e.target.value) {
+                        fetchTournamentSchedule(e.target.value);
+                      } else {
+                        setTournamentSchedule(null);
+                      }
+                    }}
+                    className="tournament-select"
+                  >
+                    <option value="">Choisir un tournoi...</option>
+                    {tournaments.map(tournament => (
+                      <option key={tournament.id} value={tournament.id}>
+                        {tournament.title} - {getGameDisplay(tournament.game)} ({tournament.status})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Tournament Schedule */}
+              {tournamentSchedule && (
+                <div className="tournament-schedule-card">
+                  <div className="schedule-header">
+                    <h3>📋 {tournamentSchedule.tournament_name}</h3>
+                    <div className="schedule-stats">
+                      <span className="stat-item">
+                        <strong>{tournamentSchedule.total_matches}</strong> matchs au total
+                      </span>
+                      <span className="stat-item">
+                        <strong>{tournamentSchedule.scheduled_matches}</strong> programmés
+                      </span>
+                      <span className="stat-item">
+                        <strong>{tournamentSchedule.pending_matches}</strong> en attente
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="matches-grid">
+                    {tournamentSchedule.matches.map(match => (
+                      <div key={match.id} className={`match-card ${match.scheduled_time ? 'scheduled' : 'pending'}`}>
+                        <div className="match-header">
+                          <span className="round-badge">R{match.round_number} - M{match.match_number}</span>
+                          <span className={`status-badge ${match.status}`}>
+                            {match.status === 'scheduled' ? '📅 Programmé' : 
+                             match.status === 'in_progress' ? '⚡ En cours' :
+                             match.status === 'completed' ? '✅ Terminé' : '⏳ En attente'}
+                          </span>
+                        </div>
+
+                        <div className="match-players">
+                          <div className="player">
+                            <span className="player-name">{match.player1_name || 'TBD'}</span>
+                          </div>
+                          <div className="vs">VS</div>
+                          <div className="player">
+                            <span className="player-name">{match.player2_name || 'TBD'}</span>
+                          </div>
+                        </div>
+
+                        <div className="match-schedule-info">
+                          <div className="scheduled-time">
+                            <span className="time-icon">🕒</span>
+                            <span className="time-text">{formatDateTime(match.scheduled_time)}</span>
+                          </div>
+                          
+                          {match.notes && (
+                            <div className="match-notes">
+                              <span className="notes-icon">📝</span>
+                              <span className="notes-text">{match.notes}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="match-actions">
+                          <button 
+                            className="btn-schedule"
+                            onClick={() => handleScheduleMatch(match)}
+                            disabled={match.status === 'completed'}
+                          >
+                            {match.scheduled_time ? '📝 Modifier' : '📅 Programmer'}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upcoming Matches */}
+              <div className="upcoming-matches-card">
+                <div className="card-header">
+                  <h3>🔜 Matchs à Venir</h3>
+                  <p>Les prochains matchs programmés dans les 7 jours</p>
+                </div>
+                
+                <div className="upcoming-matches-list">
+                  {upcomingMatches.length === 0 ? (
+                    <div className="no-matches">
+                      <span className="no-matches-icon">📅</span>
+                      <p>Aucun match programmé dans les prochains jours</p>
+                    </div>
+                  ) : (
+                    upcomingMatches.map(match => (
+                      <div key={match.id} className="upcoming-match-item">
+                        <div className="match-datetime">
+                          <div className="match-date">{formatDateTime(match.scheduled_time).split(' ')[0]}</div>
+                          <div className="match-time">{formatDateTime(match.scheduled_time).split(' ')[1]}</div>
+                        </div>
+                        
+                        <div className="match-details">
+                          <div className="match-title">
+                            {match.player1_name || 'TBD'} vs {match.player2_name || 'TBD'}
+                          </div>
+                          <div className="match-tournament">{match.tournament_name}</div>
+                          <div className="match-round">Round {match.round_number} - Match {match.match_number}</div>
+                        </div>
+                        
+                        <div className="match-status">
+                          <span className={`status-dot ${match.status}`}></span>
+                          <span className="status-text">
+                            {match.status === 'scheduled' ? 'Programmé' : 
+                             match.status === 'in_progress' ? 'En cours' : 'En attente'}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Schedule Modal */}
+          {showScheduleModal && selectedMatch && (
+            <div className="modal-overlay" onClick={() => setShowScheduleModal(false)}>
+              <div className="schedule-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>📅 Programmer le Match</h3>
+                  <button 
+                    className="modal-close"
+                    onClick={() => setShowScheduleModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="modal-content">
+                  <div className="match-info">
+                    <h4>{selectedMatch.player1_name || 'TBD'} vs {selectedMatch.player2_name || 'TBD'}</h4>
+                    <p>Round {selectedMatch.round_number} - Match {selectedMatch.match_number}</p>
+                  </div>
+                  
+                  <div className="schedule-form">
+                    <div className="form-group">
+                      <label htmlFor="schedule-date">Date du match</label>
+                      <input
+                        type="date"
+                        id="schedule-date"
+                        value={scheduleForm.date}
+                        onChange={(e) => setScheduleForm({...scheduleForm, date: e.target.value})}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="form-input"
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="schedule-time">Heure du match</label>
+                      <input
+                        type="time"
+                        id="schedule-time"
+                        value={scheduleForm.time}
+                        onChange={(e) => setScheduleForm({...scheduleForm, time: e.target.value})}
+                        className="form-input"
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="schedule-notes">Notes (optionnel)</label>
+                      <textarea
+                        id="schedule-notes"
+                        value={scheduleForm.notes}
+                        onChange={(e) => setScheduleForm({...scheduleForm, notes: e.target.value})}
+                        placeholder="Informations supplémentaires sur le match..."
+                        className="form-textarea"
+                        rows="3"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="modal-footer">
+                  <button 
+                    className="btn-cancel"
+                    onClick={() => setShowScheduleModal(false)}
+                  >
+                    Annuler
+                  </button>
+                  <button 
+                    className="btn-confirm"
+                    onClick={submitSchedule}
+                    disabled={!scheduleForm.date || !scheduleForm.time}
+                  >
+                    {selectedMatch.scheduled_time ? '✏️ Modifier' : '📅 Programmer'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
