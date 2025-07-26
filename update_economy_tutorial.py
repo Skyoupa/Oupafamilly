@@ -139,8 +139,8 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 - **Patterns de rounds** : Historique des achats adverses
 
 #### **Prédictions Économiques**
-- **Après victoire** : Adversaire probable en full buy
-- **Après défaite** : Possibilité de force-buy ou eco
+- **Après victoire** : Adversaire probable en achat complet
+- **Après défaite** : Possibilité d'achat forcé ou eco
 - **Séquence de défaites** : Calcul des bonus accumés
 
 ### 🔄 Adaptation Économique
