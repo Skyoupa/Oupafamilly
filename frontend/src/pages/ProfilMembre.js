@@ -283,16 +283,32 @@ const ProfilMembre = () => {
                   <div className="info-item">
                     <span className="info-label">Jeux favoris :</span>
                     <span className="info-value">
-                      {memberProfile.favorite_games.map(game => getGameDisplay(game)).join(', ')}
+                      {memberProfile.profile?.favorite_games && memberProfile.profile.favorite_games.length > 0
+                        ? memberProfile.profile.favorite_games.map(game => getGameDisplay(game)).join(', ')
+                        : 'Aucun jeu spécifié'
+                      }
                     </span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Discord :</span>
-                    <span className="info-value">{memberProfile.discord_username}</span>
+                    <span className="info-value">
+                      {memberProfile.profile?.discord_username || 'Non spécifié'}
+                    </span>
                   </div>
                   <div className="info-item">
                     <span className="info-label">Steam :</span>
-                    <span className="info-value">{memberProfile.steam_profile}</span>
+                    <span className="info-value">
+                      {memberProfile.profile?.steam_profile || 'Non spécifié'}
+                    </span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Membre depuis :</span>
+                    <span className="info-value">
+                      {new Date(memberProfile.user?.created_at).toLocaleDateString('fr-FR', { 
+                        year: 'numeric', 
+                        month: 'long' 
+                      })}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -302,22 +318,44 @@ const ProfilMembre = () => {
                 <h3>📊 Statistiques Tournois</h3>
                 <div className="stats-grid">
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.tournaments_won}</div>
+                    <div className="stat-number">
+                      {memberProfile.statistics?.tournaments?.victories || 0}
+                    </div>
                     <div className="stat-label">Victoires</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.total_tournaments}</div>
+                    <div className="stat-number">
+                      {memberProfile.statistics?.tournaments?.total || 0}
+                    </div>
                     <div className="stat-label">Participations</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.trophies_1v1}</div>
+                    <div className="stat-number">
+                      {memberProfile.statistics?.trophies?.['1v1'] || 0}
+                    </div>
                     <div className="stat-label">Trophées 1v1</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-number">{memberProfile.trophies_5v5}</div>
+                    <div className="stat-number">
+                      {memberProfile.statistics?.trophies?.['5v5'] || 0}
+                    </div>
                     <div className="stat-label">Trophées 5v5</div>
                   </div>
                 </div>
+                
+                {memberProfile.statistics?.matches && (
+                  <div className="additional-stats">
+                    <h4>Statistiques Matches</h4>
+                    <div className="match-stats">
+                      <span>
+                        Matches joués: {memberProfile.statistics.matches.total}
+                      </span>
+                      <span>
+                        Taux de victoire: {memberProfile.statistics.matches.win_rate}%
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Comments Section */}
