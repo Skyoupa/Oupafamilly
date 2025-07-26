@@ -110,14 +110,24 @@ const Communaute = () => {
 
       const headers = { 'Authorization': `Bearer ${token}` };
 
-      // Fetch marketplace items
+      // Fetch marketplace items with enhanced debugging
+      console.log('Fetching marketplace items...');
+      console.log('API URL:', `${API_BASE_URL}/currency/marketplace`);
+      console.log('Headers:', headers);
+      
       const marketResponse = await fetch(`${API_BASE_URL}/currency/marketplace`, { headers });
+      console.log('Marketplace response status:', marketResponse.status);
+      console.log('Marketplace response ok:', marketResponse.ok);
+      
       if (marketResponse.ok) {
         const marketData = await marketResponse.json();
         console.log('Marketplace data received:', marketData);
+        console.log('Number of items:', marketData.length);
         setMarketplaceItems(marketData.slice(0, 4)); // Show only 4 items
       } else {
+        const errorText = await marketResponse.text();
         console.error('Failed to fetch marketplace items:', marketResponse.status, marketResponse.statusText);
+        console.error('Error response:', errorText);
       }
 
       // Fetch betting markets
