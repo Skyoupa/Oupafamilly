@@ -86,6 +86,24 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise credentials_exception
     return user
 
+async def get_user_from_websocket_token(token: str) -> Optional[User]:
+    """Get user from WebSocket token."""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+        token_data = TokenData(email=email)
+    except JWTError:
+        return None
+    
+    # Get database connection
+    from database import db
+    user = await get_user_by_email(db, email=token_data.email)
+    if user is None:
+        return None
+    return user
+
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
     """Get current active user."""
     if current_user.status != "active":
