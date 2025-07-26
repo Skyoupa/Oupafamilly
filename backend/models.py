@@ -79,6 +79,12 @@ class UserProfile(BaseModel):
     # XP et niveau
     experience_points: int = 0
     level: int = 1
+    # Système ELO et classement
+    elo_rating: int = 1200  # Rating ELO initial (1200 = débutant)
+    peak_elo: int = 1200    # Meilleur ELO atteint
+    elo_history: List[Dict[str, Any]] = Field(default_factory=list)  # Historique des changements d'ELO
+    seasonal_elo: Dict[str, int] = Field(default_factory=dict)  # ELO par saison
+    current_season: str = "2025-S1"  # Saison actuelle
     # Badges et achievements
     badges: List[str] = []  # Liste des badges obtenus
     achievements: List[str] = []  # Liste des achievements
