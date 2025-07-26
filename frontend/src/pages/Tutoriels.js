@@ -17,6 +17,7 @@ const Tutoriels = () => {
       .toLowerCase()
       .normalize('NFD') // Décomposer les caractères accentués
       .replace(/[\u0300-\u036f]/g, '') // Supprimer les marques diacritiques
+      .replace(/'/g, ' ') // Remplacer les apostrophes par des espaces
       .replace(/[^a-z0-9\s-]/g, '') // Supprimer les caractères spéciaux
       .replace(/\s+/g, '-') // Remplacer les espaces par des tirets
       .replace(/-+/g, '-') // Supprimer les tirets multiples
