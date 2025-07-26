@@ -237,10 +237,10 @@ const ProfilMembre = () => {
 
   const canDeleteComment = (comment) => {
     return (
-      user && (
-        comment.author_id === user.id || // Author can delete
-        memberProfile.user_id === user.id || // Profile owner can delete
-        user.role === 'admin' // Admin can delete
+      currentUser && (
+        comment.author_id === currentUser.id || // Author can delete
+        memberProfile?.user_id === currentUser.id || // Profile owner can delete
+        currentUser.role === 'admin' // Admin can delete
       )
     );
   };
