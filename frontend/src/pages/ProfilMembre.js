@@ -18,6 +18,9 @@ const ProfilMembre = () => {
   const [showCommentForm, setShowCommentForm] = useState(false);
 
   useEffect(() => {
+    // Scroll vers le haut quand le composant se monte
+    window.scrollTo(0, 0);
+    
     if (memberId) {
       fetchMemberProfile();
       fetchMemberComments();
