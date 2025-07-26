@@ -136,16 +136,16 @@ backend:
         comment: "🎉 SYSTÈME QUÊTES QUOTIDIENNES VALIDÉ À 100% - Tests complets réussis sur tous les 4 endpoints prioritaires : ✅ GET /api/achievements/quests/daily fonctionne parfaitement (6 quêtes générées avec mix équilibré) ✅ POST /api/achievements/quests/{quest_id}/claim validation correcte (400 pour quête incomplète - comportement attendu) ✅ GET /api/achievements/quests/my-progress opérationnel (historique 6 entrées, streak tracking fonctionnel) ✅ GET /api/achievements/quests/leaderboard fonctionne (classements par période daily/week/month/all) ✅ Génération intelligente : 6 quêtes/jour avec algorithme seed basé sur date ✅ Mix équilibré des catégories : community, competitive, economic, special ✅ 4 difficultés différentes : common, rare, epic, legendary ✅ Progression détaillée avec pourcentages par critère (0.0% pour nouvelles quêtes) ✅ Système de récompenses complet : coins (20-200), XP (30-300), badges bonus ✅ Validation que récompenses ne peuvent être réclamées qu'une fois ✅ Calcul correct du streak de jours consécutifs (0 jours pour nouveau système) ✅ Leaderboard par période opérationnel (0 joueurs pour nouveau système) ✅ Quêtes spéciales : Guerrier du Week-end détecté ✅ 16 types de quêtes dans le pool avec catégories alignées ✅ Performance acceptable (< 2s par endpoint). Tests 11/11 réussis (100%). Système de quêtes quotidiennes 100% prêt pour production et intégration frontend."
 
   - task: "Système ELO automatique"
-    implemented: false
+    implemented: true
     working: false
-    file: "/app/backend/models.py"
+    file: "/app/backend/elo_system.py, /app/backend/routes/elo.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: false
         agent: "main"
-        comment: "🔄 À IMPLÉMENTER - Système ELO pour calcul automatique du classement des joueurs basé sur performances tournois, intégré dans profils membres."
+        comment: "🆕 NOUVELLEMENT IMPLÉMENTÉ - Système ELO automatique créé avec succès ! ✅ EloEngine avec calculs intelligents basés algorithme ELO classique ✅ 8 tiers de classement (Bronze à Challenger) avec progression détaillée ✅ 9 endpoints API complets : profile, leaderboard, match-history, statistics, admin endpoints ✅ Traitement automatique des résultats de matchs (tournois et matchs normaux) ✅ Facteurs K adaptatifs selon niveau et expérience ✅ Système de déclin d'inactivité ✅ Support multi-jeux et multi-modes ✅ Historique complet des matchs avec changements d'ELO ✅ Statistiques globales et leaderboards ✅ Collections MongoDB créées avec index optimisés ✅ 16 utilisateurs initialisés, 3 matchs d'exemple ✅ Router enregistré dans server.py. PRÊT POUR TESTING BACKEND."
 
   - task: "Mode sombre professionnel"
     implemented: false
