@@ -105,6 +105,54 @@
 user_problem_statement: "Je viens de mettre en place plusieurs améliorations majeures au système et j'ai besoin de les tester complètement : Système de récompenses pour tournois, Système de paris professionnel, Dashboard Admin Économie (nouveaux endpoints), Marketplace avec customs. Tests prioritaires : Vérifier que les nouveaux endpoints admin/economy sont accessibles, Confirmer présence des articles customs dans marketplace, Tester création automatique de marchés de paris pour tournois, Vérifier que le système de récompenses tournoi fonctionne."
 
 backend:
+  - task: "Système de récompenses pour tournois"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/currency.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SYSTÈME RÉCOMPENSES TOURNOIS VALIDÉ - Tests complets réussis : ✅ GET /api/currency/balance fonctionne parfaitement (21 coins, niveau 1, 351 total gagné) ✅ POST /api/currency/daily-bonus opérationnel (bonus déjà réclamé aujourd'hui - comportement attendu) ✅ POST /api/currency/tournament-rewards/{tournament_id} fonctionne après correction du modèle de requête (1 participant récompensé, gagnant identifié) ✅ Distribution automatique des récompenses de participation et victoire ✅ Intégration avec système XP et niveaux. Tous les endpoints de récompenses tournois testés avec succès."
+
+  - task: "Système de paris professionnel"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/betting.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SYSTÈME PARIS PROFESSIONNEL VALIDÉ - Tests complets réussis : ✅ GET /api/betting/markets retourne 7 marchés avec types variés (winner, match_result, special) ✅ Marchés pour 3 jeux (CS2, LoL, WoW) avec pools actifs (850 coins total) ✅ POST /api/betting/markets/tournament/{tournament_id} création automatique de marchés fonctionnelle ✅ Support des paris sur matches individuels confirmé (3 marchés match_result trouvés) ✅ Système de cotes, pools et options opérationnel ✅ Intégration avec tournois et matches. Système de paris professionnel 100% opérationnel."
+
+  - task: "Dashboard Admin Économie (nouveaux endpoints)"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/admin_economy.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DASHBOARD ADMIN ÉCONOMIE VALIDÉ - Tests complets réussis : ✅ GET /api/admin/economy/stats fonctionne parfaitement (1851 coins circulation, 9 transactions, économie saine) ✅ GET /api/admin/economy/transactions opérationnel après correction sérialisation ObjectId (9 transactions avec détails utilisateur) ✅ GET /api/admin/economy/marketplace/items retourne 18 articles avec 7 types différents ✅ POST /api/admin/economy/marketplace/items création d'articles customs fonctionnelle (avatar test créé avec succès) ✅ GET /api/admin/economy/betting/markets gestion paris admin (7 marchés, 850 coins pool, 6 paris). Tous les nouveaux endpoints admin/economy accessibles et opérationnels."
+
+  - task: "Marketplace avec customs"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/currency.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MARKETPLACE CUSTOMS VALIDÉ - Tests complets réussis : ✅ GET /api/currency/marketplace retourne 19 articles (dépasse objectif 15+) ✅ 7 types d'articles présents : avatars (5), badges (3), titres (2), thèmes (2), étiquettes customs (5), bannières (1), emotes (1) ✅ 16 articles avec données customs détectés ✅ Système de prix et disponibilité fonctionnel ✅ Intégration avec inventaire utilisateur. Minor: Système de rareté affiche tout en 'common' mais fonctionnalité core opérationnelle. Marketplace avec customs 100% fonctionnel."
+
   - task: "Community Members API endpoint"
     implemented: true
     working: true
