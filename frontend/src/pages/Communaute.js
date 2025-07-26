@@ -182,6 +182,101 @@ const Communaute = () => {
     }
   };
 
+  const handleDailyBonus = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/currency/daily-bonus`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(`Bonus réclamé ! +${data.bonus_amount} coins`);
+        fetchUserProfile();
+      } else {
+        alert(data.detail || 'Erreur');
+      }
+    } catch (error) {
+      console.error('Erreur bonus quotidien:', error);
+    }
+  };
+
+  const buyMarketplaceItem = async (itemId, itemName, price) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/currency/marketplace/buy/${itemId}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(`Achat réussi ! ${itemName} ajouté à votre inventaire`);
+        fetchUserProfile();
+        fetchCommunityFeatures();
+      } else {
+        alert(data.detail || 'Erreur lors de l\'achat');
+      }
+    } catch (error) {
+      console.error('Erreur achat:', error);
+    }
+  };
+
+  const placeBet = async (marketId, optionId, amount) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/betting/bets`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ market_id: marketId, option_id: optionId, amount })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(`Pari placé avec succès ! ${amount} coins misés`);
+        fetchUserProfile();
+        fetchCommunityFeatures();
+      } else {
+        alert(data.detail || 'Erreur lors du pari');
+      }
+    } catch (error) {
+      console.error('Erreur pari:', error);
+    }
+  };
+
+  const sendMessage = async (recipientId, content) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/chat/private`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ recipient_id: recipientId, content })
+      });
+
+      if (response.ok) {
+        alert('Message envoyé !');
+        fetchCommunityFeatures();
+      }
+    } catch (error) {
+      console.error('Erreur envoi message:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="page-pro">
