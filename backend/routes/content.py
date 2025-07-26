@@ -131,7 +131,7 @@ async def create_tutorial(
 async def get_tutorials(
     game: Optional[Game] = None,
     level: Optional[str] = None,
-    limit: int = Query(20, le=100),
+    limit: int = Query(100, le=100),
     skip: int = Query(0, ge=0)
 ):
     """Get tutorials with optional filtering."""
