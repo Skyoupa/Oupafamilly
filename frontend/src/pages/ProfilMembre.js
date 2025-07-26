@@ -22,7 +22,11 @@ const ProfilMembre = () => {
       fetchMemberProfile();
       fetchMemberComments();
     }
-  }, [memberId]);
+    
+    // Debug pour voir l'état de currentUser
+    console.log('Current user in ProfilMembre:', currentUser);
+    console.log('Member ID:', memberId);
+  }, [memberId, currentUser]);
 
   const fetchMemberProfile = async () => {
     try {
