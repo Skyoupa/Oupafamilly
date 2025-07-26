@@ -1118,6 +1118,14 @@ const Communaute = () => {
           </div>
         </div>
       </section>
+      
+      {/* Inventaire Modal */}
+      {showInventory && (
+        <Inventaire 
+          isOpen={showInventory}
+          onClose={() => setShowInventory(false)}
+        />
+      )}
     </div>
   );
 };
