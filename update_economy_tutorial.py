@@ -161,25 +161,25 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 
 ### 🎯 Scenarios Économiques Courants
 
-#### **Scenario 1 : Victoire Pistol**
-**Situation** : Équipe gagne le pistol round
+#### **Scénario 1 : Victoire Pistol**
+**Situation** : Équipe gagne le round pistolet
 **Décision** : 
-- **Buy SMGs** : UMP-45, MP9 pour les kill rewards
-- **Armor Full** : Kevlar + Casque pour survivabilité
+- **Achat SMGs** : UMP-45, MP9 pour les kill rewards
+- **Armure Complète** : Kevlar + Casque pour survivabilité
 - **Utilities** : Smoke + Flash pour contrôle
 
 **Objectif** : Maximiser les kill rewards SMG pour l'économie
 
-#### **Scenario 2 : Défaite Pistol**
-**Situation** : Équipe perd le pistol round
+#### **Scénario 2 : Défaite Pistol**
+**Situation** : Équipe perd le round pistolet
 **Décision** : 
-- **Eco Strict** : Pistolet de base + Armor
-- **Buy 1 Rifle** : Pour 1 joueur si possible
-- **Stack Utilities** : Concentrer les grenades
+- **Eco Strict** : Pistolet de base + Armure
+- **Achat 1 Fusil** : Pour 1 joueur si possible
+- **Concentration Utilities** : Concentrer les grenades
 
 **Objectif** : Perturber l'économie adverse et préparer round 3
 
-#### **Scenario 3 : Fin de Mi-Temps**
+#### **Scénario 3 : Fin de Mi-Temps**
 **Situation** : Derniers rounds avant changement
 **Décision** : 
 - **Dépenser Maximum** : Utiliser tout l'argent disponible
