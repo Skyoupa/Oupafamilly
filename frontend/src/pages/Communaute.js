@@ -106,16 +106,14 @@ const Communaute = () => {
   const fetchCommunityFeatures = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-      const headers = { 'Authorization': `Bearer ${token}` };
-
-      // Fetch marketplace items with enhanced debugging
+      // Fetch marketplace items with enhanced debugging (no auth required)
       console.log('Fetching marketplace items...');
       console.log('API URL:', `${API_BASE_URL}/currency/marketplace`);
       console.log('Headers:', headers);
       
-      const marketResponse = await fetch(`${API_BASE_URL}/currency/marketplace`, { headers });
+      const marketResponse = await fetch(`${API_BASE_URL}/currency/marketplace`);
       console.log('Marketplace response status:', marketResponse.status);
       console.log('Marketplace response ok:', marketResponse.ok);
       
@@ -130,15 +128,24 @@ const Communaute = () => {
         console.error('Error response:', errorText);
       }
 
-      // Fetch betting markets
-      const bettingResponse = await fetch(`${API_BASE_URL}/betting/markets?status=open`, { headers });
-      if (bettingResponse.ok) {
-        const bettingData = await bettingResponse.json();
-        setBettingMarkets(bettingData.slice(0, 3)); // Show only 3 markets
-      }
+      // Only fetch authenticated endpoints if we have a token
+      if (token) {
+        const authHeaders = { 'Authorization': `Bearer ${token}` };
+        
+        // Fetch betting markets
+        const bettingResponse = await fetch(`${API_BASE_URL}/betting/markets?status=open`, { headers: authHeaders });
+        if (bettingResponse.ok) {
+          const bettingData = await bettingResponse.json();
+          setBettingMarkets(bettingData.slice(0, 3)); // Show only 3 markets
+        }
 
-      // Fetch user bets
-      const userBetsResponse = await fetch(`${API_BASE_URL}/betting/bets/my-bets?limit=3`, { headers });
+        // Fetch user bets
+        const userBetsResponse = await fetch(`${API_BASE_URL}/betting/bets/my-bets?limit=3`, { headers: authHeaders });
+        if (userBetsResponse.ok) {
+          const userBetsData = await userBetsResponse.json();
+          setUserBets(userBetsData);
+        }
+      }
       if (userBetsResponse.ok) {
         const userBetsData = await userBetsResponse.json();
         setUserBets(userBetsData);
