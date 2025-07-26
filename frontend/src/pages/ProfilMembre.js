@@ -1,60 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './ProfilMembre.css';
 
 const ProfilMembre = () => {
   const { memberId } = useParams();
-  const [loading, setLoading] = useState(false);
-  
-  // Simple mock data for testing
-  const mockProfile = {
-    display_name: `Membre ${memberId}`,
-    bio: 'Membre actif de la communauté Oupafamilly',
-    level: 5,
-    coins: 250,
-    total_tournaments: 12,
-    tournaments_won: 3,
-    favorite_games: ['cs2', 'lol'],
-    discord_username: 'player#1234',
-    steam_profile: 'steamuser',
-    user_id: memberId,
-    average_rating: 4.2,
-    total_ratings: 8,
-    trophies_1v1: 2,
-    trophies_5v5: 1
-  };
-
-  const [memberProfile] = useState(mockProfile);
-  const [comments] = useState([
-    {
-      id: '1',
-      author_name: 'TestUser',
-      rating: 5,
-      content: 'Excellent joueur, très bon esprit d\'équipe !',
-      created_at: new Date(),
-      author_id: 'test_user'
-    },
-    {
-      id: '2', 
-      author_name: 'Player2',
-      rating: 4,
-      content: 'Bon niveau, communication au top.',
-      created_at: new Date(),
-      author_id: 'player2'
-    }
-  ]);
-
-  const [commentStats] = useState({
-    total_comments: 2,
-    average_rating: 4.5
-  });
-
+  const { API_BASE_URL, user: currentUser } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [memberProfile, setMemberProfile] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [commentStats, setCommentStats] = useState({ total_comments: 0, average_rating: 0 });
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const [currentUser] = useState({ id: 'current_user', role: 'user' });
+
+  useEffect(() => {
+    if (memberId) {
+      fetchMemberProfile();
+      fetchMemberComments();
+    }
+  }, [memberId]);
+
+  const fetchMemberProfile = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/profiles/${memberId}`);
+      
+      if (response.ok) {
+        const profileData = await response.json();
+        setMemberProfile(profileData);
+      } else {
+        setError('Profil non trouvé');
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement du profil:', error);
+      setError('Erreur lors du chargement du profil');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMemberComments = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/comments/user/${memberId}`);
+      
+      if (response.ok) {
+        const commentsData = await response.json();
+        setComments(commentsData.comments || []);
+        
+        // Fetch comment stats
+        const statsResponse = await fetch(`${API_BASE_URL}/comments/stats/user/${memberId}`);
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setCommentStats(statsData);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des commentaires:', error);
+    }
+  };
 
   const getGameDisplay = (game) => {
     const games = {
