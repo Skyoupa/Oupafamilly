@@ -113,7 +113,7 @@ const ProfilMembre = () => {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/comments/user`, {
+      const response = await fetch(`${API_BASE_URL}/api/comments/user`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
