@@ -313,3 +313,174 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+# Nouveaux modèles pour le système communauté avancé
+
+# Système de Monnaie Virtuelle
+class CoinTransaction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    amount: int  # Positif = gain, Négatif = dépense
+    transaction_type: str  # "tournament_win", "daily_login", "purchase", "comment", etc.
+    description: str
+    reference_id: Optional[str] = None  # ID du tournoi, équipe, etc. lié à la transaction
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CoinTransactionCreate(BaseModel):
+    amount: int
+    transaction_type: str
+    description: str
+    reference_id: Optional[str] = None
+
+# Système de Commentaires et Évaluations
+class UserComment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    target_user_id: str  # Utilisateur qui reçoit le commentaire
+    author_id: str  # Utilisateur qui écrit le commentaire
+    author_name: Optional[str] = None  # Sera rempli automatiquement
+    content: str
+    rating: int = Field(ge=1, le=5)  # Note de 1 à 5 étoiles
+    is_public: bool = True
+    is_approved: bool = True  # Pour modération si nécessaire
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class UserCommentCreate(BaseModel):
+    target_user_id: str
+    content: str
+    rating: int = Field(ge=1, le=5)
+
+class TeamComment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    team_id: str  # Équipe qui reçoit le commentaire
+    author_id: str  # Utilisateur qui écrit le commentaire
+    author_name: Optional[str] = None  # Sera rempli automatiquement
+    content: str
+    rating: int = Field(ge=1, le=5)  # Note de 1 à 5 étoiles
+    is_public: bool = True
+    is_approved: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class TeamCommentCreate(BaseModel):
+    team_id: str
+    content: str
+    rating: int = Field(ge=1, le=5)
+
+# Système de Chat Communautaire
+class ChatMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    channel: str  # "general", "cs2", "lol", "wow", "sc2", "minecraft", ou "private"
+    author_id: str
+    author_name: Optional[str] = None  # Sera rempli automatiquement
+    content: str
+    message_type: str = "text"  # "text", "image", "system"
+    reply_to: Optional[str] = None  # ID du message auquel on répond
+    is_pinned: bool = False
+    is_deleted: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ChatMessageCreate(BaseModel):
+    channel: str
+    content: str
+    message_type: str = "text"
+    reply_to: Optional[str] = None
+
+class PrivateMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    sender_id: str
+    recipient_id: str
+    content: str
+    is_read: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class PrivateMessageCreate(BaseModel):
+    recipient_id: str
+    content: str
+
+# Système de Marketplace et Achats
+class MarketplaceItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: str
+    item_type: str  # "avatar", "badge", "title", "banner", "emote"
+    price: int  # Prix en coins
+    image_url: Optional[str] = None
+    is_available: bool = True
+    is_premium: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class MarketplaceItemCreate(BaseModel):
+    name: str
+    description: str
+    item_type: str
+    price: int
+    image_url: Optional[str] = None
+    is_premium: bool = False
+
+class UserInventory(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    item_id: str
+    item_name: str
+    item_type: str
+    purchased_at: datetime = Field(default_factory=datetime.utcnow)
+    is_equipped: bool = False
+
+# Système d'Activité et Feed Social
+class ActivityFeed(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    user_name: Optional[str] = None
+    activity_type: str  # "tournament_win", "team_join", "achievement", "level_up", "comment"
+    title: str
+    description: str
+    reference_id: Optional[str] = None  # ID de référence (tournoi, équipe, etc.)
+    is_public: bool = True
+    likes: List[str] = []  # Liste des user_ids qui ont liké
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ActivityFeedCreate(BaseModel):
+    activity_type: str
+    title: str
+    description: str
+    reference_id: Optional[str] = None
+
+# Système de Défis et Achievements
+class Challenge(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    challenge_type: str  # "daily", "weekly", "monthly", "achievement"
+    requirements: Dict[str, Any] = {}  # Critères pour compléter le défi
+    rewards: Dict[str, int] = {}  # Récompenses (coins, xp, etc.)
+    is_active: bool = True
+    start_date: datetime = Field(default_factory=datetime.utcnow)
+    end_date: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class UserChallenge(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    challenge_id: str
+    progress: Dict[str, int] = {}  # Progrès vers les objectifs
+    is_completed: bool = False
+    completed_at: Optional[datetime] = None
+    rewards_claimed: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# Statistiques de la Communauté étendues
+class ExtendedCommunityStats(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    total_members: int = 0
+    active_members_today: int = 0
+    active_members_week: int = 0
+    total_teams: int = 0
+    total_tournaments: int = 0
+    total_messages: int = 0
+    total_coins_circulation: int = 0
+    top_players: List[Dict[str, Any]] = []
+    top_teams: List[Dict[str, Any]] = []
+    recent_activities: List[Dict[str, Any]] = []
+    date: datetime = Field(default_factory=datetime.utcnow)
