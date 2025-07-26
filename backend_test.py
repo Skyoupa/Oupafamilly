@@ -1445,9 +1445,424 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and (success5 or success6)
 
+    def test_new_tournament_rewards_system(self):
+        """Test new tournament rewards system - MAIN FOCUS"""
+        if not self.token:
+            self.log("Skipping tournament rewards tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING NEW TOURNAMENT REWARDS SYSTEM ===")
+        
+        # Test 1: GET /api/currency/balance (should work with coins)
+        success1, response1 = self.run_test(
+            "Get Currency Balance",
+            "GET",
+            "currency/balance",
+            200
+        )
+        
+        current_balance = 0
+        if success1:
+            current_balance = response1.get("balance", 0)
+            self.log(f"  Current balance: {current_balance} coins")
+            self.log(f"  User level: {response1.get('level', 1)}")
+            self.log(f"  Total earned: {response1.get('total_earned', 0)} coins")
+            
+            if current_balance >= 0:
+                self.log("  ✅ Balance endpoint working correctly")
+            else:
+                self.log("  ❌ Invalid balance returned", "ERROR")
+        
+        # Test 2: POST /api/currency/daily-bonus
+        success2, response2 = self.run_test(
+            "Claim Daily Bonus",
+            "POST",
+            "currency/daily-bonus",
+            200
+        )
+        
+        if success2:
+            bonus_amount = response2.get("bonus_amount", 0)
+            new_balance = response2.get("new_balance", 0)
+            self.log(f"  ✅ Daily bonus claimed: +{bonus_amount} coins")
+            self.log(f"  New balance: {new_balance} coins")
+            current_balance = new_balance
+        elif "déjà réclamé" in str(response2):
+            self.log("  ℹ️ Daily bonus already claimed today (expected)")
+            success2 = True
+        
+        # Test 3: POST /api/currency/tournament-rewards/{tournament_id} (admin only)
+        success3 = True
+        # Get a tournament ID first
+        tournaments_success, tournaments_response = self.run_test(
+            "Get Tournaments for Rewards Test",
+            "GET",
+            "tournaments/?limit=5",
+            200
+        )
+        
+        if tournaments_success and tournaments_response:
+            tournaments = tournaments_response if isinstance(tournaments_response, list) else []
+            if tournaments:
+                tournament_id = tournaments[0].get("id")
+                if tournament_id:
+                    # Test tournament rewards distribution (admin endpoint)
+                    success3, response3 = self.run_test(
+                        "Distribute Tournament Rewards",
+                        "POST",
+                        f"currency/tournament-rewards/{tournament_id}",
+                        200,
+                        data={
+                            "participants": [self.admin_user_id],
+                            "winner_id": self.admin_user_id
+                        }
+                    )
+                    
+                    if success3:
+                        self.log(f"  ✅ Tournament rewards distributed successfully")
+                        self.log(f"  Participants rewarded: {response3.get('participants_rewarded', 0)}")
+                        self.log(f"  Winner: {response3.get('winner', 'None')}")
+                    else:
+                        self.log(f"  ❌ Tournament rewards distribution failed", "ERROR")
+            else:
+                self.log("  ℹ️ No tournaments found for rewards testing")
+        
+        return success1 and success2 and success3
+
+    def test_new_professional_betting_system(self):
+        """Test new professional betting system - MAIN FOCUS"""
+        if not self.token:
+            self.log("Skipping betting system tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING NEW PROFESSIONAL BETTING SYSTEM ===")
+        
+        # Test 1: GET /api/betting/markets (existing + new markets)
+        success1, response1 = self.run_test(
+            "Get Betting Markets",
+            "GET",
+            "betting/markets?limit=20",
+            200
+        )
+        
+        markets = []
+        if success1:
+            markets = response1 if isinstance(response1, list) else []
+            self.log(f"  Found {len(markets)} betting markets")
+            
+            if len(markets) >= 7:
+                self.log("  ✅ Expected betting markets found (7+)")
+                
+                # Check for different market types
+                market_types = set()
+                games_with_markets = set()
+                match_markets = 0
+                
+                for market in markets:
+                    market_type = market.get("market_type", "unknown")
+                    game = market.get("game", "unknown")
+                    market_types.add(market_type)
+                    games_with_markets.add(game)
+                    
+                    if market_type == "match_result":
+                        match_markets += 1
+                    
+                    self.log(f"    Market: {market.get('title', 'No title')} ({market_type})")
+                    self.log(f"      Game: {game}, Status: {market.get('status', 'unknown')}")
+                    self.log(f"      Pool: {market.get('total_pool', 0)} coins, Bets: {market.get('bet_count', 0)}")
+                
+                self.log(f"  Market types found: {sorted(market_types)}")
+                self.log(f"  Games with markets: {sorted(games_with_markets)}")
+                self.log(f"  Individual match markets: {match_markets}")
+                
+                if "match_result" in market_types:
+                    self.log("  ✅ Individual match betting supported")
+                else:
+                    self.log("  ❌ Individual match betting not found", "ERROR")
+            else:
+                self.log(f"  ❌ Not enough betting markets: {len(markets)} (expected 7+)", "ERROR")
+        
+        # Test 2: POST /api/betting/markets/tournament/{tournament_id} (create markets for tournament)
+        success2 = True
+        # Get a tournament ID first
+        tournaments_success, tournaments_response = self.run_test(
+            "Get Tournaments for Market Creation",
+            "GET",
+            "tournaments/?limit=5",
+            200
+        )
+        
+        if tournaments_success and tournaments_response:
+            tournaments = tournaments_response if isinstance(tournaments_response, list) else []
+            if tournaments:
+                tournament_id = tournaments[0].get("id")
+                if tournament_id:
+                    success2, response2 = self.run_test(
+                        "Create Tournament Betting Markets",
+                        "POST",
+                        f"betting/markets/tournament/{tournament_id}",
+                        200
+                    )
+                    
+                    if success2:
+                        self.log(f"  ✅ Tournament betting markets created successfully")
+                        self.log(f"  Message: {response2.get('message', 'Success')}")
+                    else:
+                        self.log(f"  ❌ Tournament betting markets creation failed", "ERROR")
+            else:
+                self.log("  ℹ️ No tournaments found for market creation testing")
+        
+        # Test 3: Verify individual match betting support
+        success3 = True
+        if markets:
+            match_markets = [m for m in markets if m.get("market_type") == "match_result"]
+            if match_markets:
+                self.log(f"  ✅ Individual match betting verified: {len(match_markets)} match markets")
+                
+                # Show details of first match market
+                first_match = match_markets[0]
+                self.log(f"    Sample match market: {first_match.get('title', 'No title')}")
+                self.log(f"    Match ID: {first_match.get('match_id', 'None')}")
+                self.log(f"    Options: {len(first_match.get('options', []))}")
+            else:
+                self.log("  ❌ No individual match markets found", "ERROR")
+                success3 = False
+        
+        return success1 and success2 and success3
+
+    def test_new_admin_economy_dashboard(self):
+        """Test new admin economy dashboard endpoints - MAIN FOCUS"""
+        if not self.token:
+            self.log("Skipping admin economy tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING NEW ADMIN ECONOMY DASHBOARD ===")
+        
+        # Test 1: GET /api/admin/economy/stats
+        success1, response1 = self.run_test(
+            "Get Economy Stats",
+            "GET",
+            "admin/economy/stats",
+            200
+        )
+        
+        if success1:
+            self.log(f"  ✅ Economy stats retrieved successfully")
+            self.log(f"  Total coins in circulation: {response1.get('total_coins_in_circulation', 0)}")
+            self.log(f"  Total transactions: {response1.get('total_transactions', 0)}")
+            self.log(f"  Daily bonus claims: {response1.get('daily_bonus_claims', 0)}")
+            self.log(f"  Marketplace sales: {response1.get('marketplace_sales', 0)}")
+            self.log(f"  Betting pool: {response1.get('betting_pool', 0)}")
+            self.log(f"  Economy health: {response1.get('economy_health', 'Unknown')}")
+            
+            top_earners = response1.get('top_earners', [])
+            self.log(f"  Top earners: {len(top_earners)}")
+            if top_earners:
+                self.log(f"    #1: {top_earners[0].get('username', 'Unknown')} - {top_earners[0].get('total_earned', 0)} coins")
+        
+        # Test 2: GET /api/admin/economy/transactions
+        success2, response2 = self.run_test(
+            "Get All Transactions",
+            "GET",
+            "admin/economy/transactions?limit=20",
+            200
+        )
+        
+        if success2:
+            transactions = response2 if isinstance(response2, list) else []
+            self.log(f"  ✅ All transactions retrieved: {len(transactions)} transactions")
+            
+            if transactions:
+                latest_transaction = transactions[0]
+                self.log(f"    Latest: {latest_transaction.get('description', 'No description')}")
+                self.log(f"    Amount: {latest_transaction.get('amount', 0)} coins")
+                self.log(f"    Type: {latest_transaction.get('transaction_type', 'unknown')}")
+                self.log(f"    User: {latest_transaction.get('username', 'Unknown')}")
+        
+        # Test 3: GET /api/admin/economy/marketplace/items
+        success3, response3 = self.run_test(
+            "Get Admin Marketplace Items",
+            "GET",
+            "admin/economy/marketplace/items",
+            200
+        )
+        
+        marketplace_items = []
+        if success3:
+            marketplace_items = response3 if isinstance(response3, list) else []
+            self.log(f"  ✅ Admin marketplace items retrieved: {len(marketplace_items)} items")
+            
+            if marketplace_items:
+                # Show item types and rarities
+                item_types = set()
+                rarities = set()
+                custom_items = 0
+                
+                for item in marketplace_items:
+                    item_type = item.get("item_type", "unknown")
+                    rarity = item.get("rarity", "common")
+                    item_types.add(item_type)
+                    rarities.add(rarity)
+                    
+                    if item.get("custom_data"):
+                        custom_items += 1
+                
+                self.log(f"    Item types: {sorted(item_types)}")
+                self.log(f"    Rarities: {sorted(rarities)}")
+                self.log(f"    Custom items: {custom_items}")
+        
+        # Test 4: POST /api/admin/economy/marketplace/items (create custom item)
+        success4, response4 = self.run_test(
+            "Create Custom Marketplace Item",
+            "POST",
+            "admin/economy/marketplace/items",
+            200,
+            data={
+                "name": f"Test Custom Avatar {datetime.now().strftime('%H%M%S')}",
+                "description": "Avatar personnalisé créé pour les tests",
+                "price": 250,
+                "item_type": "avatar",
+                "rarity": "epic",
+                "is_available": True,
+                "is_premium": False,
+                "custom_data": {
+                    "avatar_style": "gaming",
+                    "color_scheme": "blue",
+                    "special_effects": ["glow", "particles"]
+                }
+            }
+        )
+        
+        if success4:
+            self.log(f"  ✅ Custom marketplace item created successfully")
+            self.log(f"  Item name: {response4.get('name', 'Unknown')}")
+            self.log(f"  Item type: {response4.get('item_type', 'unknown')}")
+            self.log(f"  Price: {response4.get('price', 0)} coins")
+            self.log(f"  Rarity: {response4.get('rarity', 'common')}")
+        
+        # Test 5: GET /api/admin/economy/betting/markets
+        success5, response5 = self.run_test(
+            "Get Admin Betting Markets",
+            "GET",
+            "admin/economy/betting/markets",
+            200
+        )
+        
+        if success5:
+            admin_markets = response5 if isinstance(response5, list) else []
+            self.log(f"  ✅ Admin betting markets retrieved: {len(admin_markets)} markets")
+            
+            if admin_markets:
+                total_pool = sum(market.get("total_pool", 0) for market in admin_markets)
+                total_bets = sum(market.get("bet_count", 0) for market in admin_markets)
+                
+                self.log(f"    Total pool across all markets: {total_pool} coins")
+                self.log(f"    Total bets across all markets: {total_bets}")
+                
+                # Show market statuses
+                statuses = {}
+                for market in admin_markets:
+                    status = market.get("status", "unknown")
+                    statuses[status] = statuses.get(status, 0) + 1
+                
+                self.log(f"    Market statuses: {dict(statuses)}")
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    def test_new_marketplace_customs(self):
+        """Test new marketplace with custom items - MAIN FOCUS"""
+        if not self.token:
+            self.log("Skipping marketplace customs tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING NEW MARKETPLACE WITH CUSTOMS ===")
+        
+        # Test 1: GET /api/currency/marketplace (check for new custom items)
+        success1, response1 = self.run_test(
+            "Get Marketplace with Customs",
+            "GET",
+            "currency/marketplace?limit=50",
+            200
+        )
+        
+        if success1:
+            marketplace_items = response1 if isinstance(response1, list) else []
+            self.log(f"  Found {len(marketplace_items)} marketplace items")
+            
+            # Analyze item types and look for the 15 new custom items
+            item_types = {}
+            custom_items = []
+            avatars = []
+            badges = []
+            titles = []
+            themes = []
+            tags = []
+            
+            for item in marketplace_items:
+                item_type = item.get("item_type", "unknown")
+                item_types[item_type] = item_types.get(item_type, 0) + 1
+                
+                # Categorize items
+                if item_type == "avatar":
+                    avatars.append(item)
+                elif item_type == "badge":
+                    badges.append(item)
+                elif item_type == "title":
+                    titles.append(item)
+                elif item_type == "theme":
+                    themes.append(item)
+                elif item_type == "custom_tag":
+                    tags.append(item)
+                
+                # Check for custom data (indicates custom items)
+                if item.get("custom_data") or item.get("rarity") in ["rare", "epic", "legendary"]:
+                    custom_items.append(item)
+            
+            self.log(f"  Item types distribution: {dict(item_types)}")
+            self.log(f"  Custom/Premium items: {len(custom_items)}")
+            self.log(f"  Avatars: {len(avatars)}")
+            self.log(f"  Badges: {len(badges)}")
+            self.log(f"  Titles: {len(titles)}")
+            self.log(f"  Themes: {len(themes)}")
+            self.log(f"  Custom Tags: {len(tags)}")
+            
+            # Check if we have the expected 15+ new custom items
+            total_custom_types = len(avatars) + len(badges) + len(titles) + len(themes) + len(tags)
+            if total_custom_types >= 15:
+                self.log(f"  ✅ Expected custom items found: {total_custom_types} items (15+ expected)")
+            else:
+                self.log(f"  ❌ Not enough custom items: {total_custom_types} (expected 15+)", "ERROR")
+            
+            # Show sample items from each category
+            if avatars:
+                self.log(f"    Sample Avatar: {avatars[0].get('name', 'Unknown')} - {avatars[0].get('price', 0)} coins")
+            if badges:
+                self.log(f"    Sample Badge: {badges[0].get('name', 'Unknown')} - {badges[0].get('price', 0)} coins")
+            if titles:
+                self.log(f"    Sample Title: {titles[0].get('name', 'Unknown')} - {titles[0].get('price', 0)} coins")
+            if themes:
+                self.log(f"    Sample Theme: {themes[0].get('name', 'Unknown')} - {themes[0].get('price', 0)} coins")
+            if tags:
+                self.log(f"    Sample Tag: {tags[0].get('name', 'Unknown')} - {tags[0].get('price', 0)} coins")
+            
+            # Check for different rarities
+            rarities = {}
+            for item in marketplace_items:
+                rarity = item.get("rarity", "common")
+                rarities[rarity] = rarities.get(rarity, 0) + 1
+            
+            self.log(f"  Rarity distribution: {dict(rarities)}")
+            
+            if len(rarities) > 1:
+                self.log("  ✅ Multiple rarities found (custom system working)")
+            else:
+                self.log("  ❌ Only one rarity found (custom system may not be working)", "ERROR")
+        
+        return success1
+
     def run_all_tests(self):
         """Run all API tests"""
-        self.log("🚀 Starting Oupafamilly API Tests - COMMUNITY/PROFILES FOCUS")
+        self.log("🚀 Starting Oupafamilly API Tests - NEW FEATURES FOCUS")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -1459,19 +1874,72 @@ class OupafamillyAPITester:
         if self.test_admin_login():
             self.test_get_current_user()
             
-            # PRIORITY FOCUS: Community/Profiles Endpoints Testing
+            # NEW FEATURES TESTING - MAIN FOCUS
             self.log("\n" + "="*70)
-            self.log("🎯 PRIORITY FOCUS: COMMUNITY/PROFILES ENDPOINTS TESTING")
+            self.log("🎯 MAIN FOCUS: NEW FEATURES TESTING")
             self.log("="*70)
             
-            # Test the specific endpoints causing issues
-            community_profiles_success = self.test_community_profiles_endpoints()
+            # Test 1: Tournament Rewards System
+            self.log("\n" + "="*50)
+            self.log("🏆 TESTING TOURNAMENT REWARDS SYSTEM")
+            self.log("="*50)
+            tournament_rewards_success = self.test_new_tournament_rewards_system()
             
+            # Test 2: Professional Betting System
+            self.log("\n" + "="*50)
+            self.log("🎲 TESTING PROFESSIONAL BETTING SYSTEM")
+            self.log("="*50)
+            betting_system_success = self.test_new_professional_betting_system()
+            
+            # Test 3: Admin Economy Dashboard
+            self.log("\n" + "="*50)
+            self.log("💰 TESTING ADMIN ECONOMY DASHBOARD")
+            self.log("="*50)
+            admin_economy_success = self.test_new_admin_economy_dashboard()
+            
+            # Test 4: Marketplace with Customs
+            self.log("\n" + "="*50)
+            self.log("🛍️ TESTING MARKETPLACE WITH CUSTOMS")
+            self.log("="*50)
+            marketplace_customs_success = self.test_new_marketplace_customs()
+            
+            # Summary of new features testing
+            self.log("\n" + "="*70)
+            self.log("📊 NEW FEATURES TESTING SUMMARY")
             self.log("="*70)
-            if community_profiles_success:
-                self.log("🎉 COMMUNITY/PROFILES ENDPOINTS: ALL TESTS PASSED!", "SUCCESS")
+            
+            if tournament_rewards_success:
+                self.log("✅ Tournament Rewards System: WORKING", "SUCCESS")
             else:
-                self.log("❌ COMMUNITY/PROFILES ENDPOINTS: SOME TESTS FAILED!", "ERROR")
+                self.log("❌ Tournament Rewards System: FAILED", "ERROR")
+            
+            if betting_system_success:
+                self.log("✅ Professional Betting System: WORKING", "SUCCESS")
+            else:
+                self.log("❌ Professional Betting System: FAILED", "ERROR")
+            
+            if admin_economy_success:
+                self.log("✅ Admin Economy Dashboard: WORKING", "SUCCESS")
+            else:
+                self.log("❌ Admin Economy Dashboard: FAILED", "ERROR")
+            
+            if marketplace_customs_success:
+                self.log("✅ Marketplace with Customs: WORKING", "SUCCESS")
+            else:
+                self.log("❌ Marketplace with Customs: FAILED", "ERROR")
+            
+            all_new_features_success = (
+                tournament_rewards_success and 
+                betting_system_success and 
+                admin_economy_success and 
+                marketplace_customs_success
+            )
+            
+            self.log("="*70)
+            if all_new_features_success:
+                self.log("🎉 ALL NEW FEATURES: WORKING PERFECTLY!", "SUCCESS")
+            else:
+                self.log("❌ SOME NEW FEATURES: NEED ATTENTION!", "ERROR")
             self.log("="*70)
         
         # Print final results
