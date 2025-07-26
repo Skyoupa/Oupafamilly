@@ -187,6 +187,21 @@ frontend:
         agent: "main"
         comment: "Navigation vers pages de détail des tutoriels fonctionne avec gameId et tutorialId"
 
+  - task: "Liens cliquables ResourcesHub"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/TutorialDetail.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Liens ResourcesHub non-cliquables - tutoriels non trouvés à cause de slugs incorrects"
+      - working: true
+        agent: "main"
+        comment: "✅ CORRIGÉ: Fonction slugify mise à jour pour gérer les apostrophes françaises. Tutoriels maintenant accessibles et ResourcesHub fonctionne avec liens cliquables vers HLTV.org, Liquipedia, Leetify etc."
+
 metadata:
   created_by: "main_agent"
   version: "2.0"
