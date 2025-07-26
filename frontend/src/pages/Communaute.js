@@ -14,6 +14,14 @@ const Communaute = () => {
   const [teams, setTeams] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // New community features state
+  const [userProfile, setUserProfile] = useState({ coins: 0, level: 1, experience_points: 0 });
+  const [marketplaceItems, setMarketplaceItems] = useState([]);
+  const [bettingMarkets, setBettingMarkets] = useState([]);
+  const [userBets, setUserBets] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Filtered data based on search
   const filteredMembers = members.filter(member => 
