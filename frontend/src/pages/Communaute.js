@@ -317,6 +317,24 @@ const Communaute = () => {
             >
               <span>CLASSEMENT</span>
             </button>
+            <button
+              className={`community-tab-pro ${activeView === 'marketplace' ? 'active' : ''}`}
+              onClick={() => setActiveView('marketplace')}
+            >
+              <span>🛒 MARKETPLACE</span>
+            </button>
+            <button
+              className={`community-tab-pro ${activeView === 'paris' ? 'active' : ''}`}
+              onClick={() => setActiveView('paris')}
+            >
+              <span>🎲 PARIS</span>
+            </button>
+            <button
+              className={`community-tab-pro ${activeView === 'messagerie' ? 'active' : ''}`}
+              onClick={() => setActiveView('messagerie')}
+            >
+              <span>📧 MESSAGERIE {unreadCount > 0 && <span className="unread-badge">{unreadCount}</span>}</span>
+            </button>
           </div>
 
           {/* Search Bar */}
