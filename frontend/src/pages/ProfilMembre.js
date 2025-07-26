@@ -281,6 +281,18 @@ const ProfilMembre = () => {
                 <h3>🎮 Informations Gaming</h3>
                 <div className="gaming-info-grid">
                   <div className="info-item">
+                    <span className="info-label">Nom d'utilisateur :</span>
+                    <span className="info-value">
+                      {memberProfile.user?.username || 'Non spécifié'}
+                    </span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">ID Utilisateur :</span>
+                    <span className="info-value user-id">
+                      {memberProfile.user?.id || 'Non disponible'}
+                    </span>
+                  </div>
+                  <div className="info-item">
                     <span className="info-label">Jeux favoris :</span>
                     <span className="info-value">
                       {memberProfile.profile?.favorite_games && memberProfile.profile.favorite_games.length > 0
