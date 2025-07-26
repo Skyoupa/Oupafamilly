@@ -2932,6 +2932,335 @@ class OupafamillyAPITester:
         return (success1 and success2 and success3 and success4 and success5 and 
                 success6 and success7 and success8 and success9 and success10)
 
+    def test_elo_system(self):
+        """Test ELO system endpoints - MAIN FOCUS FOR CURRENT TESTING"""
+        if not self.token:
+            self.log("Skipping ELO tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING ELO SYSTEM (PRIORITY) ===")
+        
+        # Test 1: GET /api/elo/my-profile - User's complete ELO profile
+        success1, response1 = self.run_test(
+            "Get My ELO Profile",
+            "GET",
+            "elo/my-profile",
+            200
+        )
+        
+        my_elo_profile = {}
+        if success1:
+            my_elo_profile = response1
+            self.log(f"  User ID: {response1.get('user_id', 'Unknown')}")
+            self.log(f"  Overall rating: {response1.get('overall_rating', 1200)}")
+            self.log(f"  Peak rating: {response1.get('peak_rating', 1200)}")
+            self.log(f"  Tier: {response1.get('tier', 'silver')}")
+            self.log(f"  Tier progress: {response1.get('tier_progress', 0)}%")
+            self.log(f"  Total matches: {response1.get('total_matches', 0)}")
+            self.log(f"  Win rate: {response1.get('overall_win_rate', 0.0):.1%}")
+            
+            ratings_by_game = response1.get('ratings_by_game', {})
+            self.log(f"  Games played: {len(ratings_by_game)}")
+            for game_mode, stats in ratings_by_game.items():
+                self.log(f"    {game_mode}: {stats.get('rating', 1200)} ELO ({stats.get('matches', 0)} matches)")
+        
+        # Test 2: GET /api/elo/tiers - ELO tiers list with thresholds and counters
+        success2, response2 = self.run_test(
+            "Get ELO Tiers",
+            "GET",
+            "elo/tiers",
+            200
+        )
+        
+        if success2:
+            tiers = response2.get('tiers', [])
+            current_season = response2.get('current_season', 'Unknown')
+            self.log(f"  Current season: {current_season}")
+            self.log(f"  Found {len(tiers)} tiers")
+            
+            if len(tiers) == 8:
+                self.log("  ✅ All 8 tiers present (Bronze to Challenger)")
+                total_players = sum(tier.get('player_count', 0) for tier in tiers)
+                self.log(f"  Total players in system: {total_players}")
+                
+                # Show tier distribution
+                for tier in tiers:
+                    tier_name = tier.get('tier', 'unknown')
+                    min_rating = tier.get('min_rating', 0)
+                    max_rating = tier.get('max_rating', 'unlimited')
+                    player_count = tier.get('player_count', 0)
+                    self.log(f"    {tier_name.upper()}: {min_rating}-{max_rating} ({player_count} players)")
+            else:
+                self.log(f"  ❌ Expected 8 tiers, found {len(tiers)}", "ERROR")
+        
+        # Test 3: GET /api/elo/leaderboard - ELO leaderboard with filters
+        success3, response3 = self.run_test(
+            "Get ELO Leaderboard",
+            "GET",
+            "elo/leaderboard?limit=50",
+            200
+        )
+        
+        leaderboard_data = []
+        if success3:
+            leaderboard_data = response3.get('leaderboard', [])
+            current_user_info = response3.get('current_user', {})
+            statistics = response3.get('statistics', {})
+            
+            self.log(f"  Leaderboard entries: {len(leaderboard_data)}")
+            self.log(f"  Current user rank: {current_user_info.get('rank', 'Not ranked')}")
+            self.log(f"  Current user rating: {current_user_info.get('rating', 'Unknown')}")
+            self.log(f"  Average rating: {statistics.get('average_rating', 0)}")
+            
+            tier_distribution = statistics.get('tier_distribution', {})
+            self.log(f"  Tier distribution: {tier_distribution}")
+            
+            if leaderboard_data:
+                self.log("  ✅ Leaderboard populated with players")
+                # Show top 3 players
+                for i, player in enumerate(leaderboard_data[:3]):
+                    self.log(f"    #{player.get('rank', i+1)}: {player.get('username', 'Unknown')} - {player.get('rating', 1200)} ELO ({player.get('tier', 'silver')})")
+                    self.log(f"      Matches: {player.get('matches_played', 0)} | Win rate: {player.get('win_rate', 0.0):.1%}")
+            else:
+                self.log("  ❌ Leaderboard is empty", "ERROR")
+        
+        # Test 4: GET /api/elo/leaderboard with game filter
+        success4, response4 = self.run_test(
+            "Get ELO Leaderboard (CS2 Filter)",
+            "GET",
+            "elo/leaderboard?game=cs2&limit=20",
+            200
+        )
+        
+        if success4:
+            cs2_leaderboard = response4.get('leaderboard', [])
+            filters = response4.get('filters', {})
+            self.log(f"  CS2 leaderboard entries: {len(cs2_leaderboard)}")
+            self.log(f"  Applied filters: {filters}")
+            
+            if cs2_leaderboard:
+                self.log("  ✅ Game filtering working")
+                top_cs2_player = cs2_leaderboard[0]
+                self.log(f"    Top CS2 player: {top_cs2_player.get('username', 'Unknown')} - {top_cs2_player.get('rating', 1200)} ELO")
+        
+        # Test 5: GET /api/elo/statistics - Global ELO system statistics
+        success5, response5 = self.run_test(
+            "Get ELO Global Statistics",
+            "GET",
+            "elo/statistics",
+            200
+        )
+        
+        if success5:
+            overview = response5.get('overview', {})
+            tier_distribution = response5.get('tier_distribution', {})
+            most_active = response5.get('most_active_players', [])
+            game_stats = response5.get('statistics_by_game', [])
+            
+            self.log(f"  Total players: {overview.get('total_players', 0)}")
+            self.log(f"  Total matches: {overview.get('total_matches', 0)}")
+            self.log(f"  Current season: {overview.get('current_season', 'Unknown')}")
+            
+            # Show tier distribution
+            total_in_tiers = sum(tier_distribution.values())
+            self.log(f"  Players distributed across tiers: {total_in_tiers}")
+            for tier, count in tier_distribution.items():
+                if count > 0:
+                    self.log(f"    {tier.upper()}: {count} players")
+            
+            # Show most active players
+            if most_active:
+                self.log(f"  Most active players: {len(most_active)}")
+                for player in most_active[:3]:
+                    self.log(f"    {player.get('username', 'Unknown')}: {player.get('matches_played', 0)} matches ({player.get('win_rate', 0.0):.1%} WR)")
+            
+            # Show game statistics
+            if game_stats:
+                self.log(f"  Games with ELO data: {len(game_stats)}")
+                for game in game_stats:
+                    self.log(f"    {game.get('game', 'unknown').upper()}: {game.get('player_count', 0)} players, avg {game.get('average_rating', 1200)} ELO")
+        
+        # Test 6: GET /api/elo/my-match-history - User's ELO match history
+        success6, response6 = self.run_test(
+            "Get My ELO Match History",
+            "GET",
+            "elo/my-match-history?limit=10",
+            200
+        )
+        
+        if success6:
+            matches = response6.get('matches', [])
+            match_stats = response6.get('statistics', {})
+            
+            self.log(f"  Match history entries: {len(matches)}")
+            self.log(f"  Total matches: {match_stats.get('total_matches', 0)}")
+            self.log(f"  Wins: {match_stats.get('wins', 0)}")
+            self.log(f"  Losses: {match_stats.get('losses', 0)}")
+            self.log(f"  Win rate: {match_stats.get('win_rate', 0.0):.1%}")
+            self.log(f"  Average rating change: {match_stats.get('average_rating_change', 0)}")
+            
+            if matches:
+                self.log("  ✅ Match history available")
+                # Show recent matches
+                for i, match in enumerate(matches[:3]):
+                    result = match.get('result', 'unknown')
+                    rating_change = match.get('rating_change', 0)
+                    opponent = match.get('opponent_name', 'Unknown')
+                    game = match.get('game', 'unknown')
+                    self.log(f"    Match {i+1}: {result.upper()} vs {opponent} ({game.upper()}) - {rating_change:+d} ELO")
+            else:
+                self.log("  ℹ️ No match history (expected for new system)")
+        
+        # Test 7: Test another user's profile (if we have leaderboard data)
+        success7 = True
+        if leaderboard_data:
+            other_user_id = leaderboard_data[0].get('user_id')
+            if other_user_id and other_user_id != self.admin_user_id:
+                success7, response7 = self.run_test(
+                    f"Get Other User ELO Profile",
+                    "GET",
+                    f"elo/profile/{other_user_id}",
+                    200
+                )
+                
+                if success7:
+                    self.log(f"  Other user profile: {response7.get('username', 'Unknown')}")
+                    self.log(f"  Other user rating: {response7.get('overall_rating', 1200)}")
+                    self.log(f"  Other user tier: {response7.get('tier', 'silver')}")
+                    self.log("  ✅ Other user profile access working")
+        
+        # Test 8: Test another user's match history
+        success8 = True
+        if leaderboard_data:
+            other_user_id = leaderboard_data[0].get('user_id')
+            if other_user_id and other_user_id != self.admin_user_id:
+                success8, response8 = self.run_test(
+                    f"Get Other User Match History",
+                    "GET",
+                    f"elo/match-history/{other_user_id}?limit=5",
+                    200
+                )
+                
+                if success8:
+                    other_matches = response8.get('matches', [])
+                    self.log(f"  Other user match history: {len(other_matches)} matches")
+                    self.log("  ✅ Other user match history access working")
+        
+        # Test 9: POST /api/elo/admin/process-match - Admin: manually process match result
+        success9 = True
+        if leaderboard_data and len(leaderboard_data) >= 2:
+            user1_id = leaderboard_data[0].get('user_id')
+            user2_id = leaderboard_data[1].get('user_id')
+            
+            if user1_id and user2_id:
+                success9, response9 = self.run_test(
+                    "Admin Process Match",
+                    "POST",
+                    "elo/admin/process-match",
+                    200,
+                    data={
+                        "winner_id": user1_id,
+                        "loser_id": user2_id,
+                        "game": "cs2",
+                        "is_tournament": True,
+                        "tournament_id": "test-tournament-123",
+                        "match_id": "test-match-456",
+                        "importance": 1.5
+                    }
+                )
+                
+                if success9:
+                    result = response9.get('result', {})
+                    winner_info = result.get('winner', {})
+                    loser_info = result.get('loser', {})
+                    
+                    self.log(f"  ✅ Admin match processing successful")
+                    self.log(f"  Winner: {response9.get('winner_name', 'Unknown')} ({winner_info.get('rating_before', 0)} -> {winner_info.get('rating_after', 0)}, +{winner_info.get('change', 0)})")
+                    self.log(f"  Loser: {response9.get('loser_name', 'Unknown')} ({loser_info.get('rating_before', 0)} -> {loser_info.get('rating_after', 0)}, {loser_info.get('change', 0)})")
+                else:
+                    self.log("  ❌ Admin match processing failed", "ERROR")
+        
+        # Test 10: POST /api/elo/admin/reset-user-elo - Admin: reset user ELO
+        success10 = True
+        if leaderboard_data:
+            test_user_id = leaderboard_data[-1].get('user_id')  # Use last player to minimize impact
+            
+            if test_user_id:
+                success10, response10 = self.run_test(
+                    "Admin Reset User ELO",
+                    "POST",
+                    "elo/admin/reset-user-elo",
+                    200,
+                    data={
+                        "user_id": test_user_id,
+                        "new_rating": 1300
+                    }
+                )
+                
+                if success10:
+                    self.log(f"  ✅ Admin ELO reset successful")
+                    self.log(f"  Message: {response10.get('message', 'Success')}")
+                    self.log(f"  Ratings updated: {response10.get('ratings_updated', 0)}")
+                else:
+                    self.log("  ❌ Admin ELO reset failed", "ERROR")
+        
+        # Summary
+        self.log("\n" + "="*50)
+        self.log("🎯 ELO SYSTEM SUMMARY:")
+        self.log("="*50)
+        
+        if success1:
+            self.log("✅ My ELO profile endpoint working", "SUCCESS")
+        else:
+            self.log("❌ My ELO profile endpoint failed", "ERROR")
+        
+        if success2 and len(response2.get('tiers', [])) == 8:
+            self.log("✅ ELO tiers system complete (8 tiers)", "SUCCESS")
+        else:
+            self.log("❌ ELO tiers system issues", "ERROR")
+        
+        if success3 and leaderboard_data:
+            self.log("✅ ELO leaderboard functional with data", "SUCCESS")
+        else:
+            self.log("❌ ELO leaderboard issues", "ERROR")
+        
+        if success4:
+            self.log("✅ ELO leaderboard filtering working", "SUCCESS")
+        else:
+            self.log("❌ ELO leaderboard filtering failed", "ERROR")
+        
+        if success5:
+            self.log("✅ ELO global statistics operational", "SUCCESS")
+        else:
+            self.log("❌ ELO global statistics failed", "ERROR")
+        
+        if success6:
+            self.log("✅ ELO match history functional", "SUCCESS")
+        else:
+            self.log("❌ ELO match history failed", "ERROR")
+        
+        if success7:
+            self.log("✅ Other user ELO profile access working", "SUCCESS")
+        else:
+            self.log("❌ Other user ELO profile access failed", "ERROR")
+        
+        if success8:
+            self.log("✅ Other user match history access working", "SUCCESS")
+        else:
+            self.log("❌ Other user match history access failed", "ERROR")
+        
+        if success9:
+            self.log("✅ Admin match processing functional", "SUCCESS")
+        else:
+            self.log("❌ Admin match processing failed", "ERROR")
+        
+        if success10:
+            self.log("✅ Admin ELO reset functional", "SUCCESS")
+        else:
+            self.log("❌ Admin ELO reset failed", "ERROR")
+        
+        return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8 and success9 and success10
+
     def run_all_tests(self):
         """Run API tests with daily quests system as main focus"""
         self.log("🚀 Starting Oupafamilly API Tests - DAILY QUESTS SYSTEM TESTING")
