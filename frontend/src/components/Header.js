@@ -115,11 +115,12 @@ const Header = () => {
             </button>
 
             {/* Notification Center - Desktop */}
-            {isAuthenticated && (
+            {/* Temporairement désactivé pour debug */}
+            {/* {isAuthenticated && (
               <div style={{ position: 'relative' }}>
                 <NotificationCenter user={user} />
               </div>
-            )}
+            )} */}
 
             {isAuthenticated ? (
               <div className="user-menu">
