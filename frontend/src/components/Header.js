@@ -114,6 +114,13 @@ const Header = () => {
               </span>
             </button>
 
+            {/* Notification Center - Desktop */}
+            {isAuthenticated && (
+              <div style={{ position: 'relative' }}>
+                <NotificationCenter user={user} />
+              </div>
+            )}
+
             {isAuthenticated ? (
               <div className="user-menu">
                 <Link to="/profil" className="profile-link">
