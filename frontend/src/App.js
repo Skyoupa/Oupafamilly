@@ -129,33 +129,35 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Accueil />} />
-              <Route path="/tutoriels" element={<Tutoriels />} />
-              <Route path="/tutoriels/:gameId/:tutorialId" element={<TutorialDetail />} />
-              <Route path="/tournois" element={<Tournois />} />
-              <Route path="/tournois/:id" element={<TournamentDetail />} />
-              <Route path="/tournois/:id/bracket" element={<TournamentBracket />} />
-              <Route path="/profil/:memberId" element={<ProfilMembre />} />
-              <Route path="/communaute" element={<Communaute />} />
-              <Route path="/a-propos" element={<APropos />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/profil" element={<Profil />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/tournaments" element={<AdminTournaments />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/content" element={<AdminContent />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="App">
+            <Header />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Accueil />} />
+                <Route path="/tutoriels" element={<Tutoriels />} />
+                <Route path="/tutoriels/:gameId/:tutorialId" element={<TutorialDetail />} />
+                <Route path="/tournois" element={<Tournois />} />
+                <Route path="/tournois/:id" element={<TournamentDetail />} />
+                <Route path="/tournois/:id/bracket" element={<TournamentBracket />} />
+                <Route path="/profil/:memberId" element={<ProfilMembre />} />
+                <Route path="/communaute" element={<Communaute />} />
+                <Route path="/a-propos" element={<APropos />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/profil" element={<Profil />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/tournaments" element={<AdminTournaments />} />
+                <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="/admin/content" element={<AdminContent />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
