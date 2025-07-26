@@ -388,7 +388,8 @@
 
 .comment-date {
   font-size: 0.85rem;
-  color: var(--text-white-bg-muted);
+  color: #718096;
+  font-weight: 500;
 }
 
 .delete-comment-btn {
