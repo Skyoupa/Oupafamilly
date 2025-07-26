@@ -229,6 +229,43 @@ test_plan:
         agent: "testing"
         comment: "🎯 VALIDATION FRANÇAISE COMPLÈTE - Tutoriel 'Économie CS2 : comprendre les achats' parfaitement accessible via API (ID: 87da3f33-16a9-4140-a0da-df2ab8104914). ✅ Toutes les traductions spécifiques validées: Elite→Élite ✅ Tier 1→Niveau 1 ✅ FORCE-BUY SITUATIONS→SITUATIONS DE FORCE-BUY ✅ Professional validated→Validé professionnellement ✅ Aucun terme anglais problématique détecté ✅ Contenu 100% français (9542 caractères, 303 indicateurs français). Traduction de qualité professionnelle confirmée."
 
+backend:
+  - task: "Système de monnaie virtuelle"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/currency.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 SYSTÈME MONNAIE VALIDÉ À 100% - Tests complets réussis : ✅ GET /api/currency/balance fonctionne (100 coins de départ confirmés) ✅ POST /api/currency/daily-bonus opérationnel (+12 coins bonus niveau 1) ✅ GET /api/currency/marketplace retourne 7 articles (Avatar Guerrier 150 coins, Badge Champion 100 coins, etc.) ✅ GET /api/currency/leaderboard/richest affiche 13 utilisateurs avec coins ✅ Achat marketplace fonctionnel (Badge Champion acheté avec succès) ✅ Historique transactions et inventaire opérationnels. Tous les endpoints currency testés avec succès."
+
+  - task: "Système de commentaires"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/comments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 SYSTÈME COMMENTAIRES VALIDÉ À 100% - Tests complets réussis : ✅ POST /api/comments/user création commentaire utilisateur fonctionnelle ✅ PUT /api/comments/user/{id} modification commentaire opérationnelle ✅ GET /api/comments/user/{id} récupération commentaires OK ✅ GET /api/comments/stats/user/{id} statistiques utilisateur fonctionnelles ✅ POST /api/comments/team création commentaire équipe testée ✅ GET /api/comments/stats/team/{id} statistiques équipe opérationnelles ✅ Système de notation 1-5 étoiles fonctionnel ✅ Récompenses automatiques (5 coins + 2 XP par commentaire). Tous les endpoints comments validés."
+
+  - task: "Données initialisées communauté"
+    implemented: true
+    working: true
+    file: "/app/backend/database.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 DONNÉES INITIALISÉES VALIDÉES - Vérification complète réussie : ✅ 13 utilisateurs avec profils mis à jour (coins, XP, niveau) - dépassement objectif 11 ✅ 7 articles marketplace créés (Avatar Guerrier, Badge Champion, Titre Vétéran, Bannière CS2, Emote GG, Avatar Mage, Badge Légende) ✅ Collections créées et opérationnelles (coin_transactions, user_comments, marketplace_items, user_profiles, user_inventory) ✅ Système XP et niveaux fonctionnel ✅ Leaderboard richesse opérationnel avec 12+ utilisateurs ayant 100+ coins. Initialisation données parfaitement réussie."
+
 agent_communication:
   - agent: "main"
     message: "Complété avec succès l'objectif principal : 12 tutoriels professionnels par jeu (60 total). Modifié la limite d'affichage à 100. Prêt pour tests backend pour vérifier la récupération correcte de tous les tutoriels."
@@ -244,3 +281,5 @@ agent_communication:
     message: "🇫🇷 TRADUCTION ÉCONOMIE CS2 TERMINÉE - Corrigé le problème de contenu anglais dans le tutoriel 'Économie CS2 : comprendre les achats'. Script créé et exécuté avec succès pour traduire complètement tous les éléments anglais : Elite→Élite, Tier 1→Niveau 1, sections markdown entièrement françaises. Contenu maintenant 100% français selon les exigences utilisateur."
   - agent: "testing"
     message: "🎯 VALIDATION TRADUCTION ÉCONOMIE CS2 RÉUSSIE - Tests backend spécialisés pour la traduction française : ✅ Tutoriel 'Économie CS2 : comprendre les achats' accessible via API (ID: 87da3f33-16a9-4140-a0da-df2ab8104914) ✅ Toutes traductions spécifiques validées (Elite→Élite, Tier 1→Niveau 1, FORCE-BUY→SITUATIONS DE FORCE-BUY, Professional validated→Validé professionnellement) ✅ Aucun terme anglais problématique détecté ✅ Contenu 100% français (9542 caractères, 303 indicateurs français) ✅ 23/23 tests backend réussis (100%). Traduction de qualité professionnelle confirmée."
+  - agent: "testing"
+    message: "🎯 TESTS MONNAIE & COMMENTAIRES RÉUSSIS À 100% (24/24 tests passés) - Validation complète du nouveau système communautaire Oupafamilly : ✅ Système monnaie virtuelle opérationnel (balance, daily-bonus, marketplace, leaderboard) ✅ 7 articles marketplace disponibles ✅ 13 utilisateurs avec 100+ coins initialisés ✅ Système commentaires fonctionnel (user/team comments, ratings, stats) ✅ Récompenses automatiques (coins + XP) ✅ Collections MongoDB créées et opérationnelles ✅ Achat marketplace testé avec succès ✅ Endpoints community stats/leaderboard/members fonctionnels. Nouveau système communautaire 100% prêt pour production."
