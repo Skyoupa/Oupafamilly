@@ -25,7 +25,8 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 from database import db
 
 @router.post("/register", response_model=UserResponse)
-async def register_user(user_data: UserCreate):
+@limiter.limit("3/minute")  # Limite à 3 créations de compte par minute
+async def register_user(request: Request, user_data: UserCreate):
     """Register a new user."""
     try:
         # Check if user already exists
