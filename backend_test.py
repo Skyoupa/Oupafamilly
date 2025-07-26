@@ -3746,6 +3746,68 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8 and success9 and success10
 
+    def run_priority_tests(self):
+        """Run priority tests as requested in review"""
+        self.log("🎯 STARTING PRIORITY TESTS FOR OUPAFAMILLY AUDIT")
+        self.log("=" * 80)
+        
+        # Essential setup
+        if not self.test_health_check():
+            self.log("❌ CRITICAL: Health check failed - aborting tests", "ERROR")
+            return False
+        
+        if not self.test_admin_login():
+            self.log("❌ CRITICAL: Admin login failed - aborting tests", "ERROR") 
+            return False
+        
+        if not self.test_get_current_user():
+            self.log("❌ CRITICAL: Get current user failed - aborting tests", "ERROR")
+            return False
+        
+        # PRIORITY 1: Create test tournaments
+        self.log("\n" + "="*50)
+        self.log("🎯 PRIORITY 1: CREATING TEST TOURNAMENTS")
+        self.log("="*50)
+        priority1_success = self.test_create_tournament_test_data()
+        
+        # PRIORITY 2: Verify endpoints
+        self.log("\n" + "="*50)
+        self.log("🎯 PRIORITY 2: VERIFYING ENDPOINTS")
+        self.log("="*50)
+        priority2a_success = self.test_verify_tournaments_current_endpoint()
+        priority2b_success = self.test_verify_tutorials_by_game_endpoints()
+        
+        # Additional verification tests
+        self.log("\n" + "="*50)
+        self.log("🎯 ADDITIONAL VERIFICATION")
+        self.log("="*50)
+        verification_success = self.test_data_verification()
+        
+        # Summary
+        self.log("\n" + "="*80)
+        self.log("🎯 PRIORITY TESTS SUMMARY")
+        self.log("="*80)
+        
+        priority1_status = "✅ COMPLETED" if priority1_success else "❌ FAILED"
+        priority2_status = "✅ COMPLETED" if (priority2a_success and priority2b_success) else "❌ FAILED"
+        verification_status = "✅ COMPLETED" if verification_success else "❌ FAILED"
+        
+        self.log(f"PRIORITY 1 - Create test tournaments: {priority1_status}")
+        self.log(f"PRIORITY 2 - Verify endpoints: {priority2_status}")
+        self.log(f"VERIFICATION - Data integrity: {verification_status}")
+        
+        overall_success = priority1_success and priority2a_success and priority2b_success
+        
+        if overall_success:
+            self.log("🎉 ALL PRIORITY TESTS COMPLETED SUCCESSFULLY")
+        else:
+            self.log("⚠️ SOME PRIORITY TESTS FAILED - CHECK DETAILS ABOVE")
+        
+        self.log(f"\nTests run: {self.tests_run}, Tests passed: {self.tests_passed}")
+        self.log(f"Success rate: {(self.tests_passed/self.tests_run*100):.1f}%")
+        
+        return overall_success
+
     def run_all_tests(self):
         """Run API tests with ENRICHED ACHIEVEMENTS SYSTEM as main focus"""
         self.log("🚀 Starting Oupafamilly API Tests - ENRICHED ACHIEVEMENTS SYSTEM TESTING")
