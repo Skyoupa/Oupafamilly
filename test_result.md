@@ -266,6 +266,69 @@ backend:
         agent: "testing"
         comment: "🎯 DONNÉES INITIALISÉES VALIDÉES - Vérification complète réussie : ✅ 13 utilisateurs avec profils mis à jour (coins, XP, niveau) - dépassement objectif 11 ✅ 7 articles marketplace créés (Avatar Guerrier, Badge Champion, Titre Vétéran, Bannière CS2, Emote GG, Avatar Mage, Badge Légende) ✅ Collections créées et opérationnelles (coin_transactions, user_comments, marketplace_items, user_profiles, user_inventory) ✅ Système XP et niveaux fonctionnel ✅ Leaderboard richesse opérationnel avec 12+ utilisateurs ayant 100+ coins. Initialisation données parfaitement réussie."
 
+  - task: "Système de chat communautaire"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/chat.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 SYSTÈME CHAT VALIDÉ À 100% - Tests complets réussis : ✅ GET /api/chat/stats fonctionne (3 messages 24h, 1 utilisateur actif) ✅ GET /api/chat/messages/general retourne l'historique des messages ✅ POST /api/chat/messages envoi de messages opérationnel ✅ GET /api/chat/private messages privés fonctionnels ✅ GET /api/chat/private/unread-count compteur non-lus OK ✅ Système de channels (general, cs2, lol, wow, sc2, minecraft, random) ✅ Rate limiting et récompenses automatiques (1 coin + 1 XP par message). Tous les endpoints chat testés avec succès."
+
+  - task: "Système activity feed"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/activity.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 SYSTÈME ACTIVITY VALIDÉ À 100% - Tests complets réussis : ✅ GET /api/activity/feed retourne le feed communautaire (1 activité) ✅ GET /api/activity/my-feed feed personnel fonctionnel ✅ GET /api/activity/trending activités tendance opérationnelles ✅ POST /api/activity/{id}/like système de likes fonctionnel (like/unlike) ✅ GET /api/activity/stats statistiques complètes (total, 24h, types populaires, utilisateurs actifs) ✅ Enrichissement automatique avec détails tournois/équipes/niveaux ✅ Récompenses engagement (1 coin + 1 XP pour like reçu). Tous les endpoints activity testés avec succès."
+
+  - task: "Système de paris"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/betting.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 SYSTÈME BETTING VALIDÉ À 100% - Tests complets réussis : ✅ GET /api/betting/markets retourne 7 marchés (CS2, LoL, WoW) avec options et cotes ✅ GET /api/betting/bets/my-bets affiche paris personnels (2 paris actifs) ✅ GET /api/betting/bets/stats statistiques utilisateur complètes (montant parié, gains, taux victoire) ✅ GET /api/betting/leaderboard classement des parieurs (3 joueurs) ✅ GET /api/betting/stats/global stats globales (7 marchés, 6 paris, 850 coins pool, 3 parieurs uniques) ✅ Système de cotes, gains potentiels, et règlement automatique ✅ Validation solde et limites de paris. Tous les endpoints betting testés avec succès."
+
+  - task: "Vérification données initialisées communauté"
+    implemented: true
+    working: true
+    file: "/app/backend/database.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 DONNÉES COMMUNAUTÉ VALIDÉES À 100% - Vérification complète réussie : ✅ 3 tournois de test créés (Championship CS2, Coupe LoL Printemps, WoW Arena Masters) ✅ 7 marchés de paris disponibles (CS2: 3, LoL: 2, WoW: 2) ✅ 6 paris de test placés avec succès ✅ Pool total de 850 coins confirmé ✅ 3 parieurs uniques actifs ✅ Collections MongoDB créées et opérationnelles (chat_messages, activity_feed, betting_markets, bets, private_messages) ✅ Base de données connectée et accessible ✅ 16 utilisateurs avec profils mis à jour. Écosystème communautaire parfaitement initialisé."
+
+  - task: "Correction endpoint tournaments"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/tournaments.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ Erreur 500 sur GET /api/tournaments - conflit de nommage entre paramètre 'status' et module 'status' de FastAPI"
+      - working: true
+        agent: "testing"
+        comment: "✅ CORRIGÉ: Paramètre renommé 'tournament_status', ajout mapping pour statuts DB ('registration_open'→'open', 'ongoing'→'in_progress') et types ('tournament'→'elimination'). Import uuid ajouté. Endpoint fonctionne parfaitement et retourne les 3 tournois avec structure correcte."
+
 agent_communication:
   - agent: "main"
     message: "Complété avec succès l'objectif principal : 12 tutoriels professionnels par jeu (60 total). Modifié la limite d'affichage à 100. Prêt pour tests backend pour vérifier la récupération correcte de tous les tutoriels."
