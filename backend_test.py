@@ -3557,7 +3557,7 @@ class OupafamillyAPITester:
             self.log("\n" + "="*60)
             self.log("🎯 TESTING ENRICHED ACHIEVEMENTS SYSTEM")
             self.log("="*60)
-            enriched_achievements_success = self.test_enriched_achievements_system()
+            enriched_achievements_success = self.test_elite_achievements_system_58_badges()
             
             # SECONDARY FOCUS: Daily Quests System
             self.log("\n" + "="*60)
