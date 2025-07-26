@@ -550,29 +550,19 @@ const TutorialDetail = () => {
               </div>
             )}
 
-            {/* Liens utiles */}
-            {tutorial.links && tutorial.links.length > 0 && (
-              <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-                <h3 className="text-white text-lg font-bold mb-4 flex items-center gap-2">
-                  🔗 Ressources utiles
-                </h3>
-                <div className="space-y-2">
-                  {tutorial.links.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-blue-900/20 hover:bg-blue-900/40 border border-blue-700/50 rounded-lg p-3 transition-all duration-200 group"
-                    >
-                      <span className="text-blue-300 group-hover:text-blue-200 text-sm font-medium">
-                        {link.name} ↗
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Hub Ressources Utiles - Nouveau système professionnel */}
+            <ResourcesHub 
+              game={gameId} 
+              tutorialTitle={tutorial.title}
+            />
+
+            {/* Hub Recommandations IA - Système intelligent */}
+            <AIRecommendationsHub 
+              game={gameId}
+              tutorialTitle={tutorial.title}
+              tutorialLevel={tutorial.level}
+              tutorialTags={tutorial.tags}
+            />
 
             {/* Stats du tutoriel */}
             <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
