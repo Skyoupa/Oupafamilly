@@ -114,7 +114,10 @@ const Communaute = () => {
       const marketResponse = await fetch(`${API_BASE_URL}/currency/marketplace`, { headers });
       if (marketResponse.ok) {
         const marketData = await marketResponse.json();
+        console.log('Marketplace data received:', marketData);
         setMarketplaceItems(marketData.slice(0, 4)); // Show only 4 items
+      } else {
+        console.error('Failed to fetch marketplace items:', marketResponse.status, marketResponse.statusText);
       }
 
       // Fetch betting markets
