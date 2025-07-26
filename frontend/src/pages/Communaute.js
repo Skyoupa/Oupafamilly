@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import Inventaire from '../components/Inventaire';
 
 const Communaute = () => {
   const { API_BASE_URL } = useAuth();
