@@ -82,17 +82,74 @@ const ProfilMembre = () => {
     ));
   };
 
-  const submitComment = () => {
-    if (newComment.trim()) {
-      alert('Fonctionnalité de commentaire en cours de développement !');
-      setShowCommentForm(false);
-      setNewComment('');
-      setNewRating(5);
+  const submitComment = async () => {
+    if (newComment.trim() && currentUser) {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          alert('Vous devez être connecté pour laisser un commentaire');
+          return;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/comments/user`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            target_id: memberId,
+            content: newComment,
+            rating: newRating
+          })
+        });
+
+        if (response.ok) {
+          alert('Commentaire ajouté avec succès !');
+          setShowCommentForm(false);
+          setNewComment('');
+          setNewRating(5);
+          fetchMemberComments(); // Refresh comments
+        } else {
+          const data = await response.json();
+          alert(data.detail || 'Erreur lors de l\'ajout du commentaire');
+        }
+      } catch (error) {
+        console.error('Erreur lors de l\'ajout du commentaire:', error);
+        alert('Erreur lors de l\'ajout du commentaire');
+      }
     }
   };
 
-  const canDeleteComment = () => {
-    return true; // Simplified for demo
+  const deleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/comments/user/${commentId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        alert('Commentaire supprimé');
+        fetchMemberComments(); // Refresh comments
+      } else {
+        const data = await response.json();
+        alert(data.detail || 'Erreur lors de la suppression');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+    }
+  };
+
+  const canDeleteComment = (comment) => {
+    return currentUser && (
+      currentUser.id === comment.author_id || 
+      currentUser.id === memberProfile?.user?.id ||
+      currentUser.role === 'admin' ||
+      currentUser.role === 'moderator'
+    );
   };
 
   if (loading) {
@@ -102,6 +159,38 @@ const ProfilMembre = () => {
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Chargement du profil...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="app">
+        <Header />
+        <div className="error-container">
+          <h2>Erreur</h2>
+          <p>{error}</p>
+          <Link to="/communaute" className="btn-primary-pro">
+            ← Retour à la communauté
+          </Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!memberProfile) {
+    return (
+      <div className="app">
+        <Header />
+        <div className="error-container">
+          <h2>Profil non trouvé</h2>
+          <p>Le profil demandé n'existe pas ou n'est plus disponible.</p>
+          <Link to="/communaute" className="btn-primary-pro">
+            ← Retour à la communauté
+          </Link>
         </div>
         <Footer />
       </div>
