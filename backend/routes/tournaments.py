@@ -115,6 +115,16 @@ def map_tournament_status(db_status: str) -> TournamentStatus:
     }
     return status_mapping.get(db_status, TournamentStatus.DRAFT)
 
+def map_tournament_type(db_type: str) -> TournamentType:
+    """Map database type values to model enum values."""
+    type_mapping = {
+        "tournament": TournamentType.ELIMINATION,  # Default mapping
+        "elimination": TournamentType.ELIMINATION,
+        "bracket": TournamentType.BRACKET,
+        "round_robin": TournamentType.ROUND_ROBIN
+    }
+    return type_mapping.get(db_type, TournamentType.ELIMINATION)
+
 @router.get("/{tournament_id}", response_model=Tournament)
 async def get_tournament(tournament_id: str):
     """Get a specific tournament."""
