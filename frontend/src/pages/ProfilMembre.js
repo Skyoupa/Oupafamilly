@@ -152,45 +152,33 @@ const ProfilMembre = () => {
 
   if (loading) {
     return (
-      <div className="app">
-        <Header />
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Chargement du profil...</p>
-        </div>
-        <Footer />
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Chargement du profil...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="app">
-        <Header />
-        <div className="error-container">
-          <h2>Erreur</h2>
-          <p>{error}</p>
-          <Link to="/communaute" className="btn-primary-pro">
-            ← Retour à la communauté
-          </Link>
-        </div>
-        <Footer />
+      <div className="error-container">
+        <h2>Erreur</h2>
+        <p>{error}</p>
+        <Link to="/communaute" className="btn-primary-pro">
+          ← Retour à la communauté
+        </Link>
       </div>
     );
   }
 
   if (!memberProfile) {
     return (
-      <div className="app">
-        <Header />
-        <div className="error-container">
-          <h2>Profil non trouvé</h2>
-          <p>Le profil demandé n'existe pas ou n'est plus disponible.</p>
-          <Link to="/communaute" className="btn-primary-pro">
-            ← Retour à la communauté
-          </Link>
-        </div>
-        <Footer />
+      <div className="error-container">
+        <h2>Profil non trouvé</h2>
+        <p>Le profil demandé n'existe pas ou n'est plus disponible.</p>
+        <Link to="/communaute" className="btn-primary-pro">
+          ← Retour à la communauté
+        </Link>
       </div>
     );
   }
