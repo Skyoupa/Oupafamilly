@@ -15,6 +15,124 @@ router = APIRouter(prefix="/currency", tags=["Currency & Marketplace"])
 # Get database from database module
 from database import db
 
+# Fonction pour récompenser les participants de tournoi
+async def reward_tournament_participants(tournament_id: str, participants: List[str], winner_id: str = None):
+    """Récompenser automatiquement les participants et le gagnant d'un tournoi."""
+    try:
+        # Récompenses selon le type et l'importance du tournoi
+        tournament = await db.tournaments.find_one({"id": tournament_id})
+        if not tournament:
+            return
+        
+        # Déterminer les récompenses selon le tournoi
+        max_participants = tournament.get("max_participants", 8)
+        tournament_name = tournament.get("title", "Tournoi")
+        
+        # Récompenses de base
+        participation_reward = 20  # 20 coins pour participer
+        victory_reward = 100       # 100 coins pour gagner
+        
+        # Bonus selon la taille du tournoi
+        if max_participants >= 16:
+            participation_reward = 30
+            victory_reward = 200
+        elif max_participants >= 8:
+            participation_reward = 25
+            victory_reward = 150
+        
+        # Récompenser tous les participants
+        for participant_id in participants:
+            # Créer transaction de participation
+            participation_transaction = CoinTransaction(
+                user_id=participant_id,
+                amount=participation_reward,
+                transaction_type="tournament_participation",
+                description=f"Participation au tournoi: {tournament_name}",
+                reference_id=tournament_id
+            )
+            
+            await db.coin_transactions.insert_one(participation_transaction.dict())
+            
+            # Mettre à jour le profil
+            await db.user_profiles.update_one(
+                {"user_id": participant_id},
+                {
+                    "$inc": {
+                        "coins": participation_reward,
+                        "total_coins_earned": participation_reward,
+                        "experience_points": 10  # 10 XP pour participation
+                    },
+                    "$set": {"updated_at": datetime.utcnow()}
+                },
+                upsert=True
+            )
+        
+        # Récompenser le gagnant s'il y en a un
+        if winner_id and winner_id in participants:
+            victory_transaction = CoinTransaction(
+                user_id=winner_id,
+                amount=victory_reward,
+                transaction_type="tournament_victory",
+                description=f"Victoire du tournoi: {tournament_name}",
+                reference_id=tournament_id
+            )
+            
+            await db.coin_transactions.insert_one(victory_transaction.dict())
+            
+            # Bonus gagnant
+            await db.user_profiles.update_one(
+                {"user_id": winner_id},
+                {
+                    "$inc": {
+                        "coins": victory_reward,
+                        "total_coins_earned": victory_reward,
+                        "experience_points": 50  # 50 XP bonus victoire
+                    },
+                    "$set": {"updated_at": datetime.utcnow()}
+                },
+                upsert=True
+            )
+            
+            # Vérifier montée de niveau
+            await check_level_up(winner_id, "winner")
+        
+        logger.info(f"Récompenses distribuées pour tournoi {tournament_id}: {len(participants)} participants, gagnant: {winner_id}")
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de la distribution des récompenses tournoi: {str(e)}")
+
+@router.post("/tournament-rewards/{tournament_id}")
+async def distribute_tournament_rewards(
+    tournament_id: str,
+    participants: List[str],
+    winner_id: Optional[str] = None,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Distribuer les récompenses d'un tournoi (admin seulement)."""
+    try:
+        if not is_admin(current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Seuls les admins peuvent distribuer les récompenses"
+            )
+        
+        await reward_tournament_participants(tournament_id, participants, winner_id)
+        
+        return {
+            "message": "Récompenses distribuées avec succès",
+            "participants_rewarded": len(participants),
+            "winner": winner_id
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erreur distribution récompenses: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la distribution des récompenses"
+        )
+
 @router.get("/balance")
 async def get_user_balance(current_user: User = Depends(get_current_active_user)):
     """Obtenir le solde de coins de l'utilisateur."""
