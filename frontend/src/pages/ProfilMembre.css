@@ -205,6 +205,89 @@
   gap: 1.5rem;
 }
 
+.additional-stats {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #e2e8f0;
+}
+
+.additional-stats h4 {
+  color: #1a202c;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.match-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.match-stats span {
+  color: #4a5568;
+  font-weight: 600;
+}
+
+/* Teams Information */
+.teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.team-item {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.team-item:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.team-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.team-game {
+  color: #4a5568;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.captain-badge {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #1a202c;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.team-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #718096;
+  background: #e2e8f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
 .stat-box {
   text-align: center;
   padding: 1.5rem;
