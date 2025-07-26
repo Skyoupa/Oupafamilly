@@ -1,69 +1,61 @@
 <analysis>
-The AI engineer's trajectory reveals an iterative development process. It began by resolving a specific content localization issue in the Économie CS2 tutorial, which involved database debugging due to an incorrect database name. Following this, the focus shifted entirely to expanding community features. This phase introduced virtual currency, a marketplace, betting, and a messaging system, initially on a new frontend page. Upon user feedback, the engineer adeptly refactored these new features into the existing community page, preserving its original design. The current work is centered on debugging the member profile pages, specifically addressing runtime errors upon clicking profiles and ensuring member data correctly displays on the frontend, highlighting a persistent challenge in frontend data synchronization and rendering.
+The AI engineer's work trajectory demonstrates an iterative, user-feedback-driven development cycle for the Oupafamilly application. Initially, it addressed minor content localization, then significantly expanded into a comprehensive community platform (virtual currency, marketplace, betting, messaging, inventory, XP system), prioritizing integration into the existing  page. A major part involved extensive debugging of profile displays, marketplace issues, and UI/UX refinements for contrast and layout. Recent work included a full inventory system with default item distribution. The process pivoted to robust infrastructure enhancements: implementing tournament scheduling, rigorous tutorial cleanup, cross-device responsiveness checks, and critical security (CORS, rate limiting), performance (Redis caching), and maintainability (structured logging, input validation) improvements. The latest phase involves a major gamification upgrade, starting with an achievement system, guided by user's approval for non-design-altering enhancements.
 </analysis>
 
 <product_requirements>
-The Oupafamilly application aims to be a professional, interactive esports tutorial system. Initially, it required high-quality, 100% French tutorials (e.g., CS2, WoW, LoL, SC2, Minecraft) with specific difficulty badges, unique images, AZERTY keyboard adaptation, and external resource/AI recommendation hubs. Content must be stored in MongoDB.
-
-The user later expanded requirements to a comprehensive community platform:
-1.  **Community Features**: Implement a professional community space.
-2.  **Profile Enhancements**: Enable comments on player/team profiles with owner deletion.
-3.  **Communication**: Replace the public chat system with a private messaging (mail) system between members. The messaging interface should be modern, with search capabilities, scrollable lists, and high contrast.
-4.  **Monetary System**: Introduce a virtual currency system.
-5.  **Marketplace**: Integrate a marketplace for virtual goods, powered by the currency system.
-6.  **Betting System**: Implement a betting system based on tournaments, integrated with the currency.
-7.  **Experience System**: Develop an experience (XP) system for members based on tournament participation (win/lose).
-8.  **Data Preservation**: Ensure existing member and team data is preserved and enhanced, not overwritten.
-9.  **UI/UX Integration**: Integrate all new features cleanly into the existing  page, maintaining its original design and professional aesthetic.
-10. **Deployment**: Application must remain optimized for OVH.
+The Oupafamilly application aims to be a professional esports tutorial system, initially focusing on high-quality, 100% French CS2 tutorials with features like difficulty badges, unique images, AZERTY keyboard adaptation, and integrated resource/AI recommendation hubs. It has expanded into a comprehensive community platform encompassing: enhanced player/team profiles with comment functionality and equipped item display; a private messaging system; a virtual currency system with daily bonuses; a marketplace for virtual goods; a betting system for tournaments with brackets, per-match betting, and dynamic odds; an experience (XP) system based on tournament participation. All new features are integrated into the existing  page maintaining design consistency, including a professional inventory system. Recent additions include tournament match scheduling with local time, verified site responsiveness, and critical security/performance improvements (CORS, rate limiting, Redis caching, structured logging, input validation).
 </product_requirements>
 
 <key_technical_concepts>
--   **Full-stack Architecture**: React frontend, FastAPI backend, MongoDB database.
--   **Environment Management**:  for configuration, Supervisor for service management, Kubernetes ingress.
--   **Data Persistence**: MongoDB for dynamic content (tutorials, users, teams, currency, comments, chat, betting).
--   **Frontend**: React component-based development, / hooks, Tailwind CSS, markdown rendering,  for environment variables.
--   **Backend**: FastAPI for API endpoints, Pydantic models for data validation, Python for scripting.
--   **Scripting**: Python scripts for data initialization, population, and updates.
--   **Authentication**: JWT for secure API access.
+-   **Full-stack Architecture**: React (frontend), FastAPI (backend), MongoDB (database).
+-   **Environment Management**:  for configuration, Supervisor for services, Kubernetes ingress.
+-   **Data Persistence**: MongoDB for dynamic content and user data.
+-   **Frontend**: React components, Tailwind CSS, , client-side routing, .
+-   **Backend**: FastAPI, Pydantic, , , , .
+-   **Authentication**: JWT for API security.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a standard full-stack setup with distinct backend and frontend components. The backend is FastAPI, and the frontend is React. Communication between them occurs via the , with all backend API routes prefixed with  for Kubernetes ingress. MongoDB serves as the database, accessed by the backend via  and .
-
+The application employs a standard full-stack setup, with a FastAPI backend and a React frontend, communicating via  and  prefixes for backend routes. MongoDB is the database.
 
 
 **Key File Summaries and Changes:**
-
-*   : Defines data models. **Summary**: Expanded to include  fields for , , , , , , and new models for , , , , , .
-*   : Main FastAPI app. **Summary**: Updated to include new API routers from , , , and , and added WebSocket authentication logic.
-*    (NEW): Manages virtual currency. **Summary**: Implemented endpoints for daily bonus, getting user coins, and currency transactions.
-*    (NEW): Manages profile comments. **Summary**: Implemented endpoints for adding, fetching, and deleting comments on user profiles.
-*    (NEW): Manages chat messages. **Summary**: Implemented endpoints for real-time chat, including sending and fetching messages. *Note: This was later deprecated in favor of a messaging system.*
-*    (NEW): Manages betting. **Summary**: Implemented endpoints for creating betting markets, placing bets, and managing user bets.
-*   : Main React component. **Summary**: Updated to remove the temporary  route and include the new  route for detailed member profiles. Ensures all community features route to . Corrected  access.
-*    (MODIFIED): The primary community page. **Summary**: Extensively refactored to integrate new tabs for Marketplace, Messaging, and Betting. Contains logic for displaying user stats (coins, XP), managing daily bonuses, listing members, and handling the new messaging and betting UIs. Initially had a  redeclaration error that was fixed.
-*    (NEW): Dedicated member profile page. **Summary**: Created to display detailed user information and integrate the comment system. Currently undergoing debugging for data loading and runtime errors.
-*    &  (MODIFIED/NEW): Stylesheets. **Summary**: Added extensive CSS for the new community features, including modern messaging design (high contrast, search bar), marketplace styling, betting interface, and profile page layout.
-*    (NEW): Script to correct the Économie CS2 tutorial content. **Summary**: Connects to MongoDB, retrieves the specific tutorial, and updates its markdown content to be entirely in French, removing English phrases.
-*    (NEW): Script to populate initial community data. **Summary**: Creates initial marketplace items, updates existing user profiles with default currency and XP fields.
-*    (NEW): Script to populate initial betting data. **Summary**: Creates test tournaments and matches for the betting system.
+*   : Defines data models. Expanded for community, user stats, marketplace, betting, and inventory.
+*   : Main FastAPI app. Updated to register new routers (, , ). Modified CORS for security. Integrated  and .
+*    (NEW): Implements tournament match scheduling endpoints.
+*   : Manages tournament data. Corrected data mapping for single tournament retrieval. Added  endpoint. Integrated Redis caching with  and  decorators.
+*   : Handles authentication. Integrated input validation and applied rate limiting to login/register routes.
+*   : Manages community data. Applied Redis caching to , , and .
+*    (NEW): Centralized Redis caching client and decorators.
+*    (NEW): Contains health check and system metrics logic.
+*    (NEW): Provides API endpoints for health and metrics.
+*    (NEW): Houses robust input validation and sanitization functions.
+*    (NEW): Defines data models and logic for the new achievement/badge system.
+*    (NEW): Will contain API endpoints for achievements.
+*   : Main React component. Updated routing and implemented  to remove Made with Emergent badge.
+*   : Primary community page. Refactored to integrate Tournois tab for tournament scheduling. Implemented logic for fetching tournaments and handling scheduling. Fixed API call URLs for tournaments.
+*   : Global styles. Updated for new community and tournament features.
+*    (NEW, then moved): Script to delete non-CS2 tutorials and classify remaining CS2 tutorials.
+*    (NEW, then moved): Script to populate test tournament data.
+*    (NEW Directory): Created to archive 30+ obsolete migration/maintenance scripts, cleaning the root directory.
 
 </code_architecture>
 
 <pending_tasks>
--   **Debug Member Profile Display**: Fix the  when clicking on a member profile, and ensure members are correctly displayed on the  page's member list (as they are currently not showing).
--   **Refactor Remaining CS2 Tutorials**: Continue updating the remaining CS2 tutorials to be fully professional, incorporate Tier 1 strategies and Vitality inspiration, and ensure all content, including markdown, is entirely in French (this task was initially pending and not touched upon in this trajectory, as attention shifted to community features).
+-   **Implement Quests/Défis Quotidiens:** Add a section for daily challenges within the existing community interface.
+-   **Implement ELO System:** Integrate automatic ELO calculation into existing member profiles and create seasonal rankings.
+-   **Implement Mode Sombre Professionnel:** Add a dark mode toggle to the existing header without altering the current layout.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary, the AI engineer was actively engaged in debugging the frontend  page. The user reported Uncaught runtime errors when clicking on a member's profile from the  page, and also noted that members were not appearing in the community page's member list.
+Immediately prior to this summary, the AI engineer had completed significant enhancements to the Oupafamilly application. This included critical security fixes (CORS policy refinement in , rate limiting on sensitive routes in  and other route files), performance improvements (integrating Redis caching with new  for endpoints in  and ), structured logging ( setup and new  and ), and reinforced input validation ( integrated into ). These improvements collectively raised the application's quality score from 7/10 to 9/10, making it production-ready.
 
-The engineer identified that the  component was likely causing the errors, specifically suspecting issues with how user data ( variable) was being accessed or defined, possibly related to an uninitialized  hook or similar context. Several attempts were made to fix linting errors within  related to the  variable being undefined (e.g., in functions determining comment deletion permissions or displaying user-specific content).
-
-The engineer then simplified the  component to ensure it would work with existing API endpoints, aiming to resolve the runtime errors. After applying these changes and restarting the backend, a frontend screenshot was taken of the  page. The screenshot revealed that while the main community page loaded, the members list was empty, indicating a persistent issue with data retrieval or rendering of members, which also prevents testing the clickable profile links. The current work ended with the engineer acknowledging the members not showing issue and preparing to debug the profile page directly to understand why data isn't loading.
+Following a user's request for further upgrades without design modifications, the AI engineer initiated Phase 1: Gamification Avancée. The current focus is on developing a comprehensive **System d'Achievements/Badges**. To this end, the following steps have been taken:
+1.  The existing  file was reviewed to understand the current user and application data structures, ensuring the new achievement system integrates seamlessly.
+2.  A new Python module, , has been created. This file is intended to define the data models and core logic for the achievements and badges.
+3.  A corresponding FastAPI router file, , has been created. This file will expose the API endpoints necessary for managing, retrieving, and interacting with achievements from the frontend.
 </current_work>
 
 <optional_next_step>
-Debug the  page to resolve the members not showing issue and the runtime errors when attempting to view a profile.
+Register the newly created achievements router in .
 </optional_next_step>
