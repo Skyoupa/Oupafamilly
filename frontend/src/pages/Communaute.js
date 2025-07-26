@@ -206,6 +206,145 @@ const Communaute = () => {
     }
   };
 
+  // Tournament scheduling functions
+  const fetchTournamentData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const headers = { 'Authorization': `Bearer ${token}` };
+      
+      // Fetch tournaments
+      const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments?limit=20`, { headers });
+      if (tournamentsResponse.ok) {
+        const tournamentsData = await tournamentsResponse.json();
+        setTournaments(tournamentsData);
+      }
+
+      // Fetch upcoming matches
+      const upcomingResponse = await fetch(`${API_BASE_URL}/match-scheduling/upcoming-matches?days=7&limit=10`, { headers });
+      if (upcomingResponse.ok) {
+        const upcomingData = await upcomingResponse.json();
+        setUpcomingMatches(upcomingData);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des tournois:', error);
+    }
+  };
+
+  const fetchTournamentSchedule = async (tournamentId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const headers = { 'Authorization': `Bearer ${token}` };
+      const response = await fetch(`${API_BASE_URL}/match-scheduling/tournament/${tournamentId}/matches`, { headers });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setTournamentSchedule(data);
+      } else {
+        console.error('Erreur lors de la récupération du planning du tournoi');
+        setError('Erreur lors de la récupération du planning du tournoi');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération du planning:', error);
+      setError('Erreur lors de la récupération du planning');
+    }
+  };
+
+  const scheduleMatch = async (matchId, scheduledTime, notes = '') => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const headers = { 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+
+      const response = await fetch(`${API_BASE_URL}/match-scheduling/schedule-match`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          match_id: matchId,
+          scheduled_time: scheduledTime,
+          notes
+        })
+      });
+
+      if (response.ok) {
+        // Refresh tournament schedule
+        if (selectedTournament) {
+          await fetchTournamentSchedule(selectedTournament);
+        }
+        await fetchTournamentData(); // Refresh upcoming matches
+        return true;
+      } else {
+        const errorData = await response.json();
+        setError(errorData.detail || 'Erreur lors de la programmation du match');
+        return false;
+      }
+    } catch (error) {
+      console.error('Erreur lors de la programmation du match:', error);
+      setError('Erreur lors de la programmation du match');
+      return false;
+    }
+  };
+
+  const handleScheduleMatch = (match) => {
+    setSelectedMatch(match);
+    
+    // Initialize form with current schedule if exists
+    if (match.scheduled_time) {
+      const scheduledDate = new Date(match.scheduled_time);
+      setScheduleForm({
+        date: scheduledDate.toISOString().split('T')[0],
+        time: scheduledDate.toTimeString().slice(0, 5),
+        notes: match.notes || ''
+      });
+    } else {
+      // Default to tomorrow at 18:00
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(18, 0, 0, 0);
+      
+      setScheduleForm({
+        date: tomorrow.toISOString().split('T')[0],
+        time: '18:00',
+        notes: ''
+      });
+    }
+    
+    setShowScheduleModal(true);
+  };
+
+  const submitSchedule = async () => {
+    if (!selectedMatch || !scheduleForm.date || !scheduleForm.time) return;
+
+    // Combine date and time into ISO string using local timezone
+    const localDateTime = new Date(`${scheduleForm.date}T${scheduleForm.time}`);
+    const scheduledTime = localDateTime.toISOString();
+
+    const success = await scheduleMatch(selectedMatch.id, scheduledTime, scheduleForm.notes);
+    
+    if (success) {
+      setShowScheduleModal(false);
+      setSelectedMatch(null);
+      setScheduleForm({ date: '', time: '', notes: '' });
+    }
+  };
+
+  const formatDateTime = (dateTime) => {
+    if (!dateTime) return 'Non programmé';
+    
+    const date = new Date(dateTime);
+    return date.toLocaleString('fr-FR', {
+      dateStyle: 'short',
+      timeStyle: 'short'
+    });
+  };
+
   const getGameDisplay = (game) => {
     switch (game) {
       case 'cs2': return 'Counter-Strike 2';
