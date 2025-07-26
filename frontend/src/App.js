@@ -23,61 +23,94 @@ import './App.css';
 
 function App() {
   useEffect(() => {
-    // Remove Emergent badge dynamically
+    // Remove Emergent badge with optimized approach
     const removeEmergentBadge = () => {
-      // Wait a bit for the badge to load
-      setTimeout(() => {
-        // Find and remove all potential Emergent badges
-        const selectors = [
-          '[data-testid*="emergent"]',
-          '[class*="emergent"]', 
-          '[id*="emergent"]',
-          'div[style*="position: fixed"][style*="bottom"][style*="right"]',
-          'div[style*="position: absolute"][style*="bottom"][style*="right"]',
-          'button[style*="position: fixed"]',
-          '*[title*="Made with Emergent"]',
-          '*[alt*="Made with Emergent"]'
-        ];
-        
-        selectors.forEach(selector => {
-          try {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-              const text = element.textContent || element.innerText || '';
-              const title = element.title || '';
-              const alt = element.alt || '';
-              
-              if (text.includes('Made with Emergent') || 
-                  text.includes('Emergent') || 
-                  title.includes('Made with Emergent') ||
-                  alt.includes('Made with Emergent') ||
-                  element.classList.toString().includes('emergent') ||
-                  element.id.includes('emergent')) {
-                element.remove();
-                console.log('Removed Emergent badge element');
-              }
-            });
-          } catch (e) {
-            // Ignore selector errors
+      // More targeted selectors to avoid scanning all elements
+      const targetSelectors = [
+        '[data-testid*="emergent"]',
+        '[class*="emergent"]', 
+        '[id*="emergent"]',
+        '*[title*="Made with Emergent"]',
+        '*[alt*="Made with Emergent"]'
+      ];
+      
+      let removed = false;
+      targetSelectors.forEach(selector => {
+        try {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach(element => {
+            const text = element.textContent || element.innerText || '';
+            const title = element.title || '';
+            const alt = element.alt || '';
+            
+            if (text.includes('Made with Emergent') || 
+                text.includes('Emergent') || 
+                title.includes('Made with Emergent') ||
+                alt.includes('Made with Emergent') ||
+                element.classList.toString().includes('emergent') ||
+                element.id.includes('emergent')) {
+              element.remove();
+              console.log('Removed Emergent badge element');
+              removed = true;
+            }
+          });
+        } catch (e) {
+          // Ignore selector errors
+        }
+      });
+      
+      // Only scan all elements if targeted approach didn't work
+      if (!removed) {
+        const textWalker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode: function(node) {
+              const text = node.textContent.trim();
+              return (text === 'Made with Emergent' || 
+                     (text.includes('Made with Emergent') && text.length < 50)) 
+                     ? NodeFilter.FILTER_ACCEPT 
+                     : NodeFilter.FILTER_REJECT;
+            }
           }
-        });
+        );
         
-        // Also try to find elements by text content
-        const allElements = document.querySelectorAll('*');
-        allElements.forEach(element => {
-          const text = element.textContent || '';
-          if (text.trim() === 'Made with Emergent' || 
-              (text.includes('Made with Emergent') && text.length < 50)) {
+        const nodesToRemove = [];
+        let node;
+        while (node = textWalker.nextNode()) {
+          nodesToRemove.push(node.parentElement);
+        }
+        
+        nodesToRemove.forEach(element => {
+          if (element) {
             element.remove();
             console.log('Removed Emergent badge by text content');
           }
         });
-      }, 500);
+      }
     };
     
-    // Run immediately and also set up interval to catch dynamically added badges
+    // Use MutationObserver for dynamic content instead of interval
+    const observer = new MutationObserver((mutations) => {
+      let shouldCheck = false;
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          shouldCheck = true;
+        }
+      });
+      if (shouldCheck) {
+        removeEmergentBadge();
+      }
+    });
+    
+    // Start observing
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    
+    // Run once immediately
     removeEmergentBadge();
-    const interval = setInterval(removeEmergentBadge, 2000);
     
     // Also run when page visibility changes
     const handleVisibilityChange = () => {
@@ -89,7 +122,7 @@ function App() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
     return () => {
-      clearInterval(interval);
+      observer.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
