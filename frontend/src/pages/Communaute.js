@@ -854,61 +854,132 @@ const Communaute = () => {
 
           {/* Messaging View */}
           {activeView === 'messagerie' && (
-            <div className="messaging-section">
-              <div className="messaging-header">
-                <h2>📧 Boîte de Réception</h2>
-                <p>Communiquez directement avec les autres membres</p>
+            <div className="messaging-section-modern">
+              <div className="messaging-header-modern">
+                <h2>📧 Messagerie Privée</h2>
+                <p>Communiquez directement avec les membres de la communauté</p>
               </div>
               
-              <div className="messaging-content">
-                <div className="message-compose">
-                  <h3>Envoyer un message</h3>
-                  <select id="recipient-select">
-                    <option value="">Choisir un destinataire</option>
-                    {members.map(member => (
-                      <option key={member.id} value={member.id}>
-                        {member.profile?.display_name || member.username}
-                      </option>
-                    ))}
-                  </select>
-                  <textarea 
-                    id="message-content" 
-                    placeholder="Votre message..."
-                    rows="3"
-                  />
-                  <button 
-                    className="btn-primary-pro"
-                    onClick={() => {
-                      const recipient = document.getElementById('recipient-select').value;
-                      const content = document.getElementById('message-content').value;
-                      if (recipient && content.trim()) {
-                        sendMessage(recipient, content);
-                        document.getElementById('message-content').value = '';
-                        document.getElementById('recipient-select').value = '';
-                      }
-                    }}
-                  >
-                    Envoyer
-                  </button>
-                </div>
-                
-                <div className="message-list">
-                  <h3>Messages Récents</h3>
-                  {messages.length === 0 ? (
-                    <p className="no-messages">Aucun message pour le moment</p>
-                  ) : (
-                    messages.map(message => (
-                      <div key={message.id} className="message-item">
-                        <div className="message-header">
-                          <span className="message-sender">
-                            {message.sender_id === userProfile.user_id ? 'Vous → Destinataire' : 'Expéditeur → Vous'}
+              <div className="messaging-layout">
+                {/* Left Panel - Member List */}
+                <div className="member-list-panel">
+                  <div className="member-search-box">
+                    <input
+                      type="text"
+                      placeholder="🔍 Rechercher un membre..."
+                      value={memberSearch}
+                      onChange={(e) => setMemberSearch(e.target.value)}
+                      className="search-input-modern"
+                    />
+                  </div>
+                  
+                  <div className="members-scroll-list">
+                    <h4>Membres disponibles ({filteredMembersForMessaging.length})</h4>
+                    {filteredMembersForMessaging.map(member => (
+                      <div 
+                        key={member.id} 
+                        className={`member-item-selectable ${selectedRecipient === member.id ? 'selected' : ''}`}
+                        onClick={() => setSelectedRecipient(member.id)}
+                      >
+                        <div className="member-avatar">
+                          {(member.profile?.display_name || member.username).charAt(0).toUpperCase()}
+                        </div>
+                        <div className="member-info">
+                          <span className="member-name">
+                            {member.profile?.display_name || member.username}
                           </span>
-                          <span className="message-date">
-                            {new Date(message.created_at).toLocaleDateString()}
+                          <span className="member-level">
+                            Niveau {member.profile?.level || 1}
                           </span>
                         </div>
-                        <div className="message-content">{message.content}</div>
-                        {!message.is_read && <span className="unread-indicator">Nouveau</span>}
+                      </div>
+                    ))}
+                    
+                    {filteredMembersForMessaging.length === 0 && (
+                      <div className="no-members-found">
+                        <p>Aucun membre trouvé</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Right Panel - Conversation */}
+                <div className="conversation-panel">
+                  {selectedRecipient ? (
+                    <>
+                      <div className="conversation-header">
+                        <h4>💬 Conversation avec {
+                          filteredMembersForMessaging.find(m => m.id === selectedRecipient)?.profile?.display_name ||
+                          filteredMembersForMessaging.find(m => m.id === selectedRecipient)?.username ||
+                          'Membre'
+                        }</h4>
+                      </div>
+                      
+                      <div className="message-composer">
+                        <textarea
+                          value={messageContent}
+                          onChange={(e) => setMessageContent(e.target.value)}
+                          placeholder="Tapez votre message ici..."
+                          className="message-textarea-modern"
+                          rows="4"
+                        />
+                        <button 
+                          onClick={handleSendMessage}
+                          className="send-button-modern"
+                          disabled={!messageContent.trim()}
+                        >
+                          📨 Envoyer Message
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="no-conversation-selected">
+                      <div className="select-member-prompt">
+                        <h4>💬 Sélectionnez un membre</h4>
+                        <p>Choisissez un membre dans la liste pour commencer une conversation</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Recent Messages */}
+              <div className="recent-messages-modern">
+                <h3>📬 Messages Récents</h3>
+                <div className="messages-list-modern">
+                  {messages.length === 0 ? (
+                    <div className="no-messages-modern">
+                      <p>💭 Aucun message pour le moment</p>
+                      <p>Commencez une conversation en sélectionnant un membre ci-dessus</p>
+                    </div>
+                  ) : (
+                    messages.map(message => (
+                      <div key={message.id} className="message-card-modern">
+                        <div className="message-header-modern">
+                          <div className="message-participants">
+                            <span className="message-direction">
+                              {message.sender_id === userProfile.user_id ? 
+                                '📤 Vous → ' : '📥 De : '
+                              }
+                            </span>
+                            <span className="message-other-party">
+                              {message.sender_id === userProfile.user_id ? 'Destinataire' : 'Expéditeur'}
+                            </span>
+                          </div>
+                          <div className="message-meta">
+                            <span className="message-date-modern">
+                              {new Date(message.created_at).toLocaleDateString('fr-FR')} à{' '}
+                              {new Date(message.created_at).toLocaleTimeString('fr-FR', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              })}
+                            </span>
+                            {!message.is_read && message.sender_id !== userProfile.user_id && (
+                              <span className="unread-badge-modern">Nouveau</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="message-content-modern">{message.content}</div>
                       </div>
                     ))
                   )}
