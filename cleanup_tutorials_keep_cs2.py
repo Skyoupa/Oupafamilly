@@ -12,7 +12,7 @@ async def cleanup_tutorials():
     """Supprimer tous les tutoriels sauf CS2 et classer les CS2 par difficulté."""
     
     # Load environment variables
-    load_dotenv()
+    load_dotenv('/app/backend/.env')
     
     # Connect to MongoDB
     mongo_url = os.environ.get('MONGO_URL')
