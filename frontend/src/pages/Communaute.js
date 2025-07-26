@@ -290,7 +290,7 @@ const Communaute = () => {
     }
   };
 
-  const filteredMembers = members.filter(member => 
+  const filteredMembersForMessaging = members.filter(member => 
     (member.profile?.display_name || member.username)
       .toLowerCase()
       .includes(memberSearch.toLowerCase())
