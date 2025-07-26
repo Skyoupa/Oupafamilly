@@ -1,8 +1,11 @@
 /* Profile Member Page Styles */
 
 .profil-membre-container {
-  min-height: 100vh;
-  background: var(--gradient-bg);
+  max-width: 1000px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  background: #ffffff;
+  min-height: calc(100vh - 200px);
 }
 
 .loading-container,
