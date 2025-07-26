@@ -417,39 +417,52 @@ const ProfilMembre = () => {
                   <div className="comments-summary">
                     <p>
                       {commentStats.total_comments} commentaire(s) • 
-                      Note moyenne : {commentStats.average_rating.toFixed(1)} ⭐
+                      Note moyenne : {commentStats.average_rating > 0 ? commentStats.average_rating.toFixed(1) : '0.0'} ⭐
                     </p>
                   </div>
                   
-                  {comments.map(comment => (
-                    <div key={comment.id} className="comment-card">
-                      <div className="comment-header">
-                        <div className="comment-author">
-                          <strong>{comment.author_name}</strong>
-                          <div className="comment-rating">
-                            {renderStars(comment.rating)}
+                  {comments.length === 0 ? (
+                    <div className="no-comments">
+                      <p>Aucun commentaire pour le moment.</p>
+                      {currentUser && currentUser.id !== memberProfile?.user?.id && (
+                        <p>Soyez le premier à laisser un commentaire !</p>
+                      )}
+                    </div>
+                  ) : (
+                    comments.map(comment => (
+                      <div key={comment.id} className="comment-card">
+                        <div className="comment-header">
+                          <div className="comment-author">
+                            <strong>{comment.author_name}</strong>
+                            <div className="comment-rating">
+                              {renderStars(comment.rating)}
+                            </div>
+                          </div>
+                          <div className="comment-meta">
+                            <span className="comment-date">
+                              {new Date(comment.created_at).toLocaleDateString('fr-FR')}
+                            </span>
+                            {canDeleteComment(comment) && (
+                              <button
+                                onClick={() => {
+                                  if (window.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')) {
+                                    deleteComment(comment.id);
+                                  }
+                                }}
+                                className="delete-comment-btn"
+                                title="Supprimer le commentaire"
+                              >
+                                🗑️
+                              </button>
+                            )}
                           </div>
                         </div>
-                        <div className="comment-meta">
-                          <span className="comment-date">
-                            {new Date(comment.created_at).toLocaleDateString('fr-FR')}
-                          </span>
-                          {canDeleteComment(comment) && (
-                            <button
-                              onClick={() => alert('Fonction de suppression en développement')}
-                              className="delete-comment-btn"
-                              title="Supprimer le commentaire"
-                            >
-                              🗑️
-                            </button>
-                          )}
+                        <div className="comment-content">
+                          {comment.content}
                         </div>
                       </div>
-                      <div className="comment-content">
-                        {comment.content}
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
