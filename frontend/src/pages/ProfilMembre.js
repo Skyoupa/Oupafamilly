@@ -145,8 +145,6 @@ const ProfilMembre = () => {
 
   const canDeleteComment = (comment) => {
     return currentUser && (
-      currentUser.id === comment.author_id || 
-      currentUser.id === memberProfile?.user?.id ||
       currentUser.role === 'admin' ||
       currentUser.role === 'moderator'
     );
