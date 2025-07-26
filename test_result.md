@@ -105,6 +105,18 @@
 user_problem_statement: "Je viens de mettre en place plusieurs améliorations majeures au système et j'ai besoin de les tester complètement : Système de récompenses pour tournois, Système de paris professionnel, Dashboard Admin Économie (nouveaux endpoints), Marketplace avec customs. Tests prioritaires : Vérifier que les nouveaux endpoints admin/economy sont accessibles, Confirmer présence des articles customs dans marketplace, Tester création automatique de marchés de paris pour tournois, Vérifier que le système de récompenses tournoi fonctionne."
 
 backend:
+  - task: "Nettoyage des tutoriels CS2"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎉 NETTOYAGE TUTORIELS CS2 VALIDÉ À 100% - Tests complets réussis sur tous les endpoints : ✅ GET /api/content/tutorials retourne exactement 12 tutoriels CS2 (objectif atteint) ✅ Distribution par difficulté parfaite : 2 débutant (sort_order=1), 5 intermédiaire (sort_order=2), 5 expert (sort_order=3) ✅ GET /api/content/tutorials?game=cs2 confirme filtrage CS2 (12 tutoriels) ✅ GET /api/content/tutorials?level=beginner/intermediate/expert valide classification par difficulté ✅ GET /api/content/tutorials/by-game/lol retourne 0 tutoriels (suppression confirmée) ✅ GET /api/content/tutorials/by-game/wow retourne 0 tutoriels (suppression confirmée) ✅ GET /api/content/tutorials/by-game/sc2 retourne 0 tutoriels (suppression confirmée) ✅ GET /api/content/tutorials/by-game/minecraft retourne 0 tutoriels (suppression confirmée) ✅ GET /api/content/tutorials/by-game/cs2 fonctionne parfaitement (12 tutoriels, 3 niveaux) ✅ Tous les tutoriels sont published et accessibles ✅ Tri correct par sort_order respecté ✅ 48 tutoriels des autres jeux supprimés avec succès. Nettoyage CS2 100% réussi selon spécifications."
+
   - task: "Système de récompenses pour tournois"
     implemented: true
     working: true
