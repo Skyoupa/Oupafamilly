@@ -190,6 +190,8 @@ class Tutorial(BaseModel):
     views: int = 0
     likes: int = 0
     is_published: bool = False
+    sort_order: Optional[int] = None  # 1=beginner, 2=intermediate, 3=expert
+    image: Optional[str] = None  # Image URL for tutorial
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
