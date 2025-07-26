@@ -15,6 +15,7 @@ router = APIRouter(prefix="/community", tags=["Community"])
 from database import db
 
 @router.get("/stats")
+@cached(ttl=600, key_prefix="community_stats")  # Cache for 10 minutes
 async def get_community_stats():
     """Get overall community statistics."""
     try:
