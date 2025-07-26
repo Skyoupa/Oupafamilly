@@ -9,7 +9,8 @@ from models import User
 from auth import get_current_active_user, is_admin
 from achievements import (
     trigger_achievement_check, get_user_badges, get_all_badges,
-    get_badge_progress, achievement_engine, Badge, BadgeCategory, BadgeRarity
+    get_badge_progress, achievement_engine, Badge, BadgeCategory, BadgeRarity,
+    QuestEngine
 )
 from monitoring import log_user_action, app_logger
 from datetime import datetime
