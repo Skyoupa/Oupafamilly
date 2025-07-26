@@ -211,26 +211,32 @@ const Communaute = () => {
   const fetchTournamentData = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const headers = { 'Authorization': `Bearer ${token}` };
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       
-      // Fetch tournaments from correct API
+      // Fetch tournaments from correct API (public endpoint)
+      console.log('Fetching tournaments...');
       const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments?limit=20`, { headers });
+      console.log('Tournaments response status:', tournamentsResponse.status);
+      
       if (tournamentsResponse.ok) {
         const tournamentsData = await tournamentsResponse.json();
+        console.log('Tournaments data:', tournamentsData);
         setTournaments(tournamentsData);
       } else {
         console.error('Erreur lors de la récupération des tournois:', tournamentsResponse.status);
       }
 
-      // Fetch upcoming matches
-      const upcomingResponse = await fetch(`${API_BASE_URL}/match-scheduling/upcoming-matches?days=7&limit=10`, { headers });
-      if (upcomingResponse.ok) {
-        const upcomingData = await upcomingResponse.json();
-        setUpcomingMatches(upcomingData);
-      } else {
-        console.error('Erreur lors de la récupération des matchs à venir:', upcomingResponse.status);
+      // Fetch upcoming matches (requires auth)
+      if (token) {
+        const upcomingResponse = await fetch(`${API_BASE_URL}/match-scheduling/upcoming-matches?days=7&limit=10`, { 
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (upcomingResponse.ok) {
+          const upcomingData = await upcomingResponse.json();
+          setUpcomingMatches(upcomingData);
+        } else {
+          console.error('Erreur lors de la récupération des matchs à venir:', upcomingResponse.status);
+        }
       }
     } catch (error) {
       console.error('Erreur lors du chargement des tournois:', error);
