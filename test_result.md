@@ -261,13 +261,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Système de planification des matchs de tournoi"
-    - "Interface de planification des matchs de tournoi"
+    - "Nettoyage des tutoriels CS2"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: "🎉 NETTOYAGE TUTORIELS CS2 VALIDÉ À 100% - Vérification complète réussie selon demande utilisateur : ✅ OBJECTIF ATTEINT : Exactement 12 tutoriels CS2 conservés (48 supprimés des autres jeux) ✅ CLASSIFICATION PARFAITE : 2 débutant (sort_order=1), 5 intermédiaire (sort_order=2), 5 expert (sort_order=3) ✅ SUPPRESSION CONFIRMÉE : LoL, WoW, SC2, Minecraft = 0 tutoriels chacun ✅ ENDPOINTS FONCTIONNELS : Tous les 9 endpoints testés avec succès (filtrage par jeu, niveau, tri par difficulté) ✅ ACCESSIBILITÉ : Tous les tutoriels published et accessibles ✅ API INTÉGRITÉ : Structure JSON correcte, sort_order respecté. Tests backend 14/14 réussis (100%). Le nettoyage des tutoriels CS2 s'est parfaitement déroulé selon les spécifications demandées."
   - agent: "main"
     message: "🎉 SUCCÈS COMPLET - Problèmes de profils membres entièrement résolus ! ✅ 17 membres s'affichent correctement dans /communaute ✅ Clics sur profils fonctionnent sans erreur ✅ Navigation vers /profil/{memberId} réussie ✅ Données réelles chargées depuis l'API ✅ ProfilMembre.js entièrement intégré avec backend (profiles + comments) ✅ Routes App.js corrigées pour éviter conflits. Tests screenshot confirmés : membres visibles + profil navigation opérationnelle."
   - agent: "main"
