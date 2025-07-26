@@ -95,6 +95,7 @@ class AchievementEngine:
         self.badges_registry = {
             # 🎮 GAMING BADGES
             "first_tournament_win": Badge(
+                id="first_tournament_win",
                 name="Première Victoire",
                 description="Remporte ton premier tournoi !",
                 category=BadgeCategory.GAMING,
@@ -106,6 +107,7 @@ class AchievementEngine:
             ),
             
             "cs2_specialist": Badge(
+                id="cs2_specialist",
                 name="Spécialiste CS2",
                 description="Participe à 5 tournois CS2",
                 category=BadgeCategory.GAMING,
