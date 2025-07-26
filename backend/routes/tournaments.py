@@ -171,6 +171,89 @@ async def get_tournament(tournament_id: str):
             detail="Error fetching tournament"
         )
 
+@router.get("/{tournament_id}/participants-info")
+async def get_tournament_participants_info(tournament_id: str):
+    """Get detailed information about tournament participants."""
+    try:
+        tournament_data = await db.tournaments.find_one({"id": tournament_id})
+        if not tournament_data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Tournament not found"
+            )
+        
+        participants_info = []
+        participants = tournament_data.get("participants", [])
+        
+        # Get detailed info for each participant
+        for participant_id in participants:
+            # Try to get user info first
+            user_data = await db.users.find_one({"id": participant_id})
+            if user_data:
+                # Get user profile for additional info
+                profile_data = await db.user_profiles.find_one({"user_id": participant_id})
+                
+                participant_info = {
+                    "id": participant_id,
+                    "type": "user",
+                    "name": user_data.get("username", "Utilisateur"),
+                    "display_name": profile_data.get("display_name") if profile_data else user_data.get("username", "Utilisateur"),
+                    "level": profile_data.get("level", 1) if profile_data else 1,
+                    "game_info": profile_data.get("gaming_info", {}) if profile_data else {},
+                    "avatar": profile_data.get("avatar_url") if profile_data else None,
+                    "registered_at": datetime.utcnow()  # Could be tracked separately
+                }
+                participants_info.append(participant_info)
+            else:
+                # Try to get team info
+                team_data = await db.teams.find_one({"id": participant_id})
+                if team_data:
+                    team_members = []
+                    for member_id in team_data.get("members", []):
+                        member_data = await db.users.find_one({"id": member_id})
+                        if member_data:
+                            team_members.append({
+                                "id": member_id,
+                                "username": member_data.get("username", "Membre"),
+                                "role": "member"  # Could be expanded with roles
+                            })
+                    
+                    participant_info = {
+                        "id": participant_id,
+                        "type": "team",
+                        "name": team_data.get("name", "Équipe"),
+                        "members": team_members,
+                        "members_count": len(team_members),
+                        "registered_at": team_data.get("created_at", datetime.utcnow())
+                    }
+                    participants_info.append(participant_info)
+        
+        # Calculate statistics
+        stats = {
+            "total_participants": len(participants_info),
+            "user_participants": len([p for p in participants_info if p["type"] == "user"]),
+            "team_participants": len([p for p in participants_info if p["type"] == "team"]),
+            "max_participants": tournament_data.get("max_participants", 16),
+            "spots_remaining": max(0, tournament_data.get("max_participants", 16) - len(participants_info)),
+            "registration_full": len(participants_info) >= tournament_data.get("max_participants", 16)
+        }
+        
+        return {
+            "tournament_id": tournament_id,
+            "participants": participants_info,
+            "stats": stats,
+            "registration_open": tournament_data.get("status") in ["registration", "open", "registration_open"]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting participants info for tournament {tournament_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error fetching tournament participants information"
+        )
+
 @router.post("/{tournament_id}/register")
 async def register_for_tournament(
     tournament_id: str,
