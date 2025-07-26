@@ -414,7 +414,7 @@ Le **positionnement** n'est pas une position - c'est une **philosophie tactique*
 
     # Update the tutorial with professional content
     update_result = collection.update_one(
-        {'title': 'Positionnement et angles sur cartes'},
+        {'title': 'Positionnement et angles avancés'},
         {
             '$set': {
                 'title': 'Positionnement et angles sur cartes',
