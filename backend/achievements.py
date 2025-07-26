@@ -712,6 +712,91 @@ class AchievementEngine:
                 xp_reward=250,
                 coins_reward=150
             ),
+            
+            # 🌟 BADGES MYTHIQUES EXCLUSIFS ÉLITE
+            "oupafamilly_legend": Badge(
+                name="Légende d'Oupafamilly",
+                description="Atteins le statut ultime avec 100+ badges",
+                category=BadgeCategory.ACHIEVEMENT,
+                rarity=BadgeRarity.MYTHIC,
+                icon="🌟",
+                criteria={"unique_badges": 100},
+                xp_reward=2000,
+                coins_reward=1000,
+                hidden=True
+            ),
+            
+            "perfect_player": Badge(
+                name="Joueur Parfait",
+                description="100% winrate sur 20 matchs + 90%+ précision",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.MYTHIC,
+                icon="💎",
+                criteria={"perfect_streak": 20, "min_accuracy": 90},
+                xp_reward=1500,
+                coins_reward=900,
+                hidden=True
+            ),
+            
+            "community_god": Badge(
+                name="Dieu de la Communauté",
+                description="Mentor 100+ joueurs + organise 25+ événements",
+                category=BadgeCategory.SOCIAL,
+                rarity=BadgeRarity.MYTHIC,
+                icon="👑",
+                criteria={"players_mentored": 100, "events_organized": 25},
+                xp_reward=1800,
+                coins_reward=1200,
+                hidden=True
+            ),
+            
+            "tournament_emperor": Badge(
+                name="Empereur des Tournois",
+                description="Gagne 50 tournois différents",
+                category=BadgeCategory.COMPETITIVE,
+                rarity=BadgeRarity.MYTHIC,
+                icon="🏛️",
+                criteria={"tournament_wins": 50},
+                xp_reward=2500,
+                coins_reward=1500,
+                hidden=True
+            ),
+            
+            "economic_mastermind": Badge(
+                name="Génie Économique",
+                description="Accumule 100,000 coins + 1000 transactions",
+                category=BadgeCategory.ECONOMIC,
+                rarity=BadgeRarity.MYTHIC,
+                icon="💰",
+                criteria={"total_coins_earned": 100000, "transactions_made": 1000},
+                xp_reward=2200,
+                coins_reward=1300,
+                hidden=True
+            ),
+            
+            "immortal_gaming": Badge(
+                name="Gaming Immortel",
+                description="500+ Ace + 1000+ Clutch + 50+ Flawless",
+                category=BadgeCategory.GAMING,
+                rarity=BadgeRarity.MYTHIC,
+                icon="⚡",
+                criteria={"total_aces": 500, "clutch_wins": 1000, "flawless_matches": 50},
+                xp_reward=3000,
+                coins_reward=2000,
+                hidden=True
+            ),
+            
+            "founder": Badge(
+                name="Fondateur",
+                description="L'un des 10 premiers membres d'Oupafamilly",
+                category=BadgeCategory.SPECIAL,
+                rarity=BadgeRarity.MYTHIC,
+                icon="🏛️",
+                criteria={"user_rank": 10},
+                xp_reward=5000,
+                coins_reward=3000,
+                hidden=True
+            ),
         }
     
     async def check_and_award_badges(self, user_id: str, trigger_event: str = None, event_data: Dict[str, Any] = None):
