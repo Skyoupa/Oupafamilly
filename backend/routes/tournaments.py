@@ -175,6 +175,7 @@ async def get_tournament(tournament_id: str):
         )
 
 @router.get("/{tournament_id}/participants-info")
+@cached(ttl=180, key_prefix="tournament_participants")  # Cache for 3 minutes
 async def get_tournament_participants_info(tournament_id: str):
     """Get detailed information about tournament participants."""
     try:
