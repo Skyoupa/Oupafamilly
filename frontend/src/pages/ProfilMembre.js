@@ -152,7 +152,7 @@ const ProfilMembre = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch(`${API_BASE_URL}/comments/user/${commentId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/comments/user/${commentId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
