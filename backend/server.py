@@ -55,7 +55,8 @@ async def root():
             "comments": "/api/comments",
             "chat": "/api/chat",
             "activity": "/api/activity",
-            "betting": "/api/betting"
+            "betting": "/api/betting",
+            "admin_economy": "/api/admin/economy"
         }
     }
 
