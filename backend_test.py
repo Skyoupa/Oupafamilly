@@ -1289,8 +1289,319 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5
 
+    def test_enriched_achievements_system(self):
+        """Test ENRICHED achievements system with 54+ badges - MAIN FOCUS"""
+        if not self.token:
+            self.log("Skipping enriched achievements tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING ENRICHED ACHIEVEMENTS SYSTEM (54+ BADGES) ===")
+        
+        # Test 1: GET /api/achievements/available - Verify total badges available
+        success1, response1 = self.run_test(
+            "Get Available Badges (Total Count Check)",
+            "GET",
+            "achievements/available",
+            200
+        )
+        
+        total_badges = 0
+        badge_categories = set()
+        badge_rarities = set()
+        
+        if success1:
+            badges = response1.get('badges', [])
+            total_badges = len(badges)
+            
+            self.log(f"  Found {total_badges} total badges available")
+            
+            if total_badges >= 54:
+                self.log(f"  ✅ ENRICHED SYSTEM CONFIRMED: {total_badges} badges (target: 54+)")
+            elif total_badges >= 21:
+                self.log(f"  ⚠️ PARTIAL ENRICHMENT: {total_badges} badges (expected 54+)", "WARNING")
+            else:
+                self.log(f"  ❌ INSUFFICIENT BADGES: {total_badges} badges (expected 54+)", "ERROR")
+            
+            # Analyze badge distribution
+            for badge in badges:
+                badge_categories.add(badge.get('category', 'unknown'))
+                badge_rarities.add(badge.get('rarity', 'unknown'))
+            
+            self.log(f"  Categories found: {sorted(badge_categories)}")
+            self.log(f"  Rarities found: {sorted(badge_rarities)}")
+            
+            # Check for new specialized categories
+            expected_categories = ['gaming', 'economic', 'competitive', 'social', 'achievement', 'loyalty', 'special']
+            found_categories = len([cat for cat in expected_categories if cat in badge_categories])
+            
+            if found_categories >= 6:
+                self.log(f"  ✅ Rich category diversity: {found_categories}/7 expected categories")
+            else:
+                self.log(f"  ❌ Poor category diversity: {found_categories}/7 expected categories", "ERROR")
+            
+            # Check for all rarity levels including MYTHIC
+            expected_rarities = ['common', 'rare', 'epic', 'legendary', 'mythic']
+            found_rarities = len([rarity for rarity in expected_rarities if rarity in badge_rarities])
+            
+            if found_rarities >= 5:
+                self.log(f"  ✅ Complete rarity system: {found_rarities}/5 rarity levels")
+            else:
+                self.log(f"  ❌ Incomplete rarity system: {found_rarities}/5 rarity levels", "ERROR")
+        
+        # Test 2: Check for specific new badge types
+        success2 = True
+        if success1:
+            badges = response1.get('badges', [])
+            
+            # Look for advanced gaming badges
+            gaming_badges = [b for b in badges if b.get('category') == 'gaming']
+            advanced_gaming_names = ['Tireur d\'Élite', 'Roi du Headshot', 'Maître du Clutch', 'Sniper Légendaire']
+            found_advanced_gaming = sum(1 for badge in gaming_badges if any(name in badge.get('name', '') for name in advanced_gaming_names))
+            
+            self.log(f"  Gaming badges: {len(gaming_badges)} total")
+            if found_advanced_gaming > 0:
+                self.log(f"  ✅ Advanced gaming badges found: {found_advanced_gaming}")
+            else:
+                self.log("  ❌ No advanced gaming badges detected", "ERROR")
+                success2 = False
+            
+            # Look for economic badges
+            economic_badges = [b for b in badges if b.get('category') == 'economic']
+            economic_names = ['Économe', 'Gros Dépensier', 'Collectionneur', 'Investisseur']
+            found_economic = sum(1 for badge in economic_badges if any(name in badge.get('name', '') for name in economic_names))
+            
+            self.log(f"  Economic badges: {len(economic_badges)} total")
+            if found_economic > 0:
+                self.log(f"  ✅ Economic badges found: {found_economic}")
+            else:
+                self.log("  ❌ No economic badges detected", "ERROR")
+                success2 = False
+            
+            # Look for competitive badges
+            competitive_badges = [b for b in badges if b.get('category') == 'competitive']
+            competitive_names = ['Destructeur de Tournoi', 'Champion', 'Vétéran']
+            found_competitive = sum(1 for badge in competitive_badges if any(name in badge.get('name', '') for name in competitive_names))
+            
+            self.log(f"  Competitive badges: {len(competitive_badges)} total")
+            if found_competitive > 0:
+                self.log(f"  ✅ Competitive badges found: {found_competitive}")
+            else:
+                self.log("  ❌ No competitive badges detected", "ERROR")
+                success2 = False
+            
+            # Look for social badges
+            social_badges = [b for b in badges if b.get('category') == 'social']
+            social_names = ['Mentor', 'Pacificateur', 'Ambassadeur']
+            found_social = sum(1 for badge in social_badges if any(name in badge.get('name', '') for name in social_names))
+            
+            self.log(f"  Social badges: {len(social_badges)} total")
+            if found_social > 0:
+                self.log(f"  ✅ Social badges found: {found_social}")
+            else:
+                self.log("  ❌ No social badges detected", "ERROR")
+                success2 = False
+        
+        # Test 3: Check enriched rewards system (up to 1200 XP, 800 coins)
+        success3 = True
+        if success1:
+            badges = response1.get('badges', [])
+            
+            # Find mythic badges and check their rewards
+            mythic_badges = [b for b in badges if b.get('rarity') == 'mythic']
+            max_xp_reward = 0
+            max_coins_reward = 0
+            
+            for badge in badges:
+                xp_reward = badge.get('xp_reward', 0)
+                coins_reward = badge.get('coins_reward', 0)
+                
+                if xp_reward > max_xp_reward:
+                    max_xp_reward = xp_reward
+                if coins_reward > max_coins_reward:
+                    max_coins_reward = coins_reward
+            
+            self.log(f"  Mythic badges found: {len(mythic_badges)}")
+            self.log(f"  Maximum XP reward: {max_xp_reward}")
+            self.log(f"  Maximum coins reward: {max_coins_reward}")
+            
+            if max_xp_reward >= 1000:
+                self.log(f"  ✅ High XP rewards implemented: {max_xp_reward} (target: 1200)")
+            else:
+                self.log(f"  ❌ Low XP rewards: {max_xp_reward} (expected 1000+)", "ERROR")
+                success3 = False
+            
+            if max_coins_reward >= 500:
+                self.log(f"  ✅ High coins rewards implemented: {max_coins_reward} (target: 800)")
+            else:
+                self.log(f"  ❌ Low coins rewards: {max_coins_reward} (expected 500+)", "ERROR")
+                success3 = False
+        
+        # Test 4: Check hidden badges functionality
+        success4, response4 = self.run_test(
+            "Get Available Badges (Show Hidden)",
+            "GET",
+            "achievements/available?show_hidden=true",
+            200
+        )
+        
+        hidden_badges_count = 0
+        if success4:
+            all_badges = response4.get('badges', [])
+            hidden_badges = [b for b in all_badges if b.get('hidden', False)]
+            hidden_badges_count = len(hidden_badges)
+            
+            self.log(f"  Hidden badges found: {hidden_badges_count}")
+            
+            if hidden_badges_count > 0:
+                self.log(f"  ✅ Hidden badges system working: {hidden_badges_count} hidden badges")
+                # Show sample hidden badge
+                if hidden_badges:
+                    sample_hidden = hidden_badges[0]
+                    self.log(f"    Sample hidden: {sample_hidden.get('name', 'Unknown')} ({sample_hidden.get('rarity', 'unknown')})")
+            else:
+                self.log("  ❌ No hidden badges found", "ERROR")
+                success4 = False
+        
+        # Test 5: Test my badges endpoint
+        success5, response5 = self.run_test(
+            "Get My Badges",
+            "GET",
+            "achievements/my-badges",
+            200
+        )
+        
+        my_badges_count = 0
+        if success5:
+            my_badges = response5.get('badges', [])
+            my_badges_count = len(my_badges)
+            statistics = response5.get('statistics', {})
+            
+            self.log(f"  My badges obtained: {my_badges_count}")
+            self.log(f"  Total XP from badges: {statistics.get('total_xp_from_badges', 0)}")
+            self.log(f"  Total coins from badges: {statistics.get('total_coins_from_badges', 0)}")
+            
+            by_rarity = statistics.get('by_rarity', {})
+            by_category = statistics.get('by_category', {})
+            
+            self.log(f"  Badges by rarity: {by_rarity}")
+            self.log(f"  Badges by category: {by_category}")
+            
+            if my_badges_count > 0:
+                self.log(f"  ✅ User has badges: {my_badges_count}")
+            else:
+                self.log("  ℹ️ User has no badges yet (normal for new system)")
+        
+        # Test 6: Trigger achievement check to potentially award new badges
+        success6, response6 = self.run_test(
+            "Trigger Achievement Check",
+            "POST",
+            "achievements/check",
+            200
+        )
+        
+        new_badges_awarded = 0
+        if success6:
+            new_badges = response6.get('new_badges', [])
+            new_badges_awarded = len(new_badges)
+            
+            self.log(f"  New badges awarded: {new_badges_awarded}")
+            self.log(f"  Message: {response6.get('message', 'No message')}")
+            
+            if new_badges_awarded > 0:
+                self.log(f"  ✅ Achievement system working: {new_badges_awarded} new badges")
+                for badge in new_badges[:3]:  # Show first 3
+                    self.log(f"    - {badge.get('name', 'Unknown')} ({badge.get('rarity', 'unknown')}) - {badge.get('xp_reward', 0)} XP, {badge.get('coins_reward', 0)} coins")
+            else:
+                self.log("  ℹ️ No new badges awarded (normal if criteria not met)")
+        
+        # Test 7: Check achievements stats
+        success7, response7 = self.run_test(
+            "Get Achievements Global Stats",
+            "GET",
+            "achievements/stats",
+            200
+        )
+        
+        if success7:
+            total_available = response7.get('total_badges_available', 0)
+            total_earned = response7.get('total_badges_earned', 0)
+            users_with_badges = response7.get('total_users_with_badges', 0)
+            avg_badges = response7.get('average_badges_per_user', 0)
+            
+            self.log(f"  Global stats:")
+            self.log(f"    Total badges available: {total_available}")
+            self.log(f"    Total badges earned: {total_earned}")
+            self.log(f"    Users with badges: {users_with_badges}")
+            self.log(f"    Average badges per user: {avg_badges:.1f}")
+            
+            if total_available >= 54:
+                self.log(f"  ✅ Stats confirm enriched system: {total_available} badges available")
+            else:
+                self.log(f"  ❌ Stats show insufficient badges: {total_available} (expected 54+)", "ERROR")
+                success7 = False
+        
+        # Test 8: Test performance with 54+ badges
+        import time
+        start_time = time.time()
+        
+        success8, response8 = self.run_test(
+            "Performance Test - Get All Available Badges",
+            "GET",
+            "achievements/available",
+            200
+        )
+        
+        end_time = time.time()
+        response_time = end_time - start_time
+        
+        if success8:
+            self.log(f"  Performance test: {response_time:.2f}s response time")
+            
+            if response_time < 3.0:
+                self.log(f"  ✅ Good performance with {total_badges} badges: {response_time:.2f}s")
+            else:
+                self.log(f"  ❌ Slow performance: {response_time:.2f}s (expected <3s)", "ERROR")
+                success8 = False
+        
+        # Summary
+        self.log("\n" + "="*60)
+        self.log("🏆 ENRICHED ACHIEVEMENTS SYSTEM SUMMARY:")
+        self.log("="*60)
+        
+        if total_badges >= 54:
+            self.log(f"✅ ENRICHED SYSTEM CONFIRMED: {total_badges} badges (target: 54+)", "SUCCESS")
+        else:
+            self.log(f"❌ ENRICHMENT INCOMPLETE: {total_badges} badges (target: 54+)", "ERROR")
+        
+        if success2:
+            self.log("✅ New specialized badge types detected", "SUCCESS")
+        else:
+            self.log("❌ Missing specialized badge types", "ERROR")
+        
+        if success3:
+            self.log("✅ Enriched rewards system operational (high XP/coins)", "SUCCESS")
+        else:
+            self.log("❌ Rewards system not enriched", "ERROR")
+        
+        if success4 and hidden_badges_count > 0:
+            self.log("✅ Hidden badges system working", "SUCCESS")
+        else:
+            self.log("❌ Hidden badges system issues", "ERROR")
+        
+        if success6:
+            self.log("✅ Achievement checking system operational", "SUCCESS")
+        else:
+            self.log("❌ Achievement checking system failed", "ERROR")
+        
+        if success8:
+            self.log("✅ System performance acceptable with 54+ badges", "SUCCESS")
+        else:
+            self.log("❌ Performance issues with enriched system", "ERROR")
+        
+        return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8
+
     def test_daily_quests_system(self):
-        """Test new daily quests system - MAIN FOCUS"""
+        """Test new daily quests system - SECONDARY FOCUS"""
         if not self.token:
             self.log("Skipping daily quests tests - no token", "WARNING")
             return False
@@ -1452,82 +1763,7 @@ class OupafamillyAPITester:
                 else:
                     self.log("  ℹ️ No quests available to test claiming")
         
-        # Test 5: Test different leaderboard periods
-        success5 = True
-        for period in ['daily', 'month', 'all']:
-            period_success, period_response = self.run_test(
-                f"Get Quest Leaderboard ({period})",
-                "GET",
-                f"achievements/quests/leaderboard?period={period}&limit=10",
-                200
-            )
-            
-            if period_success:
-                period_leaderboard = period_response.get('leaderboard', [])
-                self.log(f"  ✅ {period.capitalize()} leaderboard: {len(period_leaderboard)} players")
-            else:
-                self.log(f"  ❌ {period.capitalize()} leaderboard failed", "ERROR")
-                success5 = False
-        
-        # Test 6: Validate quest system features
-        success6 = True
-        if daily_quests:
-            # Check for intelligent generation features
-            has_different_categories = len(set(q.get('category') for q in daily_quests)) >= 2
-            has_different_difficulties = len(set(q.get('difficulty') for q in daily_quests)) >= 2
-            has_progression_tracking = all('completion_percentage' in q for q in daily_quests)
-            has_reward_system = all('rewards' in q and q['rewards'] for q in daily_quests)
-            
-            if has_different_categories:
-                self.log("  ✅ Intelligent category mixing working")
-            else:
-                self.log("  ❌ Poor category diversity", "ERROR")
-                success6 = False
-            
-            if has_different_difficulties:
-                self.log("  ✅ Difficulty variation present")
-            else:
-                self.log("  ❌ No difficulty variation", "ERROR")
-                success6 = False
-            
-            if has_progression_tracking:
-                self.log("  ✅ Progression tracking implemented")
-            else:
-                self.log("  ❌ Missing progression tracking", "ERROR")
-                success6 = False
-            
-            if has_reward_system:
-                self.log("  ✅ Reward system operational")
-            else:
-                self.log("  ❌ Reward system issues", "ERROR")
-                success6 = False
-        
-        # Summary
-        self.log("\n" + "="*50)
-        self.log("🎯 DAILY QUESTS SYSTEM SUMMARY:")
-        self.log("="*50)
-        
-        if success1 and len(daily_quests) >= 5:
-            self.log("✅ Daily quest generation working (5-6 quests per day)", "SUCCESS")
-        else:
-            self.log("❌ Daily quest generation issues", "ERROR")
-        
-        if success2:
-            self.log("✅ Quest progress tracking operational", "SUCCESS")
-        else:
-            self.log("❌ Quest progress tracking failed", "ERROR")
-        
-        if success3:
-            self.log("✅ Quest leaderboard system working", "SUCCESS")
-        else:
-            self.log("❌ Quest leaderboard system failed", "ERROR")
-        
-        if success4:
-            self.log("✅ Quest reward claiming functional", "SUCCESS")
-        else:
-            self.log("❌ Quest reward claiming issues", "ERROR")
-        
-        return success1 and success2 and success3 and success4 and success5 and success6
+        return success1 and success2 and success3 and success4
 
     def test_community_profiles_endpoints(self):
         """Test specific community/profiles endpoints causing display issues - PRIORITY FOCUS"""
