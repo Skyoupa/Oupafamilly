@@ -258,13 +258,13 @@
 
 .team-name {
   font-size: 1.1rem;
-  font-weight: 700;
-  color: #1a202c;
+  font-weight: 800;
+  color: #000000;
 }
 
 .team-game {
-  color: #4a5568;
-  font-weight: 500;
+  color: #1a1a1a;
+  font-weight: 700;
   font-style: italic;
 }
 
