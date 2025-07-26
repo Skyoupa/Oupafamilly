@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from datetime import timedelta, datetime
 from models import (
     User, UserCreate, UserLogin, UserResponse, UserProfile, 
@@ -13,6 +15,9 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Create limiter instance
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
