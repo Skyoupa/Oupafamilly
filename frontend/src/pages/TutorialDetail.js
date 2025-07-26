@@ -470,17 +470,6 @@ const TutorialDetail = () => {
           {/* Sidebar - Fonctionnalités avancées */}
           <div className="space-y-6">
             
-            {/* SYSTÈME DE GAMIFICATION IA - INNOVATION RÉVOLUTIONNAIRE */}
-            <GamificationPanel 
-              tutorial={tutorial}
-              progress={progress}
-              onTutorialComplete={(achievements) => {
-                console.log('Nouveaux achievements:', achievements);
-                // Mettre à jour la progression à 100% quand complété
-                updateProgress(100);
-              }}
-            />
-            
             {/* Objectifs avec checkboxes */}
             {tutorial.objectives && tutorial.objectives.length > 0 && (
               <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
