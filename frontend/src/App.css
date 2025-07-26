@@ -6880,6 +6880,29 @@ body {
 
 /* Amélioration des badges de difficulté */
 
+/* Hide Made with Emergent badge */
+[data-testid*="emergent"], 
+[class*="emergent"], 
+[id*="emergent"],
+div:has-text("Made with Emergent"),
+div:has-text("Emergent"),
+*[title*="Made with Emergent"],
+*[alt*="Made with Emergent"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* More specific selectors for bottom-right badges */
+div[style*="position: fixed"][style*="bottom"][style*="right"],
+div[style*="position: absolute"][style*="bottom"][style*="right"],
+.emergent-badge,
+.emergent-watermark {
+  display: none !important;
+}
+
 /* Marketplace improvements */
 .no-items-message {
   text-align: center;
