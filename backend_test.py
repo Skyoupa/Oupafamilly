@@ -1860,6 +1860,233 @@ class OupafamillyAPITester:
         
         return success1
 
+    def test_match_scheduling_system(self):
+        """Test new match scheduling system - MAIN FOCUS"""
+        if not self.token:
+            self.log("Skipping match scheduling tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING NEW MATCH SCHEDULING SYSTEM ===")
+        
+        # First, get available tournaments and matches for testing
+        tournaments_success, tournaments_response = self.run_test(
+            "Get Tournaments for Match Scheduling",
+            "GET",
+            "tournaments/?limit=10",
+            200
+        )
+        
+        tournament_id = None
+        match_id = None
+        
+        if tournaments_success and tournaments_response:
+            tournaments = tournaments_response if isinstance(tournaments_response, list) else []
+            if tournaments:
+                tournament_id = tournaments[0].get("id")
+                tournament_name = tournaments[0].get("title", "Unknown Tournament")
+                self.log(f"  Using tournament: {tournament_name} (ID: {tournament_id})")
+                
+                # Get matches for this tournament
+                matches_success, matches_response = self.run_test(
+                    "Get Matches for Tournament",
+                    "GET",
+                    f"matches/?tournament_id={tournament_id}",
+                    200
+                )
+                
+                if matches_success and matches_response:
+                    matches = matches_response if isinstance(matches_response, list) else []
+                    if matches:
+                        match_id = matches[0].get("id")
+                        self.log(f"  Using match ID: {match_id}")
+        
+        if not tournament_id:
+            self.log("  ❌ No tournaments found for testing match scheduling", "ERROR")
+            return False
+        
+        # Test 1: GET /api/match-scheduling/tournament/{tournament_id}/matches
+        success1, response1 = self.run_test(
+            "Get Tournament Matches with Scheduling",
+            "GET",
+            f"match-scheduling/tournament/{tournament_id}/matches",
+            200
+        )
+        
+        if success1:
+            self.log(f"  ✅ Tournament schedule retrieved successfully")
+            self.log(f"    Tournament: {response1.get('tournament_name', 'Unknown')}")
+            self.log(f"    Total matches: {response1.get('total_matches', 0)}")
+            self.log(f"    Scheduled matches: {response1.get('scheduled_matches', 0)}")
+            self.log(f"    Pending matches: {response1.get('pending_matches', 0)}")
+            
+            matches = response1.get('matches', [])
+            if matches:
+                first_match = matches[0]
+                self.log(f"    Sample match: Round {first_match.get('round_number', 0)}, Match {first_match.get('match_number', 0)}")
+                self.log(f"      Players: {first_match.get('player1_name', 'TBD')} vs {first_match.get('player2_name', 'TBD')}")
+                self.log(f"      Status: {first_match.get('status', 'unknown')}")
+                self.log(f"      Scheduled: {first_match.get('scheduled_time', 'Not scheduled')}")
+                
+                # Use this match for further testing if no specific match_id was found
+                if not match_id:
+                    match_id = first_match.get('id')
+        
+        # Test 2: POST /api/match-scheduling/schedule-match (admin/organizer only)
+        success2 = True
+        if match_id:
+            from datetime import datetime, timedelta
+            # Schedule match for 2 hours from now
+            future_time = datetime.utcnow() + timedelta(hours=2)
+            
+            success2, response2 = self.run_test(
+                "Schedule Match",
+                "POST",
+                "match-scheduling/schedule-match",
+                200,
+                data={
+                    "match_id": match_id,
+                    "scheduled_time": future_time.isoformat() + "Z",
+                    "notes": "Test scheduling from API testing"
+                }
+            )
+            
+            if success2:
+                self.log(f"  ✅ Match scheduled successfully")
+                self.log(f"    Match ID: {response2.get('id')}")
+                self.log(f"    Scheduled time: {response2.get('scheduled_time')}")
+                self.log(f"    Players: {response2.get('player1_name', 'TBD')} vs {response2.get('player2_name', 'TBD')}")
+                self.log(f"    Notes: {response2.get('notes', 'None')}")
+            else:
+                self.log(f"  ❌ Failed to schedule match: {response2}", "ERROR")
+        
+        # Test 3: PUT /api/match-scheduling/match/{match_id}/schedule (update scheduling)
+        success3 = True
+        if match_id and success2:
+            # Update the scheduled time to 3 hours from now
+            new_future_time = datetime.utcnow() + timedelta(hours=3)
+            
+            success3, response3 = self.run_test(
+                "Update Match Schedule",
+                "PUT",
+                f"match-scheduling/match/{match_id}/schedule",
+                200,
+                data={
+                    "scheduled_time": new_future_time.isoformat() + "Z",
+                    "notes": "Updated scheduling from API testing"
+                }
+            )
+            
+            if success3:
+                self.log(f"  ✅ Match schedule updated successfully")
+                self.log(f"    New scheduled time: {response3.get('scheduled_time')}")
+                self.log(f"    Updated notes: {response3.get('notes', 'None')}")
+            else:
+                self.log(f"  ❌ Failed to update match schedule: {response3}", "ERROR")
+        
+        # Test 4: GET /api/match-scheduling/upcoming-matches
+        success4, response4 = self.run_test(
+            "Get Upcoming Matches",
+            "GET",
+            "match-scheduling/upcoming-matches?days=7&limit=20",
+            200
+        )
+        
+        if success4:
+            upcoming_matches = response4 if isinstance(response4, list) else []
+            self.log(f"  ✅ Found {len(upcoming_matches)} upcoming matches")
+            
+            if upcoming_matches:
+                for i, match in enumerate(upcoming_matches[:3]):  # Show first 3
+                    self.log(f"    Match {i+1}: {match.get('player1_name', 'TBD')} vs {match.get('player2_name', 'TBD')}")
+                    self.log(f"      Tournament: {match.get('tournament_name', 'Unknown')}")
+                    self.log(f"      Scheduled: {match.get('scheduled_time', 'Not scheduled')}")
+        
+        # Test 5: GET /api/match-scheduling/schedule-conflicts/{tournament_id}
+        success5, response5 = self.run_test(
+            "Check Schedule Conflicts",
+            "GET",
+            f"match-scheduling/schedule-conflicts/{tournament_id}",
+            200
+        )
+        
+        if success5:
+            self.log(f"  ✅ Schedule conflicts check completed")
+            self.log(f"    Tournament ID: {response5.get('tournament_id')}")
+            self.log(f"    Total scheduled matches: {response5.get('total_scheduled_matches', 0)}")
+            self.log(f"    Has conflicts: {response5.get('has_conflicts', False)}")
+            
+            conflicts = response5.get('conflicts', [])
+            if conflicts:
+                self.log(f"    Found {len(conflicts)} conflicts:")
+                for conflict in conflicts[:2]:  # Show first 2 conflicts
+                    self.log(f"      Conflict: {conflict.get('time_diff_hours', 0)} hours apart")
+                    self.log(f"        Match 1: {conflict.get('match1_id')}")
+                    self.log(f"        Match 2: {conflict.get('match2_id')}")
+            else:
+                self.log("    No scheduling conflicts detected")
+        
+        # Test 6: DELETE /api/match-scheduling/match/{match_id}/schedule (remove scheduling)
+        success6 = True
+        if match_id and success2:
+            success6, response6 = self.run_test(
+                "Remove Match Schedule",
+                "DELETE",
+                f"match-scheduling/match/{match_id}/schedule",
+                200
+            )
+            
+            if success6:
+                self.log(f"  ✅ Match schedule removed successfully")
+                self.log(f"    Message: {response6.get('message', 'Success')}")
+            else:
+                self.log(f"  ❌ Failed to remove match schedule: {response6}", "ERROR")
+        
+        # Test 7: Test validation (try to schedule in the past)
+        success7 = True
+        if match_id:
+            past_time = datetime.utcnow() - timedelta(hours=1)  # 1 hour ago
+            
+            success7_test, response7 = self.run_test(
+                "Test Past Time Validation",
+                "POST",
+                "match-scheduling/schedule-match",
+                400,  # Should fail with 400 Bad Request
+                data={
+                    "match_id": match_id,
+                    "scheduled_time": past_time.isoformat() + "Z",
+                    "notes": "This should fail - past time"
+                }
+            )
+            
+            if not success7_test:  # We expect this to fail
+                self.log(f"  ✅ Past time validation working correctly (rejected)")
+                success7 = True
+            else:
+                self.log(f"  ❌ Past time validation failed - should have been rejected", "ERROR")
+                success7 = False
+        
+        # Test 8: Test with non-existent match ID
+        success8_test, response8 = self.run_test(
+            "Test Non-existent Match ID",
+            "POST",
+            "match-scheduling/schedule-match",
+            404,  # Should fail with 404 Not Found
+            data={
+                "match_id": "non-existent-match-id",
+                "scheduled_time": (datetime.utcnow() + timedelta(hours=1)).isoformat() + "Z",
+                "notes": "This should fail - non-existent match"
+            }
+        )
+        
+        if not success8_test:  # We expect this to fail
+            self.log(f"  ✅ Non-existent match validation working correctly (rejected)")
+            success8 = True
+        else:
+            self.log(f"  ❌ Non-existent match validation failed - should have been rejected", "ERROR")
+            success8 = False
+        
+        return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8
+
     def run_all_tests(self):
         """Run all API tests"""
         self.log("🚀 Starting Oupafamilly API Tests - NEW FEATURES FOCUS")
