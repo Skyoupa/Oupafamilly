@@ -58,8 +58,44 @@ async def get_tournaments(
         if game:
             filter_dict["game"] = game
         
-        tournaments = await db.tournaments.find(filter_dict).skip(skip).limit(limit).to_list(limit)
-        return [Tournament(**tournament) for tournament in tournaments]
+        tournaments_data = await db.tournaments.find(filter_dict).skip(skip).limit(limit).to_list(limit)
+        
+        # Convert database format to model format
+        tournaments = []
+        for tournament_data in tournaments_data:
+            try:
+                # Map database fields to model fields
+                mapped_tournament = {
+                    "id": tournament_data.get("id", str(uuid.uuid4())),
+                    "title": tournament_data.get("title", ""),
+                    "description": tournament_data.get("description", ""),
+                    "game": tournament_data.get("game", "cs2"),
+                    "tournament_type": tournament_data.get("type", "elimination"),
+                    "max_participants": tournament_data.get("max_participants", 16),
+                    "entry_fee": tournament_data.get("entry_fee", 0.0),
+                    "prize_pool": tournament_data.get("prize_pool", 0.0),
+                    "status": map_tournament_status(tournament_data.get("status", "draft")),
+                    "registration_start": tournament_data.get("registration_opens", datetime.utcnow()),
+                    "registration_end": tournament_data.get("registration_closes", datetime.utcnow()),
+                    "tournament_start": tournament_data.get("tournament_starts", datetime.utcnow()),
+                    "tournament_end": tournament_data.get("tournament_ends"),
+                    "rules": tournament_data.get("rules", "Standard tournament rules"),
+                    "organizer_id": tournament_data.get("organizer_id", "system"),
+                    "participants": tournament_data.get("participants", []),
+                    "matches": tournament_data.get("matches", []),
+                    "winner_id": tournament_data.get("winner_id"),
+                    "created_at": tournament_data.get("created_at", datetime.utcnow()),
+                    "updated_at": tournament_data.get("updated_at", datetime.utcnow())
+                }
+                
+                tournament = Tournament(**mapped_tournament)
+                tournaments.append(tournament)
+                
+            except Exception as e:
+                logger.warning(f"Skipping invalid tournament data: {str(e)}")
+                continue
+        
+        return tournaments
         
     except Exception as e:
         logger.error(f"Error getting tournaments: {str(e)}")
@@ -67,6 +103,17 @@ async def get_tournaments(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error fetching tournaments"
         )
+
+def map_tournament_status(db_status: str) -> TournamentStatus:
+    """Map database status values to model enum values."""
+    status_mapping = {
+        "registration_open": TournamentStatus.OPEN,
+        "ongoing": TournamentStatus.IN_PROGRESS,
+        "completed": TournamentStatus.COMPLETED,
+        "cancelled": TournamentStatus.CANCELLED,
+        "draft": TournamentStatus.DRAFT
+    }
+    return status_mapping.get(db_status, TournamentStatus.DRAFT)
 
 @router.get("/{tournament_id}", response_model=Tournament)
 async def get_tournament(tournament_id: str):
