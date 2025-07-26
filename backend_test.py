@@ -2485,6 +2485,217 @@ class OupafamillyAPITester:
         
         return cleanup_success
 
+    def test_achievements_system(self):
+        """Test achievements/badges system endpoints - MAIN FOCUS FOR CURRENT TESTING"""
+        if not self.token:
+            self.log("Skipping achievements tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING ACHIEVEMENTS/BADGES SYSTEM ===")
+        
+        # Test 1: Get my badges (user's obtained badges)
+        success1, response1 = self.run_test(
+            "Get My Badges",
+            "GET",
+            "achievements/my-badges",
+            200
+        )
+        
+        my_badges = []
+        if success1:
+            my_badges = response1.get("badges", []) if isinstance(response1, dict) else []
+            self.log(f"  User has {len(my_badges)} badges obtained")
+            if my_badges:
+                for badge in my_badges[:3]:  # Show first 3 badges
+                    self.log(f"    Badge: {badge.get('name')} ({badge.get('rarity')}) - {badge.get('description')}")
+        
+        # Test 2: Get available badges (all badges with filters)
+        success2, response2 = self.run_test(
+            "Get Available Badges",
+            "GET",
+            "achievements/available",
+            200
+        )
+        
+        available_badges = []
+        if success2:
+            available_badges = response2.get("badges", []) if isinstance(response2, dict) else []
+            total_available = response2.get("total", 0) if isinstance(response2, dict) else 0
+            self.log(f"  Found {total_available} available badges")
+            
+            # Count by rarity
+            rarity_count = {}
+            category_count = {}
+            for badge in available_badges:
+                rarity = badge.get("rarity", "unknown")
+                category = badge.get("category", "unknown")
+                rarity_count[rarity] = rarity_count.get(rarity, 0) + 1
+                category_count[category] = category_count.get(category, 0) + 1
+            
+            self.log(f"    By rarity: {rarity_count}")
+            self.log(f"    By category: {category_count}")
+            
+            if total_available >= 20:
+                self.log("  ✅ Expected number of badges available (20+)")
+            else:
+                self.log(f"  ❌ Not enough badges available: {total_available} (expected 20+)", "ERROR")
+        
+        # Test 3: Test filtering by category
+        success3, response3 = self.run_test(
+            "Get Gaming Category Badges",
+            "GET",
+            "achievements/available?category=gaming",
+            200
+        )
+        
+        if success3:
+            gaming_badges = response3.get("badges", []) if isinstance(response3, dict) else []
+            self.log(f"  Gaming category has {len(gaming_badges)} badges")
+        
+        # Test 4: Test filtering by rarity
+        success4, response4 = self.run_test(
+            "Get Rare Badges",
+            "GET",
+            "achievements/available?rarity=rare",
+            200
+        )
+        
+        if success4:
+            rare_badges = response4.get("badges", []) if isinstance(response4, dict) else []
+            self.log(f"  Rare badges: {len(rare_badges)} found")
+        
+        # Test 5: Get badge progress (test with first available badge)
+        success5 = True
+        if available_badges:
+            first_badge_id = available_badges[0].get("id")
+            if first_badge_id:
+                success5, response5 = self.run_test(
+                    f"Get Badge Progress ({available_badges[0].get('name')})",
+                    "GET",
+                    f"achievements/progress/{first_badge_id}",
+                    200
+                )
+                
+                if success5:
+                    progress = response5.get("overall_progress", 0) if isinstance(response5, dict) else 0
+                    badge_name = response5.get("badge_name", "Unknown") if isinstance(response5, dict) else "Unknown"
+                    self.log(f"  Progress for '{badge_name}': {progress*100:.1f}%")
+                    
+                    criteria_progress = response5.get("criteria_progress", {}) if isinstance(response5, dict) else {}
+                    for criterion, details in criteria_progress.items():
+                        current = details.get("current", 0)
+                        required = details.get("required", 0)
+                        self.log(f"    {criterion}: {current}/{required}")
+        
+        # Test 6: Trigger manual achievement check
+        success6, response6 = self.run_test(
+            "Trigger Achievement Check",
+            "POST",
+            "achievements/check",
+            200
+        )
+        
+        if success6:
+            new_badges_count = len(response6.get("new_badges", [])) if isinstance(response6, dict) else 0
+            message = response6.get("message", "No message") if isinstance(response6, dict) else "No message"
+            self.log(f"  Achievement check result: {message}")
+            if new_badges_count > 0:
+                self.log(f"  🎉 {new_badges_count} new badges obtained!")
+                for badge in response6.get("new_badges", []):
+                    self.log(f"    New badge: {badge.get('name')} ({badge.get('rarity')})")
+        
+        # Test 7: Get achievements leaderboard
+        success7, response7 = self.run_test(
+            "Get Achievements Leaderboard",
+            "GET",
+            "achievements/leaderboard?limit=20",
+            200
+        )
+        
+        if success7:
+            leaderboard = response7.get("leaderboard", []) if isinstance(response7, dict) else []
+            current_user_rank = response7.get("current_user_rank") if isinstance(response7, dict) else None
+            self.log(f"  Leaderboard has {len(leaderboard)} players")
+            if current_user_rank:
+                self.log(f"  Current user rank: #{current_user_rank}")
+            
+            # Show top 3
+            for i, player in enumerate(leaderboard[:3]):
+                rank = player.get("rank", i+1)
+                username = player.get("username", "Unknown")
+                badge_count = player.get("badge_count", 0)
+                rarest_badge = player.get("rarest_badge", {})
+                rarest_name = rarest_badge.get("name", "None") if rarest_badge else "None"
+                self.log(f"    #{rank}: {username} - {badge_count} badges (rarest: {rarest_name})")
+        
+        # Test 8: Get global achievements stats
+        success8, response8 = self.run_test(
+            "Get Achievements Global Stats",
+            "GET",
+            "achievements/stats",
+            200
+        )
+        
+        if success8:
+            total_available = response8.get("total_badges_available", 0) if isinstance(response8, dict) else 0
+            total_earned = response8.get("total_badges_earned", 0) if isinstance(response8, dict) else 0
+            users_with_badges = response8.get("total_users_with_badges", 0) if isinstance(response8, dict) else 0
+            avg_badges = response8.get("average_badges_per_user", 0) if isinstance(response8, dict) else 0
+            
+            self.log(f"  Total badges available: {total_available}")
+            self.log(f"  Total badges earned: {total_earned}")
+            self.log(f"  Users with badges: {users_with_badges}")
+            self.log(f"  Average badges per user: {avg_badges:.1f}")
+            
+            rarity_dist = response8.get("rarity_distribution", {}) if isinstance(response8, dict) else {}
+            self.log(f"  Rarity distribution: {rarity_dist}")
+            
+            popular_badges = response8.get("most_popular_badges", []) if isinstance(response8, dict) else []
+            if popular_badges:
+                self.log("  Most popular badges:")
+                for badge in popular_badges:
+                    self.log(f"    {badge.get('badge_name')}: {badge.get('times_earned')} times")
+        
+        # Test 9: Get another user's badges (public view)
+        success9 = True
+        if self.admin_user_id:
+            # Try to get badges of the admin user (should work as public endpoint)
+            success9, response9 = self.run_test(
+                "Get User Public Badges",
+                "GET",
+                f"achievements/user/{self.admin_user_id}/badges",
+                200
+            )
+            
+            if success9:
+                user_badges = response9.get("badges", []) if isinstance(response9, dict) else []
+                username = response9.get("username", "Unknown") if isinstance(response9, dict) else "Unknown"
+                self.log(f"  User '{username}' has {len(user_badges)} public badges")
+        
+        # Test 10: Admin endpoint - get all user badges (requires admin role)
+        success10, response10 = self.run_test(
+            "Admin: Get All User Badges",
+            "GET",
+            "achievements/admin/all-user-badges",
+            200
+        )
+        
+        if success10:
+            all_badges = response10.get("all_user_badges", []) if isinstance(response10, dict) else []
+            total = response10.get("total", 0) if isinstance(response10, dict) else 0
+            self.log(f"  Admin view: {total} total badge assignments across all users")
+            
+            if all_badges:
+                # Show recent badge assignments
+                for badge in all_badges[:3]:
+                    username = badge.get("username", "Unknown")
+                    badge_name = badge.get("badge_name", "Unknown")
+                    badge_rarity = badge.get("badge_rarity", "unknown")
+                    self.log(f"    Recent: {username} earned '{badge_name}' ({badge_rarity})")
+        
+        return (success1 and success2 and success3 and success4 and success5 and 
+                success6 and success7 and success8 and success9 and success10)
+
     def run_all_tests(self):
         """Run API tests with tournament selector issue as main focus"""
         self.log("🚀 Starting Oupafamilly API Tests - TOURNAMENT SELECTOR DIAGNOSIS")
