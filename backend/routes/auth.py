@@ -86,7 +86,8 @@ async def register_user(user_data: UserCreate):
         )
 
 @router.post("/login", response_model=Token)
-async def login_user(user_credentials: UserLogin):
+@limiter.limit("5/minute")  # Limite à 5 tentatives de connexion par minute
+async def login_user(request: Request, user_credentials: UserLogin):
     """Login user and return access token."""
     try:
         user = await authenticate_user(db, user_credentials.email, user_credentials.password)
