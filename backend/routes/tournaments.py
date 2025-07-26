@@ -405,6 +405,9 @@ async def register_for_tournament(
         registration_type = "team" if team_id else "individual"
         logger.info(f"User {current_user.username} registered for tournament {tournament.title} as {registration_type}")
         
+        # Invalidate tournament cache
+        invalidate.invalidate_tournament_cache(tournament_id)
+        
         return {"message": "Successfully registered for tournament", "type": registration_type}
         
     except HTTPException:
