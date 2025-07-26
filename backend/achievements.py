@@ -516,6 +516,422 @@ class AchievementEngine:
 # Instance globale du moteur d'achievements
 achievement_engine = AchievementEngine()
 
+# =====================================================
+# QUEST ENGINE - Système de Quêtes Quotidiennes
+# =====================================================
+
+class QuestEngine:
+    """Moteur de quêtes quotidiennes intelligent"""
+    
+    def __init__(self):
+        self.daily_quests_pool = self._initialize_quest_pool()
+    
+    def _initialize_quest_pool(self) -> Dict[str, Quest]:
+        """Initialise le pool de quêtes quotidiennes"""
+        return {
+            # 🎮 Gaming Quests
+            "play_tournament": Quest(
+                name="Participe à un Tournoi",
+                description="Inscris-toi et joue dans au moins un tournoi aujourd'hui",
+                category=BadgeCategory.GAMING,
+                difficulty=BadgeRarity.COMMON,
+                requirements={"tournament_participation": 1},
+                rewards={"coins": 25, "xp": 50},
+                duration_hours=24
+            ),
+            
+            "win_matches": Quest(
+                name="Remporte 3 Matchs",
+                description="Gagne 3 matchs dans des tournois ou parties classées",
+                category=BadgeCategory.COMPETITIVE,
+                difficulty=BadgeRarity.RARE,
+                requirements={"matches_won": 3},
+                rewards={"coins": 50, "xp": 100},
+                duration_hours=24
+            ),
+            
+            "cs2_specialist_daily": Quest(
+                name="Spécialiste CS2 du Jour",
+                description="Joue 2 parties de CS2 avec de bonnes performances",
+                category=BadgeCategory.GAMING,
+                difficulty=BadgeRarity.COMMON,
+                requirements={"cs2_matches": 2, "min_kdr": 1.0},
+                rewards={"coins": 30, "xp": 60},
+                duration_hours=24
+            ),
+            
+            # 💰 Economic Quests
+            "spend_coins": Quest(
+                name="Investisseur du Jour",
+                description="Dépense 100 coins dans le marketplace",
+                category=BadgeCategory.ECONOMIC,
+                difficulty=BadgeRarity.COMMON,
+                requirements={"coins_spent": 100},
+                rewards={"coins": 20, "xp": 40},
+                duration_hours=24
+            ),
+            
+            "marketplace_explorer": Quest(
+                name="Explorateur du Marketplace",
+                description="Achète 2 objets différents dans le marketplace",
+                category=BadgeCategory.ECONOMIC,
+                difficulty=BadgeRarity.RARE,
+                requirements={"marketplace_purchases": 2},
+                rewards={"coins": 40, "xp": 80},
+                duration_hours=24
+            ),
+            
+            "coin_collector_daily": Quest(
+                name="Collectionneur Quotidien",
+                description="Accumule 150 coins à travers diverses activités",
+                category=BadgeCategory.ECONOMIC,
+                difficulty=BadgeRarity.EPIC,
+                requirements={"coins_earned": 150},
+                rewards={"coins": 75, "xp": 120},
+                duration_hours=24
+            ),
+            
+            # 🤝 Community Quests
+            "social_butterfly": Quest(
+                name="Papillon Social",
+                description="Écris 5 commentaires positifs sur des profils",
+                category=BadgeCategory.SOCIAL,
+                difficulty=BadgeRarity.COMMON,
+                requirements={"comments_posted": 5, "min_rating": 4},
+                rewards={"coins": 25, "xp": 50},
+                duration_hours=24
+            ),
+            
+            "chat_active": Quest(
+                name="Bavard Communautaire",
+                description="Envoie 10 messages dans le chat de la communauté",
+                category=BadgeCategory.COMMUNITY,
+                difficulty=BadgeRarity.COMMON,
+                requirements={"chat_messages": 10},
+                rewards={"coins": 20, "xp": 30},
+                duration_hours=24
+            ),
+            
+            "helper": Quest(
+                name="Aide Communautaire",
+                description="Aide 3 nouveaux membres (commentaires, messages privés)",
+                category=BadgeCategory.COMMUNITY,
+                difficulty=BadgeRarity.RARE,
+                requirements={"help_interactions": 3},
+                rewards={"coins": 60, "xp": 100},
+                duration_hours=24
+            ),
+            
+            # 🎯 Betting & Strategy Quests
+            "smart_bettor": Quest(
+                name="Parieur Intelligent",
+                description="Place 3 paris avec des cotes différentes",
+                category=BadgeCategory.COMPETITIVE,
+                difficulty=BadgeRarity.RARE,
+                requirements={"bets_placed": 3, "different_odds": True},
+                rewards={"coins": 45, "xp": 90},
+                duration_hours=24
+            ),
+            
+            "risk_manager": Quest(
+                name="Gestionnaire de Risque",
+                description="Gagne au moins 1 pari sur 3 placés aujourd'hui",
+                category=BadgeCategory.COMPETITIVE,
+                difficulty=BadgeRarity.EPIC,
+                requirements={"bets_placed": 3, "min_win_rate": 0.33},
+                rewards={"coins": 80, "xp": 150},
+                duration_hours=24
+            ),
+            
+            # ⭐ Special Daily Quests
+            "perfect_day": Quest(
+                name="Journée Parfaite",
+                description="Complète 4 autres quêtes quotidiennes aujourd'hui",
+                category=BadgeCategory.SPECIAL,
+                difficulty=BadgeRarity.LEGENDARY,
+                requirements={"daily_quests_completed": 4},
+                rewards={"coins": 200, "xp": 300, "bonus_badge": "daily_completionist"},
+                duration_hours=24
+            ),
+            
+            "early_bird": Quest(
+                name="Lève-tôt",
+                description="Connecte-toi avant 8h du matin et joue 30 minutes",
+                category=BadgeCategory.LOYALTY,
+                difficulty=BadgeRarity.RARE,
+                requirements={"early_login": True, "playtime_minutes": 30},
+                rewards={"coins": 50, "xp": 75},
+                duration_hours=24
+            ),
+            
+            "night_owl": Quest(
+                name="Chouette Nocturne",
+                description="Joue entre 22h et 2h du matin pendant 45 minutes",
+                category=BadgeCategory.LOYALTY,
+                difficulty=BadgeRarity.RARE,
+                requirements={"night_play": True, "playtime_minutes": 45},
+                rewards={"coins": 55, "xp": 80},
+                duration_hours=24
+            ),
+            
+            # 🔥 Weekly Special Quests (appear certain days)
+            "weekend_warrior": Quest(
+                name="Guerrier du Week-end",
+                description="Participe à 3 tournois ce week-end",
+                category=BadgeCategory.COMPETITIVE,
+                difficulty=BadgeRarity.EPIC,
+                requirements={"weekend_tournaments": 3},
+                rewards={"coins": 100, "xp": 200},
+                duration_hours=48,  # Week-end
+                is_daily=False
+            ),
+            
+            "monday_motivation": Quest(
+                name="Motivation du Lundi",
+                description="Commence la semaine fort : 2 tournois + 5 commentaires",
+                category=BadgeCategory.LOYALTY,
+                difficulty=BadgeRarity.EPIC,
+                requirements={"tournaments": 2, "comments": 5},
+                rewards={"coins": 80, "xp": 150},
+                duration_hours=24
+            )
+        }
+    
+    async def get_daily_quests_for_date(self, target_date) -> List[Quest]:
+        """Génère les quêtes quotidiennes pour une date donnée"""
+        try:
+            from datetime import datetime
+            import hashlib
+            
+            # Créer une seed basée sur la date pour avoir des quêtes cohérentes
+            date_str = target_date.isoformat()
+            seed = int(hashlib.md5(date_str.encode()).hexdigest()[:8], 16)
+            
+            # Sélectionner 5 quêtes pour aujourd'hui (mix équilibré)
+            all_daily_quests = [q for q in self.daily_quests_pool.values() if q.is_daily]
+            
+            # Algorithme de sélection basé sur la seed
+            selected_quests = []
+            
+            # 1. Toujours inclure une quête community (engagement)
+            community_quests = [q for q in all_daily_quests if q.category in [BadgeCategory.COMMUNITY, BadgeCategory.SOCIAL]]
+            if community_quests:
+                selected_quests.append(community_quests[seed % len(community_quests)])
+            
+            # 2. Inclure une quête gaming
+            gaming_quests = [q for q in all_daily_quests if q.category in [BadgeCategory.GAMING, BadgeCategory.COMPETITIVE]]
+            if gaming_quests:
+                selected_quests.append(gaming_quests[(seed + 1) % len(gaming_quests)])
+            
+            # 3. Inclure une quête economic
+            economic_quests = [q for q in all_daily_quests if q.category == BadgeCategory.ECONOMIC]
+            if economic_quests:
+                selected_quests.append(economic_quests[(seed + 2) % len(economic_quests)])
+            
+            # 4. Sélectionner 2 quêtes aléatoires parmi les restantes
+            remaining_quests = [q for q in all_daily_quests if q not in selected_quests]
+            if len(remaining_quests) >= 2:
+                selected_quests.append(remaining_quests[(seed + 3) % len(remaining_quests)])
+                selected_quests.append(remaining_quests[(seed + 4) % len(remaining_quests)])
+            
+            # Quêtes spéciales selon le jour de la semaine
+            weekday = target_date.weekday()  # 0 = Lundi, 6 = Dimanche
+            
+            if weekday == 0:  # Lundi
+                monday_quest = self.daily_quests_pool.get("monday_motivation")
+                if monday_quest and monday_quest not in selected_quests:
+                    selected_quests.append(monday_quest)
+            
+            elif weekday in [5, 6]:  # Week-end
+                weekend_quest = self.daily_quests_pool.get("weekend_warrior")
+                if weekend_quest and weekend_quest not in selected_quests:
+                    selected_quests.append(weekend_quest)
+            
+            # Mettre à jour les dates d'activité
+            today_start = datetime.combine(target_date, datetime.min.time())
+            for quest in selected_quests:
+                quest.active_from = today_start
+                quest.active_until = today_start.replace(hour=23, minute=59, second=59)
+            
+            return selected_quests[:6]  # Maximum 6 quêtes par jour
+            
+        except Exception as e:
+            app_logger.error(f"Erreur génération quêtes quotidiennes: {str(e)}")
+            return []
+    
+    async def get_user_quest_progress(self, user_id: str, quest_id: str) -> Dict[str, Any]:
+        """Récupère la progression d'un utilisateur sur une quête"""
+        try:
+            # Récupérer la progression de l'utilisateur
+            user_quest = await db.user_quests.find_one({
+                "user_id": user_id,
+                "quest_id": quest_id
+            })
+            
+            if not user_quest:
+                # Créer une entrée vide si elle n'existe pas
+                from achievements import UserQuest
+                new_user_quest = UserQuest(
+                    user_id=user_id,
+                    quest_id=quest_id
+                )
+                await db.user_quests.insert_one(new_user_quest.dict())
+                return {
+                    "progress": {},
+                    "completed": False,
+                    "rewards_claimed": False,
+                    "completion_percentage": 0.0
+                }
+            
+            # Calculer le pourcentage de complétion
+            quest = self.daily_quests_pool.get(quest_id)
+            if not quest:
+                return user_quest
+            
+            completion_percentage = await self._calculate_quest_completion_percentage(user_id, quest, user_quest.get("progress", {}))
+            
+            return {
+                "progress": user_quest.get("progress", {}),
+                "completed": user_quest.get("completed", False),
+                "rewards_claimed": user_quest.get("rewards_claimed", False),
+                "completion_percentage": completion_percentage,
+                "started_at": user_quest.get("started_at"),
+                "completed_at": user_quest.get("completed_at")
+            }
+            
+        except Exception as e:
+            app_logger.error(f"Erreur récupération progression quête: {str(e)}")
+            return {}
+    
+    async def _calculate_quest_completion_percentage(self, user_id: str, quest: Quest, current_progress: Dict[str, Any]) -> float:
+        """Calcule le pourcentage de complétion d'une quête"""
+        try:
+            total_requirements = len(quest.requirements)
+            completed_requirements = 0
+            
+            for requirement, target_value in quest.requirements.items():
+                current_value = current_progress.get(requirement, 0)
+                
+                if requirement in ["tournament_participation", "matches_won", "cs2_matches"]:
+                    # Compter depuis les stats actuelles de l'utilisateur
+                    if current_value >= target_value:
+                        completed_requirements += 1
+                    
+                elif requirement in ["coins_spent", "coins_earned"]:
+                    # Compter depuis les transactions du jour
+                    if current_value >= target_value:
+                        completed_requirements += 1
+                        
+                elif requirement in ["comments_posted", "chat_messages"]:
+                    # Compter depuis l'activité du jour
+                    if current_value >= target_value:
+                        completed_requirements += 1
+                
+                elif requirement == "daily_quests_completed":
+                    # Compter les autres quêtes terminées aujourd'hui
+                    other_completed = await self._count_user_daily_quests_completed(user_id)
+                    if other_completed >= target_value:
+                        completed_requirements += 1
+                
+                else:
+                    # Pour les autres critères, utiliser la valeur actuelle
+                    if isinstance(target_value, bool):
+                        if current_value is True:
+                            completed_requirements += 1
+                    else:
+                        if current_value >= target_value:
+                            completed_requirements += 1
+            
+            return completed_requirements / max(total_requirements, 1)
+            
+        except Exception as e:
+            app_logger.error(f"Erreur calcul pourcentage quête: {str(e)}")
+            return 0.0
+    
+    async def claim_quest_rewards(self, user_id: str, quest_id: str) -> Dict[str, Any]:
+        """Réclame les récompenses d'une quête terminée"""
+        try:
+            quest = self.daily_quests_pool.get(quest_id)
+            if not quest:
+                raise ValueError("Quête non trouvée")
+            
+            # Marquer les récompenses comme réclamées
+            await db.user_quests.update_one(
+                {"user_id": user_id, "quest_id": quest_id},
+                {"$set": {"rewards_claimed": True}}
+            )
+            
+            # Donner les récompenses
+            rewards_given = {}
+            
+            # Coins
+            if "coins" in quest.rewards:
+                coins_reward = quest.rewards["coins"]
+                await db.users.update_one(
+                    {"id": user_id},
+                    {"$inc": {"coins": coins_reward}}
+                )
+                
+                # Enregistrer la transaction
+                from models import CoinTransaction
+                transaction = CoinTransaction(
+                    user_id=user_id,
+                    amount=coins_reward,
+                    transaction_type="quest_reward",
+                    description=f"Quête terminée : {quest.name}"
+                )
+                await db.coin_transactions.insert_one(transaction.dict())
+                rewards_given["coins"] = coins_reward
+            
+            # XP
+            if "xp" in quest.rewards:
+                xp_reward = quest.rewards["xp"]
+                await db.users.update_one(
+                    {"id": user_id},
+                    {"$inc": {"xp": xp_reward}}
+                )
+                rewards_given["xp"] = xp_reward
+            
+            # Badge bonus (si applicable)
+            if "bonus_badge" in quest.rewards:
+                bonus_badge_id = quest.rewards["bonus_badge"]
+                if bonus_badge_id in achievement_engine.badges_registry:
+                    # Attribuer le badge bonus
+                    await achievement_engine.check_and_award_badges(user_id, "quest_bonus", {"quest_id": quest_id})
+                    rewards_given["bonus_badge"] = bonus_badge_id
+            
+            log_user_action(user_id, "quest_completed", {
+                "quest_name": quest.name,
+                "rewards": rewards_given
+            })
+            
+            return rewards_given
+            
+        except Exception as e:
+            app_logger.error(f"Erreur réclamation récompenses quête: {str(e)}")
+            raise
+    
+    async def _count_user_daily_quests_completed(self, user_id: str) -> int:
+        """Compte le nombre de quêtes quotidiennes terminées aujourd'hui par un utilisateur"""
+        try:
+            from datetime import datetime
+            today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+            
+            count = await db.user_quests.count_documents({
+                "user_id": user_id,
+                "completed": True,
+                "completed_at": {"$gte": today_start}
+            })
+            
+            return count
+            
+        except Exception as e:
+            app_logger.error(f"Erreur comptage quêtes quotidiennes: {str(e)}")
+            return 0
+
+# Instance globale du moteur de quêtes
+quest_engine = QuestEngine()
+
 # Fonctions d'API publiques
 async def trigger_achievement_check(user_id: str, event: str = None, data: Dict[str, Any] = None) -> List[Badge]:
     """Déclenche une vérification des achievements pour un utilisateur"""
