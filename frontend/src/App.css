@@ -7485,6 +7485,634 @@ body {
   margin-top: 1rem;
 }
 
+/* ===========================================
+   MODE SOMBRE PROFESSIONNEL
+=========================================== */
+
+/* Mode sombre - Variables CSS spécifiques */
+.dark-mode {
+  /* Couleurs de fond sombre */
+  --bg-primary-dark: #0a0e1a;
+  --bg-secondary-dark: #1a1f2e;
+  --bg-tertiary-dark: #2a2f3e;
+  --bg-card-dark: #1e2332;
+  --bg-input-dark: #252a39;
+  
+  /* Couleurs de texte sombre */
+  --text-primary-dark: #f8fafc;
+  --text-secondary-dark: #e2e8f0;
+  --text-muted-dark: #94a3b8;
+  --text-accent-dark: #60a5fa;
+  
+  /* Couleurs de bordure sombre */
+  --border-color-dark: rgba(71, 85, 105, 0.3);
+  --border-color-hover-dark: rgba(59, 130, 246, 0.5);
+  
+  /* Couleurs d'état sombre */
+  --success-color-dark: #22c55e;
+  --warning-color-dark: #f59e0b;
+  --error-color-dark: #ef4444;
+  --info-color-dark: #3b82f6;
+  
+  /* Ombres sombre */
+  --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-hover-dark: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --shadow-glow-dark: 0 0 25px rgba(59, 130, 246, 0.4);
+}
+
+/* Corps en mode sombre */
+.dark-mode body {
+  background: linear-gradient(135deg, var(--bg-primary-dark) 0%, var(--bg-secondary-dark) 100%);
+  color: var(--text-primary-dark);
+}
+
+/* Header en mode sombre */
+.dark-mode .header-pro {
+  background: rgba(26, 31, 46, 0.95);
+  border-bottom: 2px solid var(--border-color-dark);
+}
+
+.dark-mode .nav-link-pro {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .nav-link-pro:hover,
+.dark-mode .nav-link-pro.active {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .nav-mobile-pro {
+  background: rgba(26, 31, 46, 0.98);
+}
+
+.dark-mode .nav-link-mobile-pro {
+  color: var(--text-secondary-dark);
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .nav-link-mobile-pro:hover,
+.dark-mode .nav-link-mobile-pro.active {
+  color: var(--text-primary-dark);
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--border-color-hover-dark);
+}
+
+/* Pages principales en mode sombre */
+.dark-mode .page-header-pro {
+  background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, var(--bg-primary-dark) 100%);
+}
+
+.dark-mode .page-title-pro {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .page-subtitle-pro {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .section-alt-pro {
+  background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, var(--bg-tertiary-dark) 100%);
+}
+
+/* Cartes en mode sombre */
+.dark-mode .card,
+.dark-mode .value-card-pro,
+.dark-mode .game-card-pro,
+.dark-mode .tournament-card-pro,
+.dark-mode .member-card-pro,
+.dark-mode .team-card-pro,
+.dark-mode .stat-card-pro,
+.dark-mode .leaderboard-item-pro {
+  background: rgba(42, 47, 62, 0.6);
+  border-color: var(--border-color-dark);
+  backdrop-filter: blur(15px);
+}
+
+.dark-mode .card:hover,
+.dark-mode .value-card-pro:hover,
+.dark-mode .game-card-pro:hover,
+.dark-mode .tournament-card-pro:hover,
+.dark-mode .member-card-pro:hover,
+.dark-mode .team-card-pro:hover,
+.dark-mode .stat-card-pro:hover,
+.dark-mode .leaderboard-item-pro:hover {
+  border-color: var(--border-color-hover-dark);
+  box-shadow: var(--shadow-dark), var(--shadow-glow-dark);
+}
+
+/* Texte en mode sombre */
+.dark-mode .value-title-pro,
+.dark-mode .game-name-pro,
+.dark-mode .tournament-name-pro,
+.dark-mode .member-name-pro,
+.dark-mode .team-name-pro,
+.dark-mode .section-title-pro,
+.dark-mode .leaderboard-title-pro,
+.dark-mode .player-name-pro {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .value-description-pro,
+.dark-mode .game-description-pro,
+.dark-mode .tournament-phase-pro,
+.dark-mode .member-pseudo-pro,
+.dark-mode .team-game-pro,
+.dark-mode .section-subtitle-pro,
+.dark-mode .leaderboard-subtitle-pro,
+.dark-mode .info-label,
+.dark-mode .stat-label {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .info-value,
+.dark-mode .stat-number {
+  color: var(--text-primary-dark);
+}
+
+/* Boutons en mode sombre */
+.dark-mode .btn-primary-pro {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+  box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .btn-primary-pro:hover {
+  box-shadow: var(--shadow-hover-dark), var(--shadow-glow-dark);
+}
+
+.dark-mode .btn-secondary-pro {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--primary-blue-light);
+  color: var(--primary-blue-light);
+}
+
+.dark-mode .btn-secondary-pro:hover {
+  background: var(--primary-blue);
+  color: white;
+  box-shadow: var(--shadow-glow-dark);
+}
+
+.dark-mode .btn-outline-pro {
+  border-color: var(--border-color-dark);
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .btn-outline-pro:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--primary-blue);
+  color: var(--primary-blue-light);
+}
+
+/* Onglets en mode sombre */
+.dark-mode .tournament-tab-pro,
+.dark-mode .community-tab-pro {
+  border-color: var(--border-color-dark);
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .tournament-tab-pro:hover,
+.dark-mode .community-tab-pro:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue-light);
+}
+
+.dark-mode .tournament-tab-pro.active,
+.dark-mode .community-tab-pro.active {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+  border-color: var(--primary-blue);
+  color: white;
+  box-shadow: var(--shadow-glow-dark);
+}
+
+/* Formulaires en mode sombre */
+.dark-mode .filter-select,
+.dark-mode .tournament-select,
+.dark-mode .form-input,
+.dark-mode .form-textarea,
+.dark-mode .search-input,
+.dark-mode .search-input-modern,
+.dark-mode .message-textarea-modern {
+  background: var(--bg-input-dark);
+  border-color: var(--border-color-dark);
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .filter-select:focus,
+.dark-mode .tournament-select:focus,
+.dark-mode .form-input:focus,
+.dark-mode .form-textarea:focus,
+.dark-mode .search-input:focus,
+.dark-mode .search-input-modern:focus,
+.dark-mode .message-textarea-modern:focus {
+  border-color: var(--primary-blue-light);
+  background: var(--bg-card-dark);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode .search-input::placeholder,
+.dark-mode .search-input-modern::placeholder,
+.dark-mode .message-textarea-modern::placeholder {
+  color: var(--text-muted-dark);
+}
+
+/* Sections spéciales en mode sombre */
+.dark-mode .tournament-selector-card,
+.dark-mode .tournament-schedule-card,
+.dark-mode .upcoming-matches-card,
+.dark-mode .marketplace-item,
+.dark-mode .betting-market,
+.dark-mode .user-bets,
+.dark-mode .message-compose,
+.dark-mode .message-list,
+.dark-mode .member-list-panel,
+.dark-mode .conversation-panel,
+.dark-mode .recent-messages-modern {
+  background: var(--bg-card-dark);
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .marketplace-item:hover,
+.dark-mode .betting-market:hover {
+  box-shadow: var(--shadow-dark);
+}
+
+/* Match cards en mode sombre */
+.dark-mode .match-card {
+  background: var(--bg-input-dark);
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .match-card:hover {
+  box-shadow: var(--shadow-hover-dark);
+}
+
+.dark-mode .match-card.scheduled {
+  border-color: var(--success-color-dark);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.dark-mode .match-card.pending {
+  border-color: var(--warning-color-dark);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.dark-mode .player-name {
+  background: var(--bg-card-dark);
+  border-color: var(--border-color-dark);
+  color: var(--text-primary-dark);
+}
+
+/* Badges et statuts en mode sombre */
+.dark-mode .status-badge.scheduled {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--success-color-dark);
+}
+
+.dark-mode .status-badge.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--warning-color-dark);
+}
+
+.dark-mode .status-badge.in_progress {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error-color-dark);
+}
+
+.dark-mode .status-badge.completed {
+  background: rgba(148, 163, 184, 0.2);
+  color: var(--text-muted-dark);
+}
+
+.dark-mode .round-badge {
+  background: var(--primary-blue);
+  color: white;
+}
+
+/* Modales en mode sombre */
+.dark-mode .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.dark-mode .schedule-modal {
+  background: var(--bg-card-dark);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode .modal-header {
+  background: var(--bg-input-dark);
+  border-bottom-color: var(--border-color-dark);
+}
+
+.dark-mode .modal-header h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .modal-close {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .modal-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error-color-dark);
+}
+
+.dark-mode .modal-footer {
+  background: var(--bg-input-dark);
+  border-top-color: var(--border-color-dark);
+}
+
+.dark-mode .match-info {
+  background: var(--bg-input-dark);
+}
+
+.dark-mode .match-info h4 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .match-info p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .form-group label {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .btn-cancel {
+  background: var(--bg-input-dark);
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .btn-cancel:hover {
+  background: var(--bg-tertiary-dark);
+  color: var(--text-primary-dark);
+}
+
+/* Éléments de communauté en mode sombre */
+.dark-mode .member-avatar-pro {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .member-status-pro.status-online {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--success-color-dark);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.dark-mode .member-status-pro.status-gaming {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--info-color-dark);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.dark-mode .member-status-pro.status-away {
+  background: rgba(148, 163, 184, 0.2);
+  color: var(--text-muted-dark);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.dark-mode .role-badge-pro.role-admin {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error-color-dark);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.dark-mode .role-badge-pro.role-moderator {
+  background: rgba(249, 115, 22, 0.2);
+  color: var(--accent-orange);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.dark-mode .role-badge-pro.role-member {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--info-color-dark);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.dark-mode .game-tag-pro {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--primary-blue-light);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Messages en mode sombre */
+.dark-mode .message-card-modern {
+  background: var(--bg-input-dark);
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .message-card-modern:hover {
+  background: var(--bg-tertiary-dark);
+  border-color: var(--primary-blue);
+  box-shadow: var(--shadow-dark);
+}
+
+.dark-mode .message-direction {
+  color: var(--primary-blue-light);
+}
+
+.dark-mode .message-other-party {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .message-date-modern {
+  color: var(--text-muted-dark);
+}
+
+.dark-mode .message-content-modern {
+  background: var(--bg-card-dark);
+  color: var(--text-secondary-dark);
+  border-left-color: var(--primary-blue);
+}
+
+.dark-mode .member-item-selectable {
+  border-color: transparent;
+}
+
+.dark-mode .member-item-selectable:hover {
+  background: var(--bg-input-dark);
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .member-item-selectable.selected {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.15));
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.dark-mode .member-name {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .member-level {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .no-members-found {
+  color: var(--text-muted-dark);
+}
+
+/* Hero section en mode sombre */
+.dark-mode .hero-pro {
+  background: linear-gradient(135deg, var(--bg-primary-dark) 0%, var(--bg-secondary-dark) 100%);
+}
+
+.dark-mode .hero-bg-pro {
+  background: 
+    linear-gradient(135deg, rgba(26, 31, 46, 0.9) 0%, rgba(42, 47, 62, 0.8) 100%),
+    url('https://images.unsplash.com/photo-1633545495735-25df17fb9f31');
+}
+
+.dark-mode .hero-title-line1 {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .hero-subtitle-pro {
+  color: var(--text-secondary-dark);
+}
+
+/* Marketplace en mode sombre */
+.dark-mode .marketplace-header h2 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .marketplace-header p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .item-header h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .item-description {
+  color: var(--text-secondary-dark);
+}
+
+/* Betting en mode sombre */
+.dark-mode .betting-header h2 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .betting-header p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .betting-market h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .betting-market p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .market-info span {
+  background: var(--bg-input-dark);
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .betting-option {
+  background: var(--bg-input-dark);
+  border-color: var(--border-color-dark);
+}
+
+.dark-mode .option-name {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .user-bets h3 {
+  color: var(--text-primary-dark);
+}
+
+/* Messaging en mode sombre */
+.dark-mode .messaging-header h2 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .messaging-header p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .message-compose h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .message-list h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .no-messages {
+  color: var(--text-muted-dark);
+}
+
+.dark-mode .message-sender {
+  color: var(--primary-blue-light);
+}
+
+.dark-mode .message-date {
+  color: var(--text-muted-dark);
+}
+
+.dark-mode .message-content {
+  color: var(--text-secondary-dark);
+}
+
+/* Styles spéciaux pour les éléments blancs en mode sombre */
+.dark-mode .selector-header h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .selector-header p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .schedule-header h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .card-header h3 {
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .card-header p {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .no-messages {
+  color: var(--text-muted-dark);
+}
+
+.dark-mode .no-results {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .loading,
+.dark-mode .error {
+  color: var(--text-secondary-dark);
+}
+
+.dark-mode .error {
+  color: var(--error-color-dark);
+}
+
+/* Section CTA en mode sombre */
+.dark-mode .cta-section-pro {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+}
+
+/* Responsive - adaptations mode sombre */
+@media (max-width: 768px) {
+  .dark-mode .search-input,
+  .dark-mode .search-input-modern {
+    background: var(--bg-input-dark);
+  }
+  
+  .dark-mode .member-card-pro,
+  .dark-mode .team-card-pro,
+  .dark-mode .tournament-card-pro {
+    background: rgba(42, 47, 62, 0.8);
+  }
+}
+
 /* Amélioration des badges de difficulté */
 
 /* AGGRESSIVE EMERGENT BADGE REMOVAL */
