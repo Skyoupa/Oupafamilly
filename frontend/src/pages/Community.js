@@ -220,7 +220,7 @@ const MarketplaceTab = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     fetchMarketplaceData();
