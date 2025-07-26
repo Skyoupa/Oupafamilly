@@ -276,8 +276,8 @@ const Tutoriels = () => {
                       
                       {/* Badge niveau */}
                       <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(tutorial.level)}`}>
-                          {tutorial.level}
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getDifficultyColor(tutorial.levelOriginal || tutorial.level)}`}>
+                          {tutorial.levelDisplay || tutorial.level}
                         </span>
                       </div>
                       
