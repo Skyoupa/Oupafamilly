@@ -306,8 +306,6 @@ export const cachedFetch = async (url, options = {}) => {
 /**
  * 🚀 HOOK REACT POUR CACHE STATS
  */
-import React from 'react';
-
 export const useCacheStats = () => {
   const [stats, setStats] = React.useState(cacheManager.getStats());
   
