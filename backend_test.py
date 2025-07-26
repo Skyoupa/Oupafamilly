@@ -850,9 +850,448 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5 and success6
 
+    def test_chat_system(self):
+        """Test chat system endpoints - NEW COMMUNITY SYSTEM"""
+        if not self.token:
+            self.log("Skipping chat tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING CHAT SYSTEM ===")
+        
+        # Test 1: Get chat stats
+        success1, response1 = self.run_test(
+            "Get Chat Stats",
+            "GET",
+            "chat/stats",
+            200
+        )
+        
+        if success1:
+            self.log(f"  Total messages 24h: {response1.get('total_messages_24h', 0)}")
+            self.log(f"  Private messages 24h: {response1.get('private_messages_24h', 0)}")
+            self.log(f"  Active users 24h: {response1.get('active_users_24h', 0)}")
+            self.log(f"  Online users: {response1.get('online_users', 0)}")
+            channels = response1.get('channels', {})
+            for channel, count in channels.items():
+                if count > 0:
+                    self.log(f"    {channel}: {count} messages")
+        
+        # Test 2: Get messages from general channel
+        success2, response2 = self.run_test(
+            "Get General Channel Messages",
+            "GET",
+            "chat/messages/general?limit=10",
+            200
+        )
+        
+        if success2:
+            messages = response2 if isinstance(response2, list) else []
+            self.log(f"  Found {len(messages)} messages in general channel")
+            if messages:
+                latest_msg = messages[-1]
+                self.log(f"    Latest: {latest_msg.get('author_name', 'Unknown')} - {latest_msg.get('content', '')[:50]}...")
+        
+        # Test 3: Send a chat message
+        success3, response3 = self.run_test(
+            "Send Chat Message",
+            "POST",
+            "chat/messages",
+            200,
+            data={
+                "channel": "general",
+                "content": "Test message from API testing - Hello Oupafamilly community! 🎮",
+                "message_type": "text"
+            }
+        )
+        
+        if success3:
+            self.log(f"  ✅ Message sent successfully: {response3.get('id')}")
+            self.log(f"    Content: {response3.get('content')}")
+            self.log(f"    Channel: {response3.get('channel')}")
+        
+        # Test 4: Get private messages
+        success4, response4 = self.run_test(
+            "Get Private Messages",
+            "GET",
+            "chat/private?limit=10",
+            200
+        )
+        
+        if success4:
+            private_messages = response4 if isinstance(response4, list) else []
+            self.log(f"  Found {len(private_messages)} private messages")
+        
+        # Test 5: Get unread count
+        success5, response5 = self.run_test(
+            "Get Unread Messages Count",
+            "GET",
+            "chat/private/unread-count",
+            200
+        )
+        
+        if success5:
+            unread_count = response5.get('unread_count', 0)
+            self.log(f"  Unread messages: {unread_count}")
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    def test_activity_system(self):
+        """Test activity feed system endpoints - NEW COMMUNITY SYSTEM"""
+        if not self.token:
+            self.log("Skipping activity tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING ACTIVITY SYSTEM ===")
+        
+        # Test 1: Get activity feed
+        success1, response1 = self.run_test(
+            "Get Activity Feed",
+            "GET",
+            "activity/feed?limit=20",
+            200
+        )
+        
+        activities = []
+        if success1:
+            activities = response1 if isinstance(response1, list) else []
+            self.log(f"  Found {len(activities)} activities in feed")
+            if activities:
+                latest_activity = activities[0]
+                self.log(f"    Latest: {latest_activity.get('title', 'No title')} by {latest_activity.get('user_name', 'Unknown')}")
+                self.log(f"    Type: {latest_activity.get('activity_type', 'unknown')}")
+                self.log(f"    Likes: {latest_activity.get('like_count', 0)}")
+        
+        # Test 2: Get my personal feed
+        success2, response2 = self.run_test(
+            "Get My Activity Feed",
+            "GET",
+            "activity/my-feed?limit=10",
+            200
+        )
+        
+        if success2:
+            my_activities = response2 if isinstance(response2, list) else []
+            self.log(f"  Found {len(my_activities)} personal activities")
+        
+        # Test 3: Get trending activities
+        success3, response3 = self.run_test(
+            "Get Trending Activities",
+            "GET",
+            "activity/trending",
+            200
+        )
+        
+        if success3:
+            trending = response3.get('trending_activities', [])
+            self.log(f"  Found {len(trending)} trending activities")
+            if trending:
+                top_trending = trending[0]
+                self.log(f"    Top trending: {top_trending.get('title', 'No title')} ({top_trending.get('like_count', 0)} likes)")
+        
+        # Test 4: Like an activity (if available)
+        success4 = True
+        if activities:
+            activity_id = activities[0].get('id')
+            if activity_id:
+                success4, response4 = self.run_test(
+                    "Like Activity",
+                    "POST",
+                    f"activity/{activity_id}/like",
+                    200
+                )
+                
+                if success4:
+                    self.log(f"  ✅ Activity liked: {response4.get('message', 'Success')}")
+                    self.log(f"    New like count: {response4.get('like_count', 0)}")
+                    self.log(f"    Is liked: {response4.get('is_liked', False)}")
+        
+        # Test 5: Get activity stats
+        success5, response5 = self.run_test(
+            "Get Activity Stats",
+            "GET",
+            "activity/stats",
+            200
+        )
+        
+        if success5:
+            self.log(f"  Total activities: {response5.get('total_activities', 0)}")
+            self.log(f"  Activities 24h: {response5.get('activities_24h', 0)}")
+            popular_types = response5.get('popular_activity_types', [])
+            if popular_types:
+                self.log(f"  Most popular type: {popular_types[0].get('type', 'unknown')} ({popular_types[0].get('count', 0)})")
+            active_users = response5.get('most_active_users', [])
+            if active_users:
+                self.log(f"  Most active user: {active_users[0].get('username', 'unknown')} ({active_users[0].get('activity_count', 0)} activities)")
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    def test_betting_system(self):
+        """Test betting system endpoints - NEW COMMUNITY SYSTEM"""
+        if not self.token:
+            self.log("Skipping betting tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING BETTING SYSTEM ===")
+        
+        # Test 1: Get betting markets
+        success1, response1 = self.run_test(
+            "Get Betting Markets",
+            "GET",
+            "betting/markets?limit=20",
+            200
+        )
+        
+        markets = []
+        if success1:
+            markets = response1 if isinstance(response1, list) else []
+            self.log(f"  Found {len(markets)} betting markets")
+            if markets:
+                first_market = markets[0]
+                self.log(f"    Market: {first_market.get('title', 'No title')}")
+                self.log(f"    Game: {first_market.get('game', 'unknown')}")
+                self.log(f"    Status: {first_market.get('status', 'unknown')}")
+                self.log(f"    Total pool: {first_market.get('total_pool', 0)} coins")
+                self.log(f"    Bet count: {first_market.get('bet_count', 0)}")
+                options = first_market.get('options', [])
+                self.log(f"    Options: {len(options)}")
+                for option in options[:2]:  # Show first 2 options
+                    self.log(f"      - {option.get('name', 'Unknown')} (odds: {option.get('odds', 0)})")
+        
+        # Test 2: Get my bets
+        success2, response2 = self.run_test(
+            "Get My Bets",
+            "GET",
+            "betting/bets/my-bets?limit=10",
+            200
+        )
+        
+        my_bets = []
+        if success2:
+            my_bets = response2 if isinstance(response2, list) else []
+            self.log(f"  Found {len(my_bets)} personal bets")
+            if my_bets:
+                latest_bet = my_bets[0]
+                self.log(f"    Latest bet: {latest_bet.get('amount', 0)} coins on {latest_bet.get('option_name', 'Unknown')}")
+                self.log(f"    Status: {latest_bet.get('status', 'unknown')}")
+                self.log(f"    Potential payout: {latest_bet.get('potential_payout', 0)} coins")
+        
+        # Test 3: Get betting stats
+        success3, response3 = self.run_test(
+            "Get My Betting Stats",
+            "GET",
+            "betting/bets/stats",
+            200
+        )
+        
+        if success3:
+            self.log(f"  Total bets: {response3.get('total_bets', 0)}")
+            self.log(f"  Total amount bet: {response3.get('total_amount_bet', 0)} coins")
+            self.log(f"  Total winnings: {response3.get('total_winnings', 0)} coins")
+            self.log(f"  Total losses: {response3.get('total_losses', 0)} coins")
+            self.log(f"  Win rate: {response3.get('win_rate', 0)}%")
+            self.log(f"  Profit/Loss: {response3.get('profit_loss', 0)} coins")
+            best_bet = response3.get('best_bet', {})
+            if best_bet:
+                self.log(f"  Best bet: {best_bet.get('option_name', 'None')} - {best_bet.get('payout', 0)} coins")
+        
+        # Test 4: Get betting leaderboard
+        success4, response4 = self.run_test(
+            "Get Betting Leaderboard",
+            "GET",
+            "betting/leaderboard",
+            200
+        )
+        
+        if success4:
+            leaderboard = response4.get('leaderboard', [])
+            self.log(f"  Leaderboard has {len(leaderboard)} players")
+            if leaderboard:
+                top_player = leaderboard[0]
+                self.log(f"    #1: {top_player.get('user_name', 'Unknown')} - {top_player.get('profit_loss', 0)} coins profit")
+                self.log(f"        Win rate: {top_player.get('win_rate', 0)}% ({top_player.get('won_bets', 0)}/{top_player.get('total_bets', 0)})")
+        
+        # Test 5: Get global betting stats
+        success5, response5 = self.run_test(
+            "Get Global Betting Stats",
+            "GET",
+            "betting/stats/global",
+            200
+        )
+        
+        if success5:
+            self.log(f"  Total markets: {response5.get('total_markets', 0)}")
+            self.log(f"  Active markets: {response5.get('active_markets', 0)}")
+            self.log(f"  Total bets: {response5.get('total_bets', 0)}")
+            self.log(f"  Total pool: {response5.get('total_pool', 0)} coins")
+            self.log(f"  Unique bettors: {response5.get('unique_bettors', 0)}")
+            self.log(f"  Bets 24h: {response5.get('bets_24h', 0)}")
+            popular_games = response5.get('popular_games', [])
+            if popular_games:
+                self.log(f"  Most popular game: {popular_games[0].get('game', 'unknown')} ({popular_games[0].get('markets', 0)} markets)")
+        
+        # Test 6: Try to place a bet (if markets available and user has balance)
+        success6 = True
+        if markets:
+            open_market = None
+            for market in markets:
+                if market.get('status') == 'open' and market.get('options'):
+                    open_market = market
+                    break
+            
+            if open_market:
+                # Check user balance first
+                balance_success, balance_response = self.run_test(
+                    "Check Balance for Betting",
+                    "GET",
+                    "currency/balance",
+                    200
+                )
+                
+                if balance_success:
+                    current_balance = balance_response.get('balance', 0)
+                    if current_balance >= 50:  # Need at least 50 coins to bet
+                        option = open_market['options'][0]
+                        success6, response6 = self.run_test(
+                            f"Place Test Bet",
+                            "POST",
+                            "betting/bets",
+                            200,
+                            data={
+                                "market_id": open_market['id'],
+                                "option_id": option['option_id'],
+                                "amount": 25  # Bet 25 coins
+                            }
+                        )
+                        
+                        if success6:
+                            self.log(f"  ✅ Test bet placed successfully: {response6.get('id')}")
+                            self.log(f"    Amount: {response6.get('amount')} coins")
+                            self.log(f"    Option: {response6.get('option_name')}")
+                            self.log(f"    Potential payout: {response6.get('potential_payout')} coins")
+                        elif "déjà parié" in str(response6):
+                            self.log("  ℹ️ Already bet on this market (expected)")
+                            success6 = True
+                    else:
+                        self.log(f"  ℹ️ Insufficient balance for test bet: {current_balance} coins")
+            else:
+                self.log("  ℹ️ No open markets available for test betting")
+        
+        return success1 and success2 and success3 and success4 and success5 and success6
+
+    def test_data_verification(self):
+        """Test verification of initialized data - NEW COMMUNITY SYSTEM"""
+        if not self.token:
+            self.log("Skipping data verification tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING DATA VERIFICATION ===")
+        
+        # Test 1: Verify tournaments (should have 3 test tournaments)
+        success1, response1 = self.run_test(
+            "Verify Test Tournaments",
+            "GET",
+            "tournaments/?limit=10",
+            200
+        )
+        
+        tournaments_count = 0
+        if success1:
+            tournaments = response1 if isinstance(response1, list) else []
+            tournaments_count = len(tournaments)
+            self.log(f"  Found {tournaments_count} tournaments")
+            if tournaments_count >= 3:
+                self.log("  ✅ Expected tournaments found (3+)")
+                for i, tournament in enumerate(tournaments[:3]):
+                    self.log(f"    Tournament {i+1}: {tournament.get('title', 'No title')} ({tournament.get('game', 'unknown')})")
+            else:
+                self.log(f"  ❌ Not enough tournaments: {tournaments_count} (expected 3+)", "ERROR")
+        
+        # Test 2: Verify betting markets (should have 7 markets)
+        success2, response2 = self.run_test(
+            "Verify Betting Markets",
+            "GET",
+            "betting/markets?limit=20",
+            200
+        )
+        
+        markets_count = 0
+        if success2:
+            markets = response2 if isinstance(response2, list) else []
+            markets_count = len(markets)
+            self.log(f"  Found {markets_count} betting markets")
+            if markets_count >= 7:
+                self.log("  ✅ Expected betting markets found (7+)")
+                games_found = set()
+                for market in markets:
+                    game = market.get('game', 'unknown')
+                    games_found.add(game)
+                self.log(f"    Games with markets: {sorted(games_found)}")
+            else:
+                self.log(f"  ❌ Not enough betting markets: {markets_count} (expected 7+)", "ERROR")
+        
+        # Test 3: Verify test bets (should have 6 test bets)
+        success3, response3 = self.run_test(
+            "Verify Global Betting Stats for Bets Count",
+            "GET",
+            "betting/stats/global",
+            200
+        )
+        
+        total_bets = 0
+        total_pool = 0
+        if success3:
+            total_bets = response3.get('total_bets', 0)
+            total_pool = response3.get('total_pool', 0)
+            self.log(f"  Total bets placed: {total_bets}")
+            self.log(f"  Total pool: {total_pool} coins")
+            if total_bets >= 6:
+                self.log("  ✅ Expected test bets found (6+)")
+            else:
+                self.log(f"  ❌ Not enough test bets: {total_bets} (expected 6+)", "ERROR")
+            
+            if total_pool >= 850:
+                self.log("  ✅ Expected pool size found (850+ coins)")
+            else:
+                self.log(f"  ❌ Pool too small: {total_pool} coins (expected 850+)", "ERROR")
+        
+        # Test 4: Verify collections exist (check database health)
+        success4, response4 = self.run_test(
+            "Verify Database Health",
+            "GET",
+            "health",
+            200
+        )
+        
+        if success4:
+            db_status = response4.get('database', 'unknown')
+            if db_status == 'connected':
+                self.log("  ✅ Database connected - collections accessible")
+            else:
+                self.log(f"  ❌ Database issue: {db_status}", "ERROR")
+        
+        # Test 5: Verify community data initialization
+        success5, response5 = self.run_test(
+            "Verify Community Stats",
+            "GET",
+            "community/stats",
+            200
+        )
+        
+        if success5:
+            total_members = response5.get('total_members', 0)
+            active_members = response5.get('active_members', 0)
+            self.log(f"  Total community members: {total_members}")
+            self.log(f"  Active members: {active_members}")
+            if total_members >= 10:
+                self.log("  ✅ Community properly initialized (10+ members)")
+            else:
+                self.log(f"  ❌ Community not properly initialized: {total_members} members", "ERROR")
+        
+        return success1 and success2 and success3 and success4 and success5
+
     def run_all_tests(self):
         """Run all API tests"""
-        self.log("🚀 Starting Oupafamilly API Tests - CURRENCY & COMMENTS FOCUS")
+        self.log("🚀 Starting Oupafamilly API Tests - NEW COMMUNITY SYSTEMS FOCUS")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -866,23 +1305,32 @@ class OupafamillyAPITester:
             self.test_admin_dashboard()
             self.test_auth_stats()
             
-            # MAIN FOCUS: Currency and Comments System Testing
-            self.log("\n" + "="*60)
-            self.log("🎯 MAIN FOCUS: CURRENCY & COMMENTS SYSTEM TESTING")
-            self.log("="*60)
+            # MAIN FOCUS: New Community Systems Testing
+            self.log("\n" + "="*70)
+            self.log("🎯 MAIN FOCUS: NEW COMMUNITY SYSTEMS TESTING")
+            self.log("="*70)
             
-            # Test currency system
-            currency_success = self.test_currency_system()
+            # Test the 4 new community systems
+            chat_success = self.test_chat_system()
+            activity_success = self.test_activity_system()
+            betting_success = self.test_betting_system()
+            data_success = self.test_data_verification()
             
-            # Test comments system  
-            comments_success = self.test_comments_system()
-            
-            self.log("="*60)
-            if currency_success and comments_success:
-                self.log("🎉 CURRENCY & COMMENTS SYSTEMS: ALL TESTS PASSED!", "SUCCESS")
+            self.log("="*70)
+            systems_passed = sum([chat_success, activity_success, betting_success, data_success])
+            if systems_passed == 4:
+                self.log("🎉 ALL 4 NEW COMMUNITY SYSTEMS: TESTS PASSED!", "SUCCESS")
             else:
-                self.log("❌ CURRENCY & COMMENTS SYSTEMS: SOME TESTS FAILED!", "ERROR")
-            self.log("="*60)
+                self.log(f"❌ NEW COMMUNITY SYSTEMS: {systems_passed}/4 SYSTEMS PASSED!", "ERROR")
+                if not chat_success:
+                    self.log("  - CHAT SYSTEM: FAILED", "ERROR")
+                if not activity_success:
+                    self.log("  - ACTIVITY SYSTEM: FAILED", "ERROR")
+                if not betting_success:
+                    self.log("  - BETTING SYSTEM: FAILED", "ERROR")
+                if not data_success:
+                    self.log("  - DATA VERIFICATION: FAILED", "ERROR")
+            self.log("="*70)
         
         # Additional tests for completeness
         self.test_tournaments_list()
