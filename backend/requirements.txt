@@ -31,3 +31,4 @@ structlog>=23.2.0
 bleach>=6.1.0
 email-validator>=2.1.0
 discord.py==2.3.2
+requests==2.31.0
