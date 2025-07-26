@@ -1892,7 +1892,7 @@ class OupafamillyAPITester:
                 matches_success, matches_response = self.run_test(
                     "Get Matches for Tournament",
                     "GET",
-                    f"matches/?tournament_id={tournament_id}",
+                    f"matches/tournament/{tournament_id}",
                     200
                 )
                 
