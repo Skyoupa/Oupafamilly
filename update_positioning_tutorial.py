@@ -417,7 +417,7 @@ Le **positionnement** n'est pas une position - c'est une **philosophie tactique*
         {'title': 'Positionnement et angles avancés'},
         {
             '$set': {
-                'title': 'Positionnement et angles sur cartes',
+                'title': 'Positionnement et angles avancés',
                 'description': 'Développez votre game sense et positionnement avec techniques tier 1 inspirées de Vitality pour dominer cartes et angles.',
                 'content': professional_content,
                 'level': 'intermediate',
