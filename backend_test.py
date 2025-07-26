@@ -2088,11 +2088,11 @@ class OupafamillyAPITester:
             }
         )
         
-        if not success7_test:  # We expect this to fail (404 for fake match)
+        if success7_test:  # We expect this to succeed with 404 (match not found)
             self.log(f"  ✅ Match validation working correctly (404 for fake match ID)")
             success7 = True
         else:
-            self.log(f"  ❌ Match validation failed - should have been rejected", "ERROR")
+            self.log(f"  ❌ Match validation failed - expected 404 for fake match ID", "ERROR")
             success7 = False
         
         # Test 8: Test with non-existent match ID
@@ -2108,11 +2108,11 @@ class OupafamillyAPITester:
             }
         )
         
-        if not success8_test:  # We expect this to fail (404)
-            self.log(f"  ✅ Non-existent match validation working correctly (rejected)")
+        if success8_test:  # We expect this to succeed with 404 (match not found)
+            self.log(f"  ✅ Non-existent match validation working correctly (404 returned)")
             success8 = True
         else:
-            self.log(f"  ❌ Non-existent match validation failed - should have been rejected", "ERROR")
+            self.log(f"  ❌ Non-existent match validation failed - expected 404", "ERROR")
             success8 = False
         
         return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8
