@@ -180,6 +180,18 @@ backend:
         agent: "testing"
         comment: "✅ SYSTÈME PLANIFICATION MATCHS VALIDÉ À 100% - Tests complets réussis sur les 6 endpoints : ✅ GET /api/match-scheduling/tournament/{tournament_id}/matches fonctionne parfaitement (retourne structure complète avec statistiques) ✅ POST /api/match-scheduling/schedule-match validation correcte (404 pour match inexistant - comportement attendu) ✅ PUT /api/match-scheduling/match/{match_id}/schedule validation opérationnelle ✅ DELETE /api/match-scheduling/match/{match_id}/schedule validation fonctionnelle ✅ GET /api/match-scheduling/upcoming-matches retourne liste vide (normal, pas de matchs programmés) ✅ GET /api/match-scheduling/schedule-conflicts/{tournament_id} détection conflits opérationnelle (0 conflits détectés) ✅ Validation dates passées fonctionnelle ✅ Validation permissions admin/organisateur active ✅ Enrichissement automatique noms participants implémenté. Système 100% prêt pour production. Note: Fonctionnalité complète nécessite tournois avec participants et matchs générés."
 
+  - task: "Diagnostic endpoint des tournois pour sélecteur vide"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/tournaments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎉 DIAGNOSTIC TOURNOIS RÉUSSI À 100% - Tests complets sur endpoints tournois pour résoudre problème sélecteur vide : ✅ GET /api/tournaments retourne 5 tournois (incluant 'CS2 Championship 2025' et 'Weekly CS2 Cup' demandés) ✅ GET /api/tournaments?limit=20 fonctionne parfaitement (5 tournois) ✅ GET /api/tournaments?game=cs2 retourne 3 tournois CS2 ✅ Endpoint public (pas d'authentification requise) ✅ Structure JSON complète avec tous champs requis (id, title, game, status, tournament_type) ✅ Statuts corrects : 'open', 'draft', 'in_progress' ✅ Types corrects : 'elimination', 'round_robin' ✅ 10/10 tests backend réussis (100%). CONCLUSION: L'API backend fonctionne parfaitement - le problème du sélecteur vide vient du frontend (intégration API ou traitement des données)."
+
   - task: "Community Members API endpoint"
     implemented: true
     working: true
