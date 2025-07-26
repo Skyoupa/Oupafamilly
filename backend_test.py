@@ -296,6 +296,107 @@ class OupafamillyAPITester:
         
         return success1 and success2
 
+    def test_cs2_economy_tutorial_french_translation(self):
+        """Test specific CS2 Economy tutorial French translation - MAIN FOCUS"""
+        self.log("=== TESTING CS2 ECONOMY TUTORIAL FRENCH TRANSLATION ===")
+        
+        # Get CS2 tutorials specifically
+        success, response = self.run_test(
+            "Get CS2 Tutorials for Economy Check",
+            "GET",
+            "content/tutorials?game=cs2",
+            200
+        )
+        
+        if not success:
+            self.log("❌ Failed to get CS2 tutorials", "ERROR")
+            return False
+        
+        tutorials = response if isinstance(response, list) else []
+        economy_tutorial = None
+        
+        # Find the specific economy tutorial
+        for tutorial in tutorials:
+            if "Économie CS2" in tutorial.get('title', '') and "comprendre les achats" in tutorial.get('title', ''):
+                economy_tutorial = tutorial
+                break
+        
+        if not economy_tutorial:
+            self.log("❌ Economy tutorial 'Économie CS2 : comprendre les achats' not found", "ERROR")
+            return False
+        
+        self.log(f"✅ Found Economy Tutorial: {economy_tutorial.get('title')}")
+        
+        # Get full tutorial details
+        tutorial_id = economy_tutorial.get('id')
+        success_detail, tutorial_detail = self.run_test(
+            "Get Economy Tutorial Details",
+            "GET",
+            f"content/tutorials/{tutorial_id}",
+            200
+        )
+        
+        if not success_detail:
+            self.log("❌ Failed to get economy tutorial details", "ERROR")
+            return False
+        
+        content = tutorial_detail.get('content', '')
+        title = tutorial_detail.get('title', '')
+        
+        self.log(f"  Tutorial Title: {title}")
+        self.log(f"  Content Length: {len(content)} characters")
+        
+        # Check for specific French translations that were mentioned in the context
+        translation_checks = [
+            ("Élite", "Elite → Élite translation"),
+            ("Niveau 1", "Tier 1 → Niveau 1 translation"),
+            ("SITUATIONS DE FORCE-BUY", "FORCE-BUY SITUATIONS → SITUATIONS DE FORCE-BUY translation"),
+            ("Validé professionnellement", "Professional validated → Validé professionnellement translation")
+        ]
+        
+        translation_success = True
+        for french_term, description in translation_checks:
+            if french_term in content:
+                self.log(f"  ✅ {description}: Found '{french_term}'")
+            else:
+                self.log(f"  ❌ {description}: Missing '{french_term}'", "ERROR")
+                translation_success = False
+        
+        # Check for remaining English terms that should have been translated
+        english_terms_to_avoid = [
+            "Elite",
+            "Tier 1", 
+            "FORCE-BUY SITUATIONS (Professional validated)",
+            "Professional validated"
+        ]
+        
+        english_found = []
+        for english_term in english_terms_to_avoid:
+            if english_term in content:
+                english_found.append(english_term)
+        
+        if english_found:
+            self.log(f"  ❌ Found untranslated English terms: {english_found}", "ERROR")
+            translation_success = False
+        else:
+            self.log("  ✅ No problematic English terms found")
+        
+        # Check overall French content quality
+        french_indicators = ["les", "des", "une", "dans", "pour", "avec", "sur", "par", "de", "du", "la", "le"]
+        french_count = sum(content.lower().count(indicator) for indicator in french_indicators)
+        
+        if french_count > 10:  # Should have plenty of French words
+            self.log(f"  ✅ Content appears to be in French (French indicators: {french_count})")
+        else:
+            self.log(f"  ❌ Content may not be fully in French (French indicators: {french_count})", "ERROR")
+            translation_success = False
+        
+        # Show a sample of the content for verification
+        content_sample = content[:300] + "..." if len(content) > 300 else content
+        self.log(f"  Content Sample: {content_sample}")
+        
+        return translation_success
+
     def test_tutorials_endpoints(self):
         """Test tutorial endpoints - MAIN FOCUS FOR VALIDATION"""
         self.log("=== TESTING TUTORIALS ENDPOINTS ===")
