@@ -16,7 +16,7 @@ from datetime import datetime
 from database import db, client
 
 # Import route modules
-from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments, chat, activity, betting, admin_economy, match_scheduling, monitoring, achievements, elo
+from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments, chat, activity, betting, admin_economy, match_scheduling, monitoring, achievements, elo, steam
 
 # Configure structured logging and monitoring
 from monitoring import configure_structured_logging, app_logger, RequestLoggingMiddleware
