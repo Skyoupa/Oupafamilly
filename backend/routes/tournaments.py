@@ -44,7 +44,7 @@ async def create_tournament(
 
 @router.get("/", response_model=List[Tournament])
 async def get_tournaments(
-    status: Optional[TournamentStatus] = None,
+    tournament_status: Optional[TournamentStatus] = None,
     game: Optional[Game] = None,
     limit: int = Query(20, le=100),
     skip: int = Query(0, ge=0)
@@ -52,8 +52,8 @@ async def get_tournaments(
     """Get tournaments with optional filtering."""
     try:
         filter_dict = {}
-        if status:
-            filter_dict["status"] = status
+        if tournament_status:
+            filter_dict["status"] = tournament_status
         if game:
             filter_dict["game"] = game
         
