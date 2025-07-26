@@ -275,12 +275,26 @@ const Communaute = () => {
 
       if (response.ok) {
         alert('Message envoyé !');
+        setMessageContent('');
+        setSelectedRecipient('');
         fetchCommunityFeatures();
       }
     } catch (error) {
       console.error('Erreur envoi message:', error);
     }
   };
+
+  const handleSendMessage = () => {
+    if (selectedRecipient && messageContent.trim()) {
+      sendMessage(selectedRecipient, messageContent);
+    }
+  };
+
+  const filteredMembers = members.filter(member => 
+    (member.profile?.display_name || member.username)
+      .toLowerCase()
+      .includes(memberSearch.toLowerCase())
+  );
 
   if (loading) {
     return (
