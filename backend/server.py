@@ -50,7 +50,9 @@ async def root():
             "content": "/api/content",
             "admin": "/api/admin",
             "community": "/api/community",
-            "profiles": "/api/profiles"
+            "profiles": "/api/profiles",
+            "currency": "/api/currency",
+            "comments": "/api/comments"
         }
     }
 
