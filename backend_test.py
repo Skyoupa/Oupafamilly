@@ -2564,28 +2564,24 @@ class OupafamillyAPITester:
             rare_badges = response4.get("badges", []) if isinstance(response4, dict) else []
             self.log(f"  Rare badges: {len(rare_badges)} found")
         
-        # Test 5: Get badge progress (test with first available badge)
-        success5 = True
-        if available_badges:
-            first_badge_id = available_badges[0].get("id")
-            if first_badge_id:
-                success5, response5 = self.run_test(
-                    f"Get Badge Progress ({available_badges[0].get('name')})",
-                    "GET",
-                    f"achievements/progress/{first_badge_id}",
-                    200
-                )
-                
-                if success5:
-                    progress = response5.get("overall_progress", 0) if isinstance(response5, dict) else 0
-                    badge_name = response5.get("badge_name", "Unknown") if isinstance(response5, dict) else "Unknown"
-                    self.log(f"  Progress for '{badge_name}': {progress*100:.1f}%")
-                    
-                    criteria_progress = response5.get("criteria_progress", {}) if isinstance(response5, dict) else {}
-                    for criterion, details in criteria_progress.items():
-                        current = details.get("current", 0)
-                        required = details.get("required", 0)
-                        self.log(f"    {criterion}: {current}/{required}")
+        # Test 5: Get badge progress (test with a known badge key)
+        success5, response5 = self.run_test(
+            f"Get Badge Progress (first_tournament_win)",
+            "GET",
+            f"achievements/progress/first_tournament_win",
+            200
+        )
+        
+        if success5:
+            progress = response5.get("overall_progress", 0) if isinstance(response5, dict) else 0
+            badge_name = response5.get("badge_name", "Unknown") if isinstance(response5, dict) else "Unknown"
+            self.log(f"  Progress for '{badge_name}': {progress*100:.1f}%")
+            
+            criteria_progress = response5.get("criteria_progress", {}) if isinstance(response5, dict) else {}
+            for criterion, details in criteria_progress.items():
+                current = details.get("current", 0)
+                required = details.get("required", 0)
+                self.log(f"    {criterion}: {current}/{required}")
         
         # Test 6: Trigger manual achievement check
         success6, response6 = self.run_test(
