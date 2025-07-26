@@ -329,10 +329,10 @@ async def claim_daily_bonus(current_user: User = Depends(get_current_active_user
                 detail="Vous avez déjà réclamé votre bonus quotidien aujourd'hui"
             )
         
-        # Calculer le bonus (base 10, +bonus selon le niveau)
+        # Calculer le bonus (base réduite 5, +1 par niveau pour équilibrer l'économie)
         profile = await db.user_profiles.find_one({"user_id": current_user.id})
         user_level = profile.get("level", 1) if profile else 1
-        bonus_amount = 10 + (user_level * 2)  # 10 + 2 par niveau
+        bonus_amount = 5 + (user_level * 1)  # Base 5 + 1 par niveau (au lieu de 10 + 2)
         
         # Créer la transaction de bonus
         transaction = CoinTransaction(
