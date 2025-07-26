@@ -851,6 +851,221 @@ class AchievementEngine:
                     })
                     if user_count_before >= required_value:
                         return False
+                
+                # 🆕 NOUVEAUX CRITÈRES BADGES ÉLITE
+                
+                elif criterion == "max_coins_saved":
+                    # Maximum de coins économisés
+                    current_coins = user_data.get("coins", 0)
+                    if current_coins < required_value:
+                        return False
+                
+                elif criterion == "unique_items_bought":
+                    # Articles uniques achetés
+                    pipeline = [
+                        {"$match": {"user_id": user_id, "transaction_type": "marketplace_purchase"}},
+                        {"$group": {"_id": "$item_id"}},
+                        {"$count": "unique_items"}
+                    ]
+                    result = await db.transactions.aggregate(pipeline).to_list(1)
+                    count = result[0]["unique_items"] if result else 0
+                    if count < required_value:
+                        return False
+                
+                elif criterion == "consecutive_tournament_wins":
+                    # Victoires consécutives de tournois
+                    # Dans une vraie implémentation, on trackerat la streak
+                    return False  # Placeholder - nécessite tracking des streaks
+                
+                elif criterion == "daily_bonus_streak":
+                    # Streak bonus quotidien
+                    streak = user_data.get("daily_bonus_streak", 0)
+                    if streak < required_value:
+                        return False
+                
+                elif criterion == "total_headshots":
+                    # Total headshots (stats gaming)
+                    stats = user_data.get("gaming_stats", {})
+                    headshots = stats.get("total_headshots", 0)
+                    if headshots < required_value:
+                        return False
+                
+                elif criterion == "clutch_wins":
+                    # Situations clutch gagnées
+                    stats = user_data.get("gaming_stats", {})
+                    clutches = stats.get("clutch_wins", 0)
+                    if clutches < required_value:
+                        return False
+                
+                elif criterion == "total_aces":
+                    # Total Ace réalisés
+                    stats = user_data.get("gaming_stats", {})
+                    aces = stats.get("total_aces", 0)
+                    if aces < required_value:
+                        return False
+                
+                elif criterion == "match_win_streak":
+                    # Streak victoires matchs
+                    stats = user_data.get("gaming_stats", {})
+                    streak = stats.get("current_win_streak", 0)
+                    if streak < required_value:
+                        return False
+                
+                elif criterion == "consecutive_bet_wins":
+                    # Paris gagnés consécutifs
+                    betting_stats = user_data.get("betting_stats", {})
+                    streak = betting_stats.get("consecutive_wins", 0)
+                    if streak < required_value:
+                        return False
+                
+                elif criterion == "players_mentored":
+                    # Joueurs mentorés
+                    mentoring = user_data.get("mentoring_stats", {})
+                    count = mentoring.get("players_helped", 0)
+                    if count < required_value:
+                        return False
+                
+                elif criterion == "events_organized":
+                    # Événements organisés
+                    events = await db.events.count_documents({"organizer_id": user_id})
+                    if events < required_value:
+                        return False
+                
+                elif criterion == "user_level":
+                    # Niveau utilisateur
+                    level = user_data.get("level", 1)
+                    if level < required_value:
+                        return False
+                
+                elif criterion == "unique_badges":
+                    # Badges uniques obtenus
+                    badge_count = await db.user_badges.count_documents({"user_id": user_id})
+                    if badge_count < required_value:
+                        return False
+                
+                elif criterion == "guides_written":
+                    # Guides/tutoriels écrits
+                    guides = await db.user_guides.count_documents({"author_id": user_id})
+                    if guides < required_value:
+                        return False
+                
+                elif criterion == "screenshots_shared":
+                    # Screenshots partagés
+                    screenshots = await db.user_screenshots.count_documents({"user_id": user_id})
+                    if screenshots < required_value:
+                        return False
+                
+                elif criterion == "accuracy_matches":
+                    # Matchs avec précision élevée
+                    stats = user_data.get("gaming_stats", {})
+                    accuracy_matches = stats.get("high_accuracy_matches", 0)
+                    if accuracy_matches < required_value:
+                        return False
+                
+                elif criterion == "min_accuracy":
+                    # Précision minimale requise
+                    stats = user_data.get("gaming_stats", {})
+                    avg_accuracy = stats.get("average_accuracy", 0)
+                    if avg_accuracy < required_value:
+                        return False
+                
+                elif criterion == "daily_playtime_hours":
+                    # Temps de jeu quotidien
+                    today_playtime = user_data.get("today_playtime_hours", 0)
+                    if today_playtime < required_value:
+                        return False
+                
+                elif criterion == "night_sessions":
+                    # Sessions nocturnes
+                    stats = user_data.get("gaming_stats", {})
+                    night_sessions = stats.get("night_sessions", 0)
+                    if night_sessions < required_value:
+                        return False
+                
+                elif criterion == "flawless_matches":
+                    # Matchs sans mort
+                    stats = user_data.get("gaming_stats", {})
+                    flawless = stats.get("flawless_victories", 0)
+                    if flawless < required_value:
+                        return False
+                
+                elif criterion == "upset_victories":
+                    # Victoires inattendues
+                    stats = user_data.get("competitive_stats", {})
+                    upsets = stats.get("upset_victories", 0)
+                    if upsets < required_value:
+                        return False
+                
+                elif criterion == "underdog_wins":
+                    # Victoires en underdog
+                    stats = user_data.get("competitive_stats", {})
+                    underdog_wins = stats.get("underdog_wins", 0)
+                    if underdog_wins < required_value:
+                        return False
+                
+                elif criterion == "comeback_victories":
+                    # Victoires en remontée
+                    stats = user_data.get("competitive_stats", {})
+                    comebacks = stats.get("comeback_victories", 0)
+                    if comebacks < required_value:
+                        return False
+                
+                elif criterion == "high_odds_wins":
+                    # Paris gagnés à haute cote
+                    betting_stats = user_data.get("betting_stats", {})
+                    high_odds_wins = betting_stats.get("high_odds_wins", 0)
+                    if high_odds_wins < required_value:
+                        return False
+                
+                elif criterion == "matches_analyzed":
+                    # Matchs analysés en détail
+                    analysis_count = await db.match_analyses.count_documents({"analyst_id": user_id})
+                    if analysis_count < required_value:
+                        return False
+                
+                elif criterion == "spray_control_accuracy":
+                    # Précision du spray control
+                    stats = user_data.get("gaming_stats", {})
+                    spray_accuracy = stats.get("spray_control_accuracy", 0)
+                    if spray_accuracy < required_value:
+                        return False
+                
+                elif criterion == "avg_reaction_time":
+                    # Temps de réaction moyen (plus petit = meilleur)
+                    stats = user_data.get("gaming_stats", {})
+                    reaction_time = stats.get("avg_reaction_time_ms", 999)
+                    if reaction_time > required_value:  # Inverse : plus petit = meilleur
+                        return False
+                
+                elif criterion == "perseverance_losses":
+                    # Persévérance après défaites
+                    stats = user_data.get("mental_stats", {})
+                    max_loss_streak = stats.get("max_loss_streak_endured", 0)
+                    if max_loss_streak < required_value:
+                        return False
+                
+                elif criterion == "rank_improvement":
+                    # Amélioration de rang
+                    elo_history = user_data.get("elo_history", [])
+                    if required_value == "bronze_to_gold":
+                        # Vérifier s'il est passé de Bronze à Gold
+                        if not self._check_rank_progression(elo_history, "bronze", "gold"):
+                            return False
+                
+                elif criterion == "holiday_tournament_wins":
+                    # Tournois spéciaux gagnés
+                    wins = await db.tournament_results.count_documents({
+                        "winner_id": user_id,
+                        "tournament_type": "holiday_special"
+                    })
+                    if wins < required_value:
+                        return False
+                
+                elif criterion == "anniversary_participation":
+                    # Participation événement anniversaire
+                    participation = user_data.get("special_events", {}).get("anniversary_2024", False)
+                    if not participation:
+                        return False
             
             return True
             
