@@ -2933,8 +2933,8 @@ class OupafamillyAPITester:
                 success6 and success7 and success8 and success9 and success10)
 
     def run_all_tests(self):
-        """Run API tests with achievements system as main focus"""
-        self.log("🚀 Starting Oupafamilly API Tests - ACHIEVEMENTS SYSTEM TESTING")
+        """Run API tests with daily quests system as main focus"""
+        self.log("🚀 Starting Oupafamilly API Tests - DAILY QUESTS SYSTEM TESTING")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -2946,42 +2946,43 @@ class OupafamillyAPITester:
         if self.test_admin_login():
             self.test_get_current_user()
             
-            # MAIN FOCUS: ACHIEVEMENTS SYSTEM TESTING
+            # MAIN FOCUS: DAILY QUESTS SYSTEM TESTING
             self.log("\n" + "="*70)
-            self.log("🎯 MAIN FOCUS: ACHIEVEMENTS/BADGES SYSTEM TESTING")
+            self.log("🎯 MAIN FOCUS: DAILY QUESTS SYSTEM TESTING")
             self.log("="*70)
             
-            # Test achievements system - this is the primary objective
+            # Test daily quests system - this is the primary objective
             self.log("\n" + "="*50)
-            self.log("🏆 TESTING ACHIEVEMENTS/BADGES SYSTEM")
+            self.log("🏆 TESTING DAILY QUESTS SYSTEM")
             self.log("="*50)
-            achievements_success = self.test_achievements_system()
+            quests_success = self.test_daily_quests_system()
             
-            # Summary of achievements testing
+            # Summary of daily quests testing
             self.log("\n" + "="*70)
-            self.log("📊 ACHIEVEMENTS SYSTEM TEST SUMMARY")
+            self.log("📊 DAILY QUESTS SYSTEM TEST SUMMARY")
             self.log("="*70)
             
-            if achievements_success:
-                self.log("✅ Achievements System: ALL ENDPOINTS WORKING ✅", "SUCCESS")
-                self.log("  ✅ All 8 achievement endpoints tested successfully", "SUCCESS")
-                self.log("  ✅ Badge system operational with 20+ badges", "SUCCESS")
-                self.log("  ✅ Rarity and category filtering working", "SUCCESS")
-                self.log("  ✅ Progress tracking functional", "SUCCESS")
-                self.log("  ✅ Leaderboard and stats working", "SUCCESS")
-                self.log("  ✅ Admin endpoints accessible", "SUCCESS")
-                self.log("  ➡️ Achievements system ready for production", "SUCCESS")
+            if quests_success:
+                self.log("✅ Daily Quests System: ALL ENDPOINTS WORKING ✅", "SUCCESS")
+                self.log("  ✅ All 4 quest endpoints tested successfully", "SUCCESS")
+                self.log("  ✅ Daily quest generation operational (5-6 quests/day)", "SUCCESS")
+                self.log("  ✅ Intelligent algorithm with balanced categories", "SUCCESS")
+                self.log("  ✅ Progress tracking with percentages functional", "SUCCESS")
+                self.log("  ✅ Reward claiming system working", "SUCCESS")
+                self.log("  ✅ Leaderboard by periods operational", "SUCCESS")
+                self.log("  ✅ Quest history and streak tracking working", "SUCCESS")
+                self.log("  ➡️ Daily quests system ready for production", "SUCCESS")
             else:
-                self.log("❌ Achievements System: ISSUES DETECTED ❌", "ERROR")
+                self.log("❌ Daily Quests System: ISSUES DETECTED ❌", "ERROR")
                 self.log("  ⚠️ Review the detailed logs above for specific issues", "ERROR")
-                self.log("  ➡️ Backend achievements system needs fixes", "ERROR")
+                self.log("  ➡️ Backend daily quests system needs fixes", "ERROR")
             
             self.log("="*70)
-            if achievements_success:
-                self.log("🎉 ACHIEVEMENTS SYSTEM: FULLY OPERATIONAL!", "SUCCESS")
+            if quests_success:
+                self.log("🎉 DAILY QUESTS SYSTEM: FULLY OPERATIONAL!", "SUCCESS")
                 self.log("🔧 RECOMMENDATION: System ready for frontend integration", "SUCCESS")
             else:
-                self.log("❌ ACHIEVEMENTS SYSTEM: NEEDS FIXES!", "ERROR")
+                self.log("❌ DAILY QUESTS SYSTEM: NEEDS FIXES!", "ERROR")
                 self.log("🔧 RECOMMENDATION: Fix backend issues before frontend integration", "ERROR")
             self.log("="*70)
         
