@@ -3262,8 +3262,8 @@ class OupafamillyAPITester:
         return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8 and success9 and success10
 
     def run_all_tests(self):
-        """Run API tests with daily quests system as main focus"""
-        self.log("🚀 Starting Oupafamilly API Tests - DAILY QUESTS SYSTEM TESTING")
+        """Run API tests with ELO system as main focus"""
+        self.log("🚀 Starting Oupafamilly API Tests - ELO SYSTEM TESTING")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -3275,43 +3275,44 @@ class OupafamillyAPITester:
         if self.test_admin_login():
             self.test_get_current_user()
             
-            # MAIN FOCUS: DAILY QUESTS SYSTEM TESTING
+            # MAIN FOCUS: ELO SYSTEM TESTING
             self.log("\n" + "="*70)
-            self.log("🎯 MAIN FOCUS: DAILY QUESTS SYSTEM TESTING")
+            self.log("🎯 MAIN FOCUS: ELO SYSTEM TESTING")
             self.log("="*70)
             
-            # Test daily quests system - this is the primary objective
+            # Test ELO system - this is the primary objective
             self.log("\n" + "="*50)
-            self.log("🏆 TESTING DAILY QUESTS SYSTEM")
+            self.log("🏆 TESTING ELO SYSTEM")
             self.log("="*50)
-            quests_success = self.test_daily_quests_system()
+            elo_success = self.test_elo_system()
             
-            # Summary of daily quests testing
+            # Summary of ELO testing
             self.log("\n" + "="*70)
-            self.log("📊 DAILY QUESTS SYSTEM TEST SUMMARY")
+            self.log("📊 ELO SYSTEM TEST SUMMARY")
             self.log("="*70)
             
-            if quests_success:
-                self.log("✅ Daily Quests System: ALL ENDPOINTS WORKING ✅", "SUCCESS")
-                self.log("  ✅ All 4 quest endpoints tested successfully", "SUCCESS")
-                self.log("  ✅ Daily quest generation operational (5-6 quests/day)", "SUCCESS")
-                self.log("  ✅ Intelligent algorithm with balanced categories", "SUCCESS")
-                self.log("  ✅ Progress tracking with percentages functional", "SUCCESS")
-                self.log("  ✅ Reward claiming system working", "SUCCESS")
-                self.log("  ✅ Leaderboard by periods operational", "SUCCESS")
-                self.log("  ✅ Quest history and streak tracking working", "SUCCESS")
-                self.log("  ➡️ Daily quests system ready for production", "SUCCESS")
+            if elo_success:
+                self.log("✅ ELO System: ALL ENDPOINTS WORKING ✅", "SUCCESS")
+                self.log("  ✅ All 9 ELO endpoints tested successfully", "SUCCESS")
+                self.log("  ✅ 8-tier system operational (Bronze to Challenger)", "SUCCESS")
+                self.log("  ✅ Intelligent ELO calculations with adaptive K-factor", "SUCCESS")
+                self.log("  ✅ Multi-game and multi-mode support functional", "SUCCESS")
+                self.log("  ✅ Leaderboards with filtering operational", "SUCCESS")
+                self.log("  ✅ Match history tracking working", "SUCCESS")
+                self.log("  ✅ Global statistics and tier distribution working", "SUCCESS")
+                self.log("  ✅ Admin match processing and ELO reset functional", "SUCCESS")
+                self.log("  ➡️ ELO system ready for production", "SUCCESS")
             else:
-                self.log("❌ Daily Quests System: ISSUES DETECTED ❌", "ERROR")
+                self.log("❌ ELO System: ISSUES DETECTED ❌", "ERROR")
                 self.log("  ⚠️ Review the detailed logs above for specific issues", "ERROR")
-                self.log("  ➡️ Backend daily quests system needs fixes", "ERROR")
+                self.log("  ➡️ Backend ELO system needs fixes", "ERROR")
             
             self.log("="*70)
-            if quests_success:
-                self.log("🎉 DAILY QUESTS SYSTEM: FULLY OPERATIONAL!", "SUCCESS")
+            if elo_success:
+                self.log("🎉 ELO SYSTEM: FULLY OPERATIONAL!", "SUCCESS")
                 self.log("🔧 RECOMMENDATION: System ready for frontend integration", "SUCCESS")
             else:
-                self.log("❌ DAILY QUESTS SYSTEM: NEEDS FIXES!", "ERROR")
+                self.log("❌ ELO SYSTEM: NEEDS FIXES!", "ERROR")
                 self.log("🔧 RECOMMENDATION: Fix backend issues before frontend integration", "ERROR")
             self.log("="*70)
         
