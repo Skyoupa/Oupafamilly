@@ -368,8 +368,12 @@ async def admin_get_all_user_badges(
         
         all_badges = await db.user_badges.aggregate(pipeline).to_list(1000)
         
-        # Enrichir avec info badge
+        # Enrichir avec info badge et convertir ObjectId
         for badge in all_badges:
+            # Convertir ObjectId en string
+            if "_id" in badge:
+                badge["_id"] = str(badge["_id"])
+            
             badge_info = achievement_engine.badges_registry.get(badge["badge_id"])
             if badge_info:
                 badge["badge_name"] = badge_info.name
