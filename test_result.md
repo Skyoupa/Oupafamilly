@@ -153,6 +153,18 @@ backend:
         agent: "testing"
         comment: "✅ MARKETPLACE CUSTOMS VALIDÉ - Tests complets réussis : ✅ GET /api/currency/marketplace retourne 19 articles (dépasse objectif 15+) ✅ 7 types d'articles présents : avatars (5), badges (3), titres (2), thèmes (2), étiquettes customs (5), bannières (1), emotes (1) ✅ 16 articles avec données customs détectés ✅ Système de prix et disponibilité fonctionnel ✅ Intégration avec inventaire utilisateur. Minor: Système de rareté affiche tout en 'common' mais fonctionnalité core opérationnelle. Marketplace avec customs 100% fonctionnel."
 
+  - task: "Système de planification des matchs de tournoi"
+    implemented: true
+    working: false
+    file: "/app/backend/routes/match_scheduling.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "🚧 NOUVELLEMENT IMPLÉMENTÉ - Système de planification des matchs créé avec endpoints complets : ✅ GET /api/match-scheduling/tournament/{tournament_id}/matches - Vue complète des matchs avec planification ✅ POST /api/match-scheduling/schedule-match - Programmer un match (admin/organisateur) ✅ PUT /api/match-scheduling/match/{match_id}/schedule - Modifier programmation ✅ DELETE /api/match-scheduling/match/{match_id}/schedule - Supprimer programmation ✅ GET /api/match-scheduling/upcoming-matches - Matchs à venir ✅ GET /api/match-scheduling/schedule-conflicts/{tournament_id} - Détection conflits. Router enregistré dans server.py. NÉCESSITE TESTING BACKEND."
+
   - task: "Community Members API endpoint"
     implemented: true
     working: true
