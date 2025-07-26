@@ -247,8 +247,8 @@ AWP perdue = 4 750$ de dégâts
 #### **Exercice 1 : Calcul Rapide**
 1. **Situation** : Équipe a perdu 3 rounds consécutifs
 2. **Calcul** : Budget disponible pour chaque joueur
-3. **Décision** : Force-buy ou eco selon budget
-4. **Répétition** : 10 scenarios différents
+3. **Décision** : Achat forcé ou eco selon budget
+4. **Répétition** : 10 scénarios différents
 
 #### **Exercice 2 : Lecture Adverse**
 1. **Observation** : Analyser les achats adverses
@@ -256,7 +256,7 @@ AWP perdue = 4 750$ de dégâts
 3. **Adaptation** : Ajuster sa stratégie d'achat
 4. **Validation** : Vérifier les prédictions
 
-#### **Exercice 3 : Optimisation Team**
+#### **Exercice 3 : Optimisation Équipe**
 1. **Situation** : Budget limité pour l'équipe
 2. **Répartition** : Distribuer l'argent selon les rôles
 3. **Priorisation** : Déterminer qui achète quoi
@@ -266,13 +266,13 @@ AWP perdue = 4 750$ de dégâts
 
 #### **Analyse Quotidienne**
 - **Review Économique** : Analyser ses décisions d'achat
-- **Pattern Recognition** : Identifier les patterns adverses
-- **Calculation Practice** : Entraîner les calculs rapides
+- **Reconnaissance Patterns** : Identifier les patterns adverses
+- **Pratique Calculs** : Entraîner les calculs rapides
 
 #### **Amélioration Hebdomadaire**
-- **Demo Analysis** : Étudier l'économie en demo
-- **Team Discussion** : Discuter des stratégies économiques
-- **Meta Updates** : S'adapter aux évolutions économiques
+- **Analyse Démo** : Étudier l'économie en demo
+- **Discussion Équipe** : Discuter des stratégies économiques
+- **Mises à Jour Méta** : S'adapter aux évolutions économiques
 
 ---
 
