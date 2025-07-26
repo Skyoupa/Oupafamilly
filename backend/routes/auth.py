@@ -11,7 +11,8 @@ from auth import (
     get_current_active_user, get_user_by_email, ACCESS_TOKEN_EXPIRE_MINUTES,
     pwd_context
 )
-from motor.motor_asyncio import AsyncIOMotorClient
+from validation import SecurityValidator, validate_request_security, log_security_event
+from monitoring import log_user_action, log_performance
 import logging
 
 logger = logging.getLogger(__name__)
