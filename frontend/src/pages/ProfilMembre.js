@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './ProfilMembre.css';
 
 const ProfilMembre = () => {
   const { memberId } = useParams();
-  const { API_BASE_URL, user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Get API base URL from environment
+  const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+  
+  // Get current user from localStorage (simple auth check)
+  const [currentUser, setCurrentUser] = useState(null);
   
   // Profile data
   const [memberProfile, setMemberProfile] = useState(null);
@@ -25,6 +29,13 @@ const ProfilMembre = () => {
   const [showCommentForm, setShowCommentForm] = useState(false);
 
   useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Simple user object - in real app you'd decode the token
+      setCurrentUser({ id: 'current_user_id', role: 'user' });
+    }
+    
     if (memberId) {
       fetchMemberProfile();
       fetchComments();
@@ -36,7 +47,7 @@ const ProfilMembre = () => {
       setLoading(true);
       
       // Get member profile
-      const profileResponse = await fetch(`${API_BASE_URL}/profiles/${memberId}`);
+      const profileResponse = await fetch(`${API_BASE_URL}/api/profiles/${memberId}`);
       if (profileResponse.ok) {
         const profileData = await profileResponse.json();
         setMemberProfile(profileData);
@@ -46,10 +57,14 @@ const ProfilMembre = () => {
       }
 
       // Get member stats
-      const statsResponse = await fetch(`${API_BASE_URL}/profiles/${memberId}/stats`);
-      if (statsResponse.ok) {
-        const statsData = await statsResponse.json();
-        setMemberStats(statsData);
+      try {
+        const statsResponse = await fetch(`${API_BASE_URL}/api/profiles/${memberId}/stats`);
+        if (statsResponse.ok) {
+          const statsData = await statsResponse.json();
+          setMemberStats(statsData);
+        }
+      } catch (statsError) {
+        console.log('Stats non disponibles pour ce membre');
       }
 
     } catch (error) {
@@ -66,14 +81,14 @@ const ProfilMembre = () => {
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
       // Get comments
-      const commentsResponse = await fetch(`${API_BASE_URL}/comments/user/${memberId}`, { headers });
+      const commentsResponse = await fetch(`${API_BASE_URL}/api/comments/user/${memberId}`, { headers });
       if (commentsResponse.ok) {
         const commentsData = await commentsResponse.json();
         setComments(commentsData);
       }
 
       // Get comment stats
-      const statsResponse = await fetch(`${API_BASE_URL}/comments/stats/user/${memberId}`, { headers });
+      const statsResponse = await fetch(`${API_BASE_URL}/api/comments/stats/user/${memberId}`, { headers });
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setCommentStats(statsData);
@@ -81,6 +96,7 @@ const ProfilMembre = () => {
 
     } catch (error) {
       console.error('Erreur chargement commentaires:', error);
+      // Not critical - continue without comments
     }
   };
 
