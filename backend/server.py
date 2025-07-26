@@ -130,6 +130,7 @@ api_router.include_router(match_scheduling.router)
 api_router.include_router(monitoring.router)
 api_router.include_router(achievements.router)
 api_router.include_router(elo.router)
+api_router.include_router(steam.router)
 
 # Include the router in the main app
 app.include_router(api_router)
