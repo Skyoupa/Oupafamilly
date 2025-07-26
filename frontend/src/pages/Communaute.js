@@ -23,6 +23,7 @@ const Communaute = () => {
   const [userBets, setUserBets] = useState([]);
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showInventory, setShowInventory] = useState(false);
   
   // Messaging state
   const [memberSearch, setMemberSearch] = useState('');
