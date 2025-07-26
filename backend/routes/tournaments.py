@@ -15,6 +15,7 @@ router = APIRouter(prefix="/tournaments", tags=["Tournaments"])
 
 # Get database from database module
 from database import db
+from cache import cached, invalidate
 
 @router.post("/", response_model=Tournament)
 async def create_tournament(
