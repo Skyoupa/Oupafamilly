@@ -16,7 +16,11 @@ from datetime import datetime
 from database import db, client
 
 # Import route modules
-from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments, chat, activity, betting, admin_economy, match_scheduling
+from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments, chat, activity, betting, admin_economy, match_scheduling, monitoring
+
+# Configure structured logging and monitoring
+from monitoring import configure_structured_logging, app_logger
+configure_structured_logging()
 
 # Create rate limiter
 limiter = Limiter(key_func=get_remote_address)
