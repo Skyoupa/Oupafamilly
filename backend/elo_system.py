@@ -483,6 +483,7 @@ class EloEngine:
                 },
                 {
                     "$project": {
+                        "_id": 0,  # Exclude MongoDB ObjectId
                         "user_id": 1,
                         "game": 1,
                         "mode": 1,
