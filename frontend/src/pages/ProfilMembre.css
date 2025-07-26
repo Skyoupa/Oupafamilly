@@ -178,15 +178,15 @@
 }
 
 .info-label {
-  font-weight: 700;
-  color: #1a202c;
-  font-size: 0.95rem;
+  font-weight: 800;
+  color: #000000;
+  font-size: 1rem;
 }
 
 .info-value {
-  font-weight: 600;
-  color: #2d3748;
-  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  font-size: 1rem;
 }
 
 .user-id {
