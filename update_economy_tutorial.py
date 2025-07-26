@@ -182,9 +182,9 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 #### **Scenario 3 : Fin de Mi-Temps**
 **Situation** : Derniers rounds avant changement
 **Décision** : 
-- **Spend Maximum** : Utiliser tout l'argent disponible
-- **Weapon Drops** : Partager les armes chères
-- **Utility Spam** : Utiliser toutes les grenades
+- **Dépenser Maximum** : Utiliser tout l'argent disponible
+- **Drops d'Armes** : Partager les armes chères
+- **Spam Utility** : Utiliser toutes les grenades
 
 **Objectif** : Maximiser l'impact avant reset économique
 
