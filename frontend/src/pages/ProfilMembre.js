@@ -270,24 +270,12 @@ const ProfilMembre = () => {
                     </span>
                   </div>
                   <div className="info-item">
-                    <span className="info-label">ID Utilisateur :</span>
-                    <span className="info-value user-id">
-                      {memberProfile.user?.id || 'Non disponible'}
-                    </span>
-                  </div>
-                  <div className="info-item">
                     <span className="info-label">Jeux favoris :</span>
                     <span className="info-value">
                       {memberProfile.profile?.favorite_games && memberProfile.profile.favorite_games.length > 0
                         ? memberProfile.profile.favorite_games.map(game => getGameDisplay(game)).join(', ')
                         : 'Aucun jeu spécifié'
                       }
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Discord :</span>
-                    <span className="info-value">
-                      {memberProfile.profile?.discord_username || 'Non spécifié'}
                     </span>
                   </div>
                   <div className="info-item">
