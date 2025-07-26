@@ -786,6 +786,13 @@ const Communaute = () => {
                 <button className="btn-primary-pro" onClick={handleDailyBonus}>
                   🎁 Bonus Quotidien
                 </button>
+                
+                <button 
+                  className="btn-secondary-pro inventory-btn"
+                  onClick={() => setShowInventory(true)}
+                >
+                  💼 Mon Inventaire
+                </button>
               </div>
               
               <div className="marketplace-grid">
