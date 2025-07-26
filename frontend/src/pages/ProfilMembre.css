@@ -203,7 +203,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Special styling for important values */
+/* Special styling for important values - more compact */
 .info-value.username-value,
 .info-value.games-value,
 .info-value.steam-value,
@@ -211,22 +211,23 @@
   background: linear-gradient(135deg, #fef9e7, #fef3c7);
   color: #000000;
   font-weight: 900;
-  font-size: 1.4rem;
-  border: 4px solid #d97706;
-  text-shadow: 0 2px 4px rgba(255,255,255,0.9);
-  letter-spacing: 0.5px;
+  font-size: 1.1rem;
+  border: 2px solid #d97706;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+  letter-spacing: 0.3px;
+  padding: 0.4rem 0.6rem;
 }
 
 .info-value {
   font-weight: 900;
   color: #000000;
-  font-size: 1.3rem;
-  text-shadow: 0 3px 6px rgba(255,255,255,0.9);
+  font-size: 1.1rem;
+  text-shadow: 0 2px 4px rgba(255,255,255,0.9);
   background: linear-gradient(135deg, #ffffff, #f8fafc);
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 3px solid #1e293b;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  border: 2px solid #475569;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   font-family: 'Arial Black', Arial, sans-serif;
 }
 
