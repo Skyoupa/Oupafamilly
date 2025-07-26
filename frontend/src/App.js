@@ -77,7 +77,7 @@ function App() {
         
         const nodesToRemove = [];
         let node;
-        while (node = textWalker.nextNode()) {
+        while ((node = textWalker.nextNode())) {
           nodesToRemove.push(node.parentElement);
         }
         
