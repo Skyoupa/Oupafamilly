@@ -236,8 +236,7 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Système de planification des matchs de tournoi"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
