@@ -145,26 +145,21 @@ const Communaute = () => {
           const userBetsData = await userBetsResponse.json();
           setUserBets(userBetsData);
         }
-      }
-      if (userBetsResponse.ok) {
-        const userBetsData = await userBetsResponse.json();
-        setUserBets(userBetsData);
-      }
+        
+        // Fetch messages
+        const messagesResponse = await fetch(`${API_BASE_URL}/chat/private?limit=5`, { headers: authHeaders });
+        if (messagesResponse.ok) {
+          const messagesData = await messagesResponse.json();
+          setMessages(messagesData);
+        }
 
-      // Fetch messages
-      const messagesResponse = await fetch(`${API_BASE_URL}/chat/private?limit=5`, { headers });
-      if (messagesResponse.ok) {
-        const messagesData = await messagesResponse.json();
-        setMessages(messagesData);
+        // Fetch unread count
+        const unreadResponse = await fetch(`${API_BASE_URL}/chat/private/unread-count`, { headers: authHeaders });
+        if (unreadResponse.ok) {
+          const unreadData = await unreadResponse.json();
+          setUnreadCount(unreadData.unread_count);
+        }
       }
-
-      // Fetch unread count
-      const unreadResponse = await fetch(`${API_BASE_URL}/chat/private/unread-count`, { headers });
-      if (unreadResponse.ok) {
-        const unreadData = await unreadResponse.json();
-        setUnreadCount(unreadData.unread_count);
-      }
-
     } catch (error) {
       console.error('Erreur lors du chargement des fonctionnalités communautaires:', error);
     }
