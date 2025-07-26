@@ -6880,12 +6880,18 @@ body {
 
 /* Amélioration des badges de difficulté */
 
-/* Hide Made with Emergent badge */
-[data-testid*="emergent"], 
-[class*="emergent"], 
-[id*="emergent"],
+/* AGGRESSIVE EMERGENT BADGE REMOVAL */
+/* Target all possible badge selectors */
+*[data-testid*="emergent"], 
+*[class*="emergent"], 
+*[id*="emergent"],
+*[data-*="emergent"],
 div:has-text("Made with Emergent"),
 div:has-text("Emergent"),
+span:has-text("Made with Emergent"),
+span:has-text("Emergent"),
+button:has-text("Made with Emergent"),
+button:has-text("Emergent"),
 *[title*="Made with Emergent"],
 *[alt*="Made with Emergent"],
 *[aria-label*="Made with Emergent"],
@@ -6899,31 +6905,52 @@ div:has-text("Emergent"),
   width: 0 !important;
   height: 0 !important;
   z-index: -9999 !important;
+  pointer-events: none !important;
 }
 
-/* More aggressive selectors for bottom-right badges */
+/* Target positioned elements (common for badges) */
 div[style*="position: fixed"][style*="bottom"][style*="right"],
 div[style*="position: absolute"][style*="bottom"][style*="right"],
+div[style*="position: fixed"][style*="bottom: 20px"],
+div[style*="position: fixed"][style*="right: 20px"],
+button[style*="position: fixed"][style*="bottom"],
+button[style*="position: fixed"][style*="right"],
 .emergent-badge,
 .emergent-watermark,
 *[class*="made-with"],
 *[id*="made-with"],
-button[style*="position: fixed"],
-div[role="button"][style*="position: fixed"] {
+*[class*="watermark"],
+*[id*="watermark"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
+  pointer-events: none !important;
 }
 
-/* Hide any element containing "Made with" or "Emergent" text */
-*:has-text("Made with") {
-  display: none !important;
-}
-
-/* Target specific common badge patterns */
+/* Target by z-index (badges often have high z-index) */
+div[style*="z-index: 999"],
+div[style*="z-index: 9999"],
 div[style*="z-index"][style*="fixed"][style*="bottom"],
-div[style*="z-index"][style*="absolute"][style*="bottom"] {
+div[style*="z-index"][style*="absolute"][style*="bottom"],
+*[style*="z-index: 2147483647"] {
   display: none !important;
+}
+
+/* Catch-all for bottom corner elements */
+*[style*="bottom: 16px"][style*="right: 16px"],
+*[style*="bottom: 20px"][style*="right: 20px"],
+*[style*="bottom: 24px"][style*="right: 24px"] {
+  display: none !important;
+}
+
+/* Animation-based hiding for dynamically added elements */
+@keyframes hide-emergent {
+  from { opacity: 1; }
+  to { opacity: 0; display: none; }
+}
+
+*[data-testid]:not([data-testid=""]):not([data-testid*="main"]):not([data-testid*="app"]):not([data-testid*="page"]) {
+  animation: hide-emergent 0.1s forwards;
 }
 
 /* Marketplace improvements */
