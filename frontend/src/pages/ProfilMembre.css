@@ -319,8 +319,8 @@
   background: #e0f2fe;
   border-radius: 8px;
   text-align: center;
-  color: var(--text-white-bg-secondary);
-  font-weight: 500;
+  color: #1a365d;
+  font-weight: 600;
 }
 
 .no-comments {
