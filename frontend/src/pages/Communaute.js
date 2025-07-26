@@ -800,6 +800,59 @@ const Communaute = () => {
                 ) : (
                   marketplaceItems.map(item => (
                     <div key={item.id} className="marketplace-item">
+                      {/* Visuel de l'item */}
+                      <div className={`item-visual item-visual-${item.item_type}`}>
+                        {item.item_type === 'avatar' && (
+                          <div className="avatar-preview">
+                            <div className="avatar-icon">👤</div>
+                            <div className="avatar-effects">✨</div>
+                          </div>
+                        )}
+                        {item.item_type === 'badge' && (
+                          <div className="badge-preview">
+                            <div className="badge-icon">🏆</div>
+                            <div className="badge-text">{item.custom_data?.text || 'BADGE'}</div>
+                          </div>
+                        )}
+                        {item.item_type === 'custom_tag' && (
+                          <div 
+                            className="tag-preview"
+                            style={{
+                              background: item.custom_data?.background || 'linear-gradient(135deg, #667eea, #764ba2)',
+                              border: item.custom_data?.border || '2px solid #4c51bf',
+                              color: item.custom_data?.text_color || '#ffffff'
+                            }}
+                          >
+                            <span>MEMBRE</span>
+                          </div>
+                        )}
+                        {item.item_type === 'title' && (
+                          <div className="title-preview">
+                            <div className="title-icon">👑</div>
+                            <div 
+                              className="title-text"
+                              style={{color: item.custom_data?.title_color || '#6c5ce7'}}
+                            >
+                              {item.custom_data?.title_text || 'Titre'}
+                            </div>
+                          </div>
+                        )}
+                        {item.item_type === 'theme' && (
+                          <div className="theme-preview">
+                            <div className="theme-icon">🎨</div>
+                            <div className="theme-name">{item.name.replace('Thème Profil ', '')}</div>
+                          </div>
+                        )}
+                        {(item.item_type === 'banner' || item.item_type === 'emote') && (
+                          <div className="generic-preview">
+                            <div className="generic-icon">
+                              {item.item_type === 'banner' ? '🖼️' : '😊'}
+                            </div>
+                            <div className="generic-text">{item.item_type.toUpperCase()}</div>
+                          </div>
+                        )}
+                      </div>
+                      
                       <div className="item-header">
                         <h3>{item.name}</h3>
                         {item.is_premium && <span className="premium-badge">⭐ Premium</span>}
