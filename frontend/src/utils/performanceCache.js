@@ -3,6 +3,8 @@
  * Système de cache intelligent pour Oupafamilly
  */
 
+import React from 'react';
+
 class PerformanceCacheManager {
   constructor() {
     this.memoryCache = new Map();
