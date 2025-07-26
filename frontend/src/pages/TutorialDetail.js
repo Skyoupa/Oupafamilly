@@ -434,9 +434,9 @@ const TutorialDetail = () => {
             </div>
 
             {/* Contenu du tutoriel */}
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 tutorial-detail-container">
+            <div className="bg-gray-800 rounded-xl p-5 border border-gray-700 shadow-lg">
               <div 
-                className="prose prose-invert prose-blue max-w-none tutorial-content-enhanced"
+                className="tutorial-content prose prose-sm max-w-none"
                 style={{ 
                   color: '#f3f4f6',
                   lineHeight: '1.5',
