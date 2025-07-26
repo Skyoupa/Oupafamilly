@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class OupafamillyAPITester:
-    def __init__(self, base_url="https://917b40b9-35ed-47fa-b3d2-baa88d58a65b.preview.emergentagent.com"):
+    def __init__(self, base_url="https://2b476b14-bbe4-46e1-80dc-7b7371253a31.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
