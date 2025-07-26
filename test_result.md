@@ -214,6 +214,18 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Traduction complète tutoriel Économie CS2"
+    implemented: true
+    working: true
+    file: "/app/fix_economy_tutorial_french.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ TRADUCTION RÉUSSIE - Tutoriel 'Économie CS2 : comprendre les achats' entièrement traduit en français. Corrections appliquées: Elite→Élite, Tier 1→Niveau 1, FORCE-BUY SITUATIONS→SITUATIONS DE FORCE-BUY, etc. Tous les objectifs, tips et contenu markdown maintenant 100% français avec seuls les termes de jeu spécifiques conservés en anglais."
+
 agent_communication:
   - agent: "main"
     message: "Complété avec succès l'objectif principal : 12 tutoriels professionnels par jeu (60 total). Modifié la limite d'affichage à 100. Prêt pour tests backend pour vérifier la récupération correcte de tous les tutoriels."
@@ -225,3 +237,5 @@ agent_communication:
     message: "✅ CORRECTION MAJEURE RÉUSSIE - Problème des liens non-cliquables dans ResourcesHub résolu. Issue était dans la fonction slugify qui générait des slugs incorrects pour les titres avec apostrophes françaises. Correction appliquée: apostrophes remplacées par espaces avant conversion en slugs. Tutoriels maintenant accessibles et ResourcesHub fonctionne avec liens cliquables vers HLTV.org, Liquipedia, Leetify etc."
   - agent: "testing"
     message: "🔍 VALIDATION POST-CORRECTION SLUG - Tests backend complets après correction slugify : ✅ API /api/content/tutorials?game=cs2 fonctionne parfaitement (12 tutoriels CS2) ✅ Tutoriel 'Stratégies d'équipe et coordination' accessible via API (ID: 3d8421af-799e-4e3e-a4b7-94ec8a96cdad) ✅ Tous les jeux testés (cs2, wow, lol, sc2, minecraft) - 12 tutoriels chacun ✅ Endpoints by-game fonctionnels ✅ Métadonnées complètes (title, game, level, content, image) ✅ 21/21 tests backend réussis (100%). Backend API entièrement opérationnel après correction slug."
+  - agent: "main"
+    message: "🇫🇷 TRADUCTION ÉCONOMIE CS2 TERMINÉE - Corrigé le problème de contenu anglais dans le tutoriel 'Économie CS2 : comprendre les achats'. Script créé et exécuté avec succès pour traduire complètement tous les éléments anglais : Elite→Élite, Tier 1→Niveau 1, sections markdown entièrement françaises. Contenu maintenant 100% français selon les exigences utilisateur."
