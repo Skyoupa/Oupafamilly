@@ -40,7 +40,6 @@ function App() {
               <Route path="/a-propos" element={<APropos />} />
               <Route path="/news" element={<News />} />
               <Route path="/profil" element={<Profil />} />
-            <Route path="/profil/:userId" element={<Profil />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/tournaments" element={<AdminTournaments />} />
               <Route path="/admin/users" element={<AdminUsers />} />
