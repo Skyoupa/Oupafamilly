@@ -1,6 +1,9 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 import logging
 from pathlib import Path
@@ -15,12 +18,19 @@ from database import db, client
 # Import route modules
 from routes import auth, tournaments, teams, matches, content, admin, community, profiles, currency, comments, chat, activity, betting, admin_economy, match_scheduling
 
+# Create rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 # Create the main app without a prefix
 app = FastAPI(
     title="Oupafamilly API",
     description="API pour la communauté multigaming Oupafamilly",
     version="1.0.0"
 )
+
+# Add rate limiting state
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
