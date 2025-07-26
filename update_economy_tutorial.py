@@ -228,15 +228,15 @@ AWP perdue = 4 750$ de dégâts
 
 ### 📈 Optimisation Économique
 
-#### **Maximize Kill Rewards**
-- **SMG Usage** : Utiliser les SMGs sur eco rounds
-- **Shotgun Positioning** : Placer les shotguns sur angles close
-- **Weapon Selection** : Choisir selon les kill rewards
+#### **Maximiser les Kill Rewards**
+- **Usage SMG** : Utiliser les SMGs sur eco rounds
+- **Positionnement Shotgun** : Placer les shotguns sur angles close
+- **Sélection d'Armes** : Choisir selon les kill rewards
 
-#### **Minimize Economic Loss**
-- **Weapon Saves** : Sauvegarder les armes chères
-- **Utility Timing** : Utiliser les grenades avant de mourir
-- **Drop Strategy** : Partager avant engagement risqué
+#### **Minimiser les Pertes Économiques**
+- **Saves d'Armes** : Sauvegarder les armes chères
+- **Timing Utility** : Utiliser les grenades avant de mourir
+- **Stratégie de Drop** : Partager avant engagement risqué
 
 ---
 
