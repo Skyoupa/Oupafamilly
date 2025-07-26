@@ -808,3 +808,62 @@ async def admin_give_coins(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Erreur lors de l'attribution de coins"
         )
+
+async def give_default_items_to_new_user(user_id: str):
+    """Donner les items par défaut à un nouvel utilisateur."""
+    try:
+        # Récupérer les bannières par défaut
+        default_banners = await db.marketplace_items.find({"is_default": True}).to_list(10)
+        
+        if not default_banners:
+            logger.warning("Aucune bannière par défaut trouvée")
+            return
+        
+        for banner in default_banners:
+            inventory_item = {
+                "id": str(uuid.uuid4()),
+                "user_id": user_id,
+                "item_id": banner["id"],
+                "item_name": banner["name"],
+                "item_type": "banner",
+                "item_data": banner["custom_data"],
+                "is_equipped": banner["id"] == "default_banner_blue",  # Équiper la bleue par défaut
+                "is_default": True,
+                "purchased_at": datetime.utcnow()
+            }
+            
+            await db.user_inventory.insert_one(inventory_item)
+        
+        # Équiper la bannière bleue par défaut
+        blue_banner = next((b for b in default_banners if b["id"] == "default_banner_blue"), None)
+        if blue_banner:
+            await db.user_profiles.update_one(
+                {"user_id": user_id},
+                {"$set": {"equipped_banner": blue_banner["custom_data"]}},
+                upsert=True
+            )
+        
+        logger.info(f"Items par défaut donnés à l'utilisateur {user_id}")
+        
+    except Exception as e:
+        logger.error(f"Erreur ajout items par défaut pour {user_id}: {e}")
+
+@router.post("/setup-new-user")
+async def setup_new_user_items(
+    current_user: User = Depends(get_current_active_user)
+):
+    """Donner les items par défaut à un utilisateur (pour les tests ou rattrapage)."""
+    try:
+        await give_default_items_to_new_user(current_user.id)
+        
+        return {
+            "message": "Items par défaut ajoutés avec succès",
+            "items_added": ["Bannière Bleue Classique", "Bannière Verte Nature", "Bannière Violette Royale"]
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur setup utilisateur: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de l'ajout des items par défaut"
+        )
