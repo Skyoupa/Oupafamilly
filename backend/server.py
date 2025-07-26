@@ -96,6 +96,8 @@ api_router.include_router(content.router)
 api_router.include_router(admin.router)
 api_router.include_router(community.router)
 api_router.include_router(profiles.router)
+api_router.include_router(currency.router)
+api_router.include_router(comments.router)
 
 # Include the router in the main app
 app.include_router(api_router)
