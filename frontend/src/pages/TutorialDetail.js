@@ -5,7 +5,6 @@ import { getEnhancedContent } from '../data/enhancedTutorialContent';
 import COMPLETE_PROFESSIONAL_CONTENT from '../data/completeProfessionalContent';
 import MASSIVE_PROFESSIONAL_CONTENT_PART2 from '../data/massiveProfessionalContentPart2';
 import { BEGINNER_FRIENDLY_CONTENT } from '../data/beginnerFriendlyContent';
-import GamificationPanel from '../components/GamificationPanel';
 import ResourcesHub from '../components/ResourcesHub';
 import AIRecommendationsHub from '../components/AIRecommendationsHub';
 
