@@ -121,6 +121,7 @@ api_router.include_router(activity.router)
 api_router.include_router(betting.router)
 api_router.include_router(admin_economy.router)
 api_router.include_router(match_scheduling.router)
+api_router.include_router(monitoring.router)
 
 # Include the router in the main app
 app.include_router(api_router)
