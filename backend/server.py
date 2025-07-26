@@ -75,7 +75,8 @@ async def root():
             "betting": "/api/betting",
             "admin_economy": "/api/admin/economy",
             "match_scheduling": "/api/match-scheduling",
-            "achievements": "/api/achievements"
+            "achievements": "/api/achievements",
+            "elo": "/api/elo"
         }
     }
 
