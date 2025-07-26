@@ -494,10 +494,7 @@ const ProfilMembre = () => {
             </div>
           </div>
         </section>
-      </main>
-      
-      <Footer />
-    </div>
+      </div>
   );
 };
 
