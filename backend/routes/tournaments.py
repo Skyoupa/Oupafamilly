@@ -128,6 +128,7 @@ def map_tournament_type(db_type: str) -> TournamentType:
     return type_mapping.get(db_type, TournamentType.ELIMINATION)
 
 @router.get("/{tournament_id}", response_model=Tournament)
+@cached(ttl=600, key_prefix="tournament")  # Cache for 10 minutes
 async def get_tournament(tournament_id: str):
     """Get a specific tournament."""
     try:
