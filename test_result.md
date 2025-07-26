@@ -102,7 +102,87 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Compléter le système de tutoriels Oupafamilly avec 12 tutoriels professionnels par jeu (CS2, WoW, LoL, SC2, Minecraft), tous traduits en français avec images uniques et système de difficulté coloré."
+user_problem_statement: "Debug the `ProfilMembre.js` page to resolve the 'members not showing' issue and the runtime errors when attempting to view a profile."
+
+backend:
+  - task: "Community Members API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/community.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VALIDÉ: Endpoint GET /api/community/members fonctionne parfaitement. Retourne 17 membres avec profils complets enrichis (trophées, statistiques, display_name, bio, favorite_games, avatar_url)."
+      - working: true
+        agent: "main"
+        comment: "✅ CONFIRMÉ: Backend retourne correctement 17 membres avec toutes les données nécessaires pour l'affichage frontend."
+
+  - task: "User Profiles API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/profiles.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VALIDÉ: Endpoint GET /api/profiles/{user_id} fonctionne parfaitement. Structure complète avec user, profile, statistics, teams, recent_matches."
+      - working: true
+        agent: "main"
+        comment: "✅ CONFIRMÉ: Profile API retourne données détaillées pour affichage profil membre."
+
+frontend:
+  - task: "ProfilMembre.js - Runtime errors fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ProfilMembre.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "❌ PROBLÈME UTILISATEUR: Erreurs runtime lors du clic sur profils membres, données mock utilisées au lieu d'API réelle."
+      - working: true
+        agent: "main"
+        comment: "✅ CORRIGÉ: Remplacé données mock par appels API réels vers /profiles/{memberId}. Ajouté gestion d'erreurs, loading states, et intégration complète avec le système de commentaires. Corrigé routes conflictuelles dans App.js."
+
+  - task: "Community Members Display"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Communaute.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "❌ PROBLÈME UTILISATEUR: Liste des membres vide dans la page /communaute, aucun membre ne s'affiche."
+      - working: true
+        agent: "main"
+        comment: "✅ CORRIGÉ: Vérification complète - le code frontend était déjà correct et utilisait le bon endpoint /community/members. Le problème venait des routes conflictuelles dans App.js qui ont été corrigées."
+
+metadata:
+  created_by: "main_agent"
+  version: "3.0"
+  test_sequence: 2
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "ProfilMembre.js functionality"
+    - "Community members display"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "🎉 SUCCÈS COMPLET - Problèmes de profils membres entièrement résolus ! ✅ 17 membres s'affichent correctement dans /communaute ✅ Clics sur profils fonctionnent sans erreur ✅ Navigation vers /profil/{memberId} réussie ✅ Données réelles chargées depuis l'API ✅ ProfilMembre.js entièrement intégré avec backend (profiles + comments) ✅ Routes App.js corrigées pour éviter conflits. Tests screenshot confirmés : membres visibles + profil navigation opérationnelle."
 
 backend:
   - task: "Augmentation limite affichage tutoriels à 100"
