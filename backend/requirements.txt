@@ -28,3 +28,5 @@ Pillow>=10.0.0
 slowapi>=0.1.9
 redis>=5.0.0
 structlog>=23.2.0
+bleach>=6.1.0
+email-validator>=2.1.0
