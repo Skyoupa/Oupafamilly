@@ -105,7 +105,9 @@ const Tutoriels = () => {
           gameName: game ? game.name : tutorial.game,
           gameId: tutorial.game,
           gameColor: game ? game.color : '#666',
-          level: levelDisplayNames[tutorial.level] || tutorial.level
+          levelDisplay: levelDisplayNames[tutorial.level] || tutorial.level,
+          // Garder le level original pour les classes CSS
+          levelOriginal: tutorial.level
         };
       });
     }
@@ -118,7 +120,9 @@ const Tutoriels = () => {
       gameName: selectedGameData ? selectedGameData.name : tutorial.game,
       gameId: selectedGame,
       gameColor: selectedGameData ? selectedGameData.color : '#666',
-      level: levelDisplayNames[tutorial.level] || tutorial.level
+      levelDisplay: levelDisplayNames[tutorial.level] || tutorial.level,
+      // Garder le level original pour les classes CSS
+      levelOriginal: tutorial.level
     }));
   };
 
