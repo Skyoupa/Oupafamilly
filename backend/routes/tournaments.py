@@ -136,7 +136,31 @@ async def get_tournament(tournament_id: str):
                 detail="Tournament not found"
             )
         
-        return Tournament(**tournament_data)
+        # Map database fields to model fields (same logic as in list endpoint)
+        mapped_tournament = {
+            "id": tournament_data.get("id", str(uuid.uuid4())),
+            "title": tournament_data.get("title", ""),
+            "description": tournament_data.get("description", ""),
+            "game": tournament_data.get("game", "cs2"),
+            "tournament_type": map_tournament_type(tournament_data.get("type", "elimination")),
+            "max_participants": tournament_data.get("max_participants", 16),
+            "entry_fee": tournament_data.get("entry_fee", 0.0),
+            "prize_pool": tournament_data.get("prize_pool", 0.0),
+            "status": map_tournament_status(tournament_data.get("status", "draft")),
+            "registration_start": tournament_data.get("registration_opens", datetime.utcnow()),
+            "registration_end": tournament_data.get("registration_closes", datetime.utcnow()),
+            "tournament_start": tournament_data.get("tournament_starts", datetime.utcnow()),
+            "tournament_end": tournament_data.get("tournament_ends"),
+            "rules": tournament_data.get("rules", "Standard tournament rules"),
+            "organizer_id": tournament_data.get("organizer_id", "system"),
+            "participants": tournament_data.get("participants", []),
+            "matches": tournament_data.get("matches", []),
+            "winner_id": tournament_data.get("winner_id"),
+            "created_at": tournament_data.get("created_at", datetime.utcnow()),
+            "updated_at": tournament_data.get("updated_at", datetime.utcnow())
+        }
+        
+        return Tournament(**mapped_tournament)
         
     except HTTPException:
         raise
