@@ -2486,8 +2486,8 @@ class OupafamillyAPITester:
         return cleanup_success
 
     def run_all_tests(self):
-        """Run all API tests with CS2 tutorial cleanup as main focus"""
-        self.log("🚀 Starting Oupafamilly API Tests - CS2 TUTORIAL CLEANUP VERIFICATION")
+        """Run API tests with tournament selector issue as main focus"""
+        self.log("🚀 Starting Oupafamilly API Tests - TOURNAMENT SELECTOR DIAGNOSIS")
         self.log(f"Base URL: {self.base_url}")
         self.log(f"API URL: {self.api_url}")
         
@@ -2499,38 +2499,45 @@ class OupafamillyAPITester:
         if self.test_admin_login():
             self.test_get_current_user()
             
-            # MAIN FOCUS: CS2 TUTORIAL CLEANUP VERIFICATION
+            # MAIN FOCUS: TOURNAMENT SELECTOR ISSUE DIAGNOSIS
             self.log("\n" + "="*70)
-            self.log("🎯 MAIN FOCUS: CS2 TUTORIAL CLEANUP VERIFICATION")
+            self.log("🎯 MAIN FOCUS: TOURNAMENT SELECTOR ISSUE DIAGNOSIS")
             self.log("="*70)
             
-            # Test CS2 tutorial cleanup - this is the primary objective
+            # Test tournament selector issue - this is the primary objective
             self.log("\n" + "="*50)
-            self.log("🧹 TESTING CS2 TUTORIAL CLEANUP")
+            self.log("🔍 TESTING TOURNAMENT SELECTOR ISSUE")
             self.log("="*50)
-            cs2_cleanup_success = self.test_cs2_tutorial_cleanup_verification()
+            tournament_selector_success = self.test_tournament_selector_issue()
             
-            # Summary of CS2 cleanup testing
+            # Additional tournament tests for context
+            self.test_tournaments_list()
+            self.test_tournament_stats()
+            
+            # Summary of tournament selector testing
             self.log("\n" + "="*70)
-            self.log("📊 CS2 TUTORIAL CLEANUP VERIFICATION SUMMARY")
+            self.log("📊 TOURNAMENT SELECTOR DIAGNOSIS SUMMARY")
             self.log("="*70)
             
-            if cs2_cleanup_success:
-                self.log("✅ CS2 Tutorial Cleanup: FULLY VERIFIED ✅", "SUCCESS")
-                self.log("  ✅ Exactly 12 CS2 tutorials remain", "SUCCESS")
-                self.log("  ✅ 48 tutorials from other games successfully deleted", "SUCCESS")
-                self.log("  ✅ Proper difficulty classification (1=beginner, 2=intermediate, 3=expert)", "SUCCESS")
-                self.log("  ✅ All tutorials published and accessible", "SUCCESS")
-                self.log("  ✅ All API endpoints working correctly", "SUCCESS")
+            if tournament_selector_success:
+                self.log("✅ Tournament Selector: API WORKING CORRECTLY ✅", "SUCCESS")
+                self.log("  ✅ Tournaments are being returned by the API", "SUCCESS")
+                self.log("  ✅ Expected test tournaments found", "SUCCESS")
+                self.log("  ✅ No authentication issues", "SUCCESS")
+                self.log("  ✅ Data structure compatible with frontend", "SUCCESS")
+                self.log("  ➡️ Issue is likely in frontend integration or data processing", "SUCCESS")
             else:
-                self.log("❌ CS2 Tutorial Cleanup: ISSUES DETECTED ❌", "ERROR")
+                self.log("❌ Tournament Selector: API ISSUES DETECTED ❌", "ERROR")
                 self.log("  ⚠️ Review the detailed logs above for specific issues", "ERROR")
+                self.log("  ➡️ Backend API needs fixes before frontend will work", "ERROR")
             
             self.log("="*70)
-            if cs2_cleanup_success:
-                self.log("🎉 CS2 TUTORIAL CLEANUP VERIFICATION: SUCCESSFUL!", "SUCCESS")
+            if tournament_selector_success:
+                self.log("🎉 TOURNAMENT SELECTOR DIAGNOSIS: API IS WORKING!", "SUCCESS")
+                self.log("🔧 RECOMMENDATION: Check frontend integration and data processing", "SUCCESS")
             else:
-                self.log("❌ CS2 TUTORIAL CLEANUP VERIFICATION: NEEDS ATTENTION!", "ERROR")
+                self.log("❌ TOURNAMENT SELECTOR DIAGNOSIS: API NEEDS FIXES!", "ERROR")
+                self.log("🔧 RECOMMENDATION: Fix backend API issues first", "ERROR")
             self.log("="*70)
         
         # Print final results
