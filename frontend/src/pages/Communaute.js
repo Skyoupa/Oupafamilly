@@ -780,7 +780,7 @@ const Communaute = () => {
                     <p>Aucun article disponible pour le moment. Veuillez réessayer plus tard.</p>
                     <button 
                       className="btn-secondary-pro"
-                      onClick={fetchData}
+                      onClick={() => window.location.reload()}
                     >
                       🔄 Actualiser
                     </button>
