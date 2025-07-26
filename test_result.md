@@ -105,9 +105,9 @@
 user_problem_statement: "Je viens de mettre en place plusieurs améliorations majeures au système et j'ai besoin de les tester complètement : Système de récompenses pour tournois, Système de paris professionnel, Dashboard Admin Économie (nouveaux endpoints), Marketplace avec customs. Tests prioritaires : Vérifier que les nouveaux endpoints admin/economy sont accessibles, Confirmer présence des articles customs dans marketplace, Tester création automatique de marchés de paris pour tournois, Vérifier que le système de récompenses tournoi fonctionne."
 
 backend:
-  - task: "Système d'achievements/badges"
+  - task: "Système d'achievements/badges ENRICHI"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/routes/achievements.py, /app/backend/achievements.py"
     stuck_count: 0
     priority: "high"
@@ -119,6 +119,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "🎉 SYSTÈME ACHIEVEMENTS/BADGES VALIDÉ À 100% - Tests complets réussis sur tous les 8 endpoints prioritaires : ✅ GET /api/achievements/my-badges fonctionne parfaitement (12 badges obtenus par admin) ✅ GET /api/achievements/available opérationnel (21 badges disponibles avec filtres par catégorie/rareté) ✅ GET /api/achievements/progress/{badge_id} fonctionnel (progression détaillée avec critères) ✅ POST /api/achievements/check opérationnel (vérification manuelle achievements) ✅ GET /api/achievements/leaderboard fonctionne (classement par nombre de badges) ✅ GET /api/achievements/stats opérationnel (statistiques globales système) ✅ GET /api/achievements/user/{user_id}/badges fonctionne (7 badges publics visibles) ✅ GET /api/achievements/admin/all-user-badges opérationnel (vue admin globale) ✅ Système de rareté complet : common, rare, epic, legendary, mythic ✅ 7 catégories fonctionnelles : gaming, community, economic, social, competitive, loyalty, special ✅ 21 badges prédéfinis avec critères intelligents ✅ Récompenses automatiques (XP + coins) opérationnelles ✅ Badges cachés jusqu'à obtention fonctionnels ✅ Progression détaillée avec pourcentages ✅ Leaderboard par nombre de badges opérationnel ✅ Authentification requise sur tous endpoints ✅ Autorisation admin fonctionnelle ✅ Performance acceptable (< 2s par endpoint). Corrections appliquées : import create_transaction, ObjectId serialization, Badge() validation. Système 100% prêt pour production et intégration frontend."
+      - working: false
+        agent: "testing"
+        comment: "🔍 SYSTÈME ACHIEVEMENTS ENRICHI TESTÉ - Tests complets sur système enrichi avec 33 nouveaux badges : ❌ ENRICHISSEMENT PARTIEL DÉTECTÉ : 51 badges totaux dans le système (objectif 54+) ❌ Seulement 37 badges visibles publiquement (manque badges mythiques) ❌ Système de rareté incomplet : 4/5 niveaux (manque MYTHIC dans badges visibles) ❌ Récompenses non enrichies : Max 500 XP, 350 coins (objectif 1200 XP, 800 coins) ✅ 7 catégories présentes : gaming, community, economic, social, competitive, loyalty, special ✅ 14 badges cachés fonctionnels ✅ Système de vérification achievements opérationnel (3 nouveaux badges attribués) ✅ Performance excellente : 0.02s avec 37 badges ✅ Badges spécialisés détectés : Gaming avancés (2), Économiques (3), Compétitifs (1), Sociaux (2) ✅ Admin possède 15 badges avec distribution équilibrée par rareté. CONCLUSION : Le système fonctionne mais l'enrichissement n'est pas complet - manque 17+ badges pour atteindre l'objectif de 54+ badges avec récompenses mythiques."
 
   - task: "Système de quêtes quotidiennes"
     implemented: true
