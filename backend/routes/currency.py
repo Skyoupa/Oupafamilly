@@ -506,21 +506,113 @@ async def buy_marketplace_item(
             detail="Erreur lors de l'achat"
         )
 
-@router.get("/inventory", response_model=List[UserInventory])
-async def get_user_inventory(current_user: User = Depends(get_current_active_user)):
+@router.get("/inventory")
+async def get_user_inventory(
+    current_user: User = Depends(get_current_active_user)
+):
     """Obtenir l'inventaire de l'utilisateur."""
     try:
-        inventory = await db.user_inventory.find({
-            "user_id": current_user.id
-        }).sort("purchased_at", -1).to_list(100)
+        inventory_items = await db.user_inventory.find({"user_id": current_user.id}).to_list(100)
         
-        return [UserInventory(**item) for item in inventory]
+        # Organiser par type d'item
+        organized_inventory = {
+            "avatar": [],
+            "banner": [],
+            "badge": [],
+            "custom_tag": [],
+            "title": [],
+            "theme": [],
+            "emote": []
+        }
+        
+        for item in inventory_items:
+            item_type = item.get("item_type", "misc")
+            if item_type in organized_inventory:
+                organized_inventory[item_type].append(item)
+            else:
+                organized_inventory.setdefault("misc", []).append(item)
+        
+        return organized_inventory
         
     except Exception as e:
-        logger.error(f"Erreur lors de la récupération de l'inventaire: {str(e)}")
+        logger.error(f"Erreur récupération inventaire: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Erreur lors de la récupération de l'inventaire"
+        )
+
+@router.post("/inventory/equip/{inventory_item_id}")
+async def equip_inventory_item(
+    inventory_item_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Équiper un article de l'inventaire."""
+    try:
+        # Récupérer l'item d'inventaire
+        inventory_item = await db.user_inventory.find_one({
+            "id": inventory_item_id,
+            "user_id": current_user.id
+        })
+        
+        if not inventory_item:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Article non trouvé dans votre inventaire"
+            )
+        
+        item_type = inventory_item["item_type"]
+        
+        # Déséquiper tous les autres items du même type
+        await db.user_inventory.update_many(
+            {
+                "user_id": current_user.id,
+                "item_type": item_type,
+                "is_equipped": True
+            },
+            {"$set": {"is_equipped": False}}
+        )
+        
+        # Équiper le nouvel item
+        await db.user_inventory.update_one(
+            {"id": inventory_item_id},
+            {"$set": {"is_equipped": True}}
+        )
+        
+        # Mettre à jour le profil utilisateur avec les données de l'item équipé
+        update_data = {}
+        
+        if item_type == "banner":
+            update_data["equipped_banner"] = inventory_item["item_data"]
+        elif item_type == "avatar":
+            update_data["equipped_avatar"] = inventory_item["item_data"]
+        elif item_type == "badge":
+            update_data["equipped_badge"] = inventory_item["item_data"]
+        elif item_type == "custom_tag":
+            update_data["equipped_tag"] = inventory_item["item_data"]
+        elif item_type == "title":
+            update_data["equipped_title"] = inventory_item["item_data"]
+        elif item_type == "theme":
+            update_data["equipped_theme"] = inventory_item["item_data"]
+        
+        if update_data:
+            await db.user_profiles.update_one(
+                {"user_id": current_user.id},
+                {"$set": update_data},
+                upsert=True
+            )
+        
+        return {
+            "message": f"{inventory_item['item_name']} équipé avec succès",
+            "equipped_item": inventory_item
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erreur équipement item: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de l'équipement"
         )
 
 @router.get("/leaderboard/richest")
