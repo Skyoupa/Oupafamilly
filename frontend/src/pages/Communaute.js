@@ -601,6 +601,15 @@ const Communaute = () => {
               <span>CLASSEMENT</span>
             </button>
             <button
+              className={`community-tab-pro ${activeView === 'tournois' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveView('tournois');
+                fetchTournamentData();
+              }}
+            >
+              <span>🏆 TOURNOIS</span>
+            </button>
+            <button
               className={`community-tab-pro ${activeView === 'marketplace' ? 'active' : ''}`}
               onClick={() => setActiveView('marketplace')}
             >
