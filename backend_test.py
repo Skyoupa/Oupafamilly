@@ -1510,8 +1510,12 @@ class OupafamillyAPITester:
                     success3, response3 = self.run_test(
                         "Distribute Tournament Rewards",
                         "POST",
-                        f"currency/tournament-rewards/{tournament_id}?participants={self.admin_user_id}&winner_id={self.admin_user_id}",
-                        200
+                        f"currency/tournament-rewards/{tournament_id}",
+                        200,
+                        data={
+                            "participants": [self.admin_user_id],
+                            "winner_id": self.admin_user_id
+                        }
                     )
                     
                     if success3:
