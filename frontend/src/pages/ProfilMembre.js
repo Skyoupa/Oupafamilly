@@ -46,25 +46,30 @@ const ProfilMembre = () => {
     try {
       setLoading(true);
       
-      // Get member profile
-      const profileResponse = await fetch(`${API_BASE_URL}/api/profiles/${memberId}`);
-      if (profileResponse.ok) {
-        const profileData = await profileResponse.json();
-        setMemberProfile(profileData);
-      } else {
-        setError('Profil membre non trouvé');
-        return;
-      }
-
-      // Get member stats
-      try {
-        const statsResponse = await fetch(`${API_BASE_URL}/api/profiles/${memberId}/stats`);
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setMemberStats(statsData);
+      // Pour le moment, utilisons l'API communauté pour obtenir les infos du membre
+      const membersResponse = await fetch(`${API_BASE_URL}/api/community/members`);
+      if (membersResponse.ok) {
+        const membersData = await membersResponse.json();
+        const member = membersData.members?.find(m => m.id === memberId);
+        
+        if (member) {
+          setMemberProfile(member.profile || {
+            display_name: member.username,
+            bio: 'Aucune biographie renseignée',
+            level: 1,
+            coins: 0,
+            total_tournaments: 0,
+            tournaments_won: 0,
+            favorite_games: [],
+            discord_username: '',
+            steam_profile: '',
+            user_id: member.id
+          });
+        } else {
+          setError('Profil membre non trouvé');
         }
-      } catch (statsError) {
-        console.log('Stats non disponibles pour ce membre');
+      } else {
+        setError('Impossible de charger les données du membre');
       }
 
     } catch (error) {
