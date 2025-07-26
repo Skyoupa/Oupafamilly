@@ -329,6 +329,18 @@ backend:
         agent: "testing"
         comment: "✅ CORRIGÉ: Paramètre renommé 'tournament_status', ajout mapping pour statuts DB ('registration_open'→'open', 'ongoing'→'in_progress') et types ('tournament'→'elimination'). Import uuid ajouté. Endpoint fonctionne parfaitement et retourne les 3 tournois avec structure correcte."
 
+  - task: "Endpoints communauté et profils"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/community.py, /app/backend/routes/profiles.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎯 ENDPOINTS COMMUNAUTÉ/PROFILS VALIDÉS À 100% - Tests spécialisés pour résoudre problèmes d'affichage /communaute : ✅ GET /api/community/members retourne 17 membres avec profils complets (trophées, bio, jeux favoris) ✅ GET /api/community/stats fonctionne (17 utilisateurs, 3 tournois) ✅ GET /api/community/teams opérationnel (0 équipes actuellement) ✅ GET /api/community/leaderboard retourne 17 joueurs classés ✅ GET /api/profiles/{user_id} fonctionne parfaitement avec structure complète (user, profile, statistics, teams, recent_matches) ✅ Tous les endpoints retournent des données structurées correctement. Les problèmes d'affichage /communaute ne viennent PAS du backend - tous les endpoints fonctionnent et retournent des données."
+
 agent_communication:
   - agent: "main"
     message: "Complété avec succès l'objectif principal : 12 tutoriels professionnels par jeu (60 total). Modifié la limite d'affichage à 100. Prêt pour tests backend pour vérifier la récupération correcte de tous les tutoriels."
@@ -348,3 +360,5 @@ agent_communication:
     message: "🎯 TESTS MONNAIE & COMMENTAIRES RÉUSSIS À 100% (24/24 tests passés) - Validation complète du nouveau système communautaire Oupafamilly : ✅ Système monnaie virtuelle opérationnel (balance, daily-bonus, marketplace, leaderboard) ✅ 7 articles marketplace disponibles ✅ 13 utilisateurs avec 100+ coins initialisés ✅ Système commentaires fonctionnel (user/team comments, ratings, stats) ✅ Récompenses automatiques (coins + XP) ✅ Collections MongoDB créées et opérationnelles ✅ Achat marketplace testé avec succès ✅ Endpoints community stats/leaderboard/members fonctionnels. Nouveau système communautaire 100% prêt pour production."
   - agent: "testing"
     message: "🎯 TESTS 4 NOUVEAUX SYSTÈMES COMMUNAUTAIRES RÉUSSIS À 100% (31/31 tests passés) - Validation complète des systèmes Oupafamilly : ✅ SYSTÈME CHAT: Messages, channels, privés, stats, rate limiting, récompenses (1 coin+XP/message) ✅ SYSTÈME ACTIVITY: Feed communautaire, personnel, trending, likes, stats, enrichissement auto, récompenses engagement ✅ SYSTÈME BETTING: 7 marchés (CS2/LoL/WoW), paris, stats, leaderboard, 850 coins pool, 6 paris actifs, validation solde ✅ DONNÉES INITIALISÉES: 3 tournois, 7 marchés, 6 paris, collections MongoDB, 16 utilisateurs ✅ CORRECTION TOURNAMENTS: Endpoint réparé avec mapping statuts/types. Écosystème communautaire complet 100% opérationnel."
+  - agent: "testing"
+    message: "🎯 DIAGNOSTIC ENDPOINTS COMMUNAUTÉ/PROFILS TERMINÉ - Tests spécialisés pour résoudre problèmes d'affichage page /communaute : ✅ TOUS LES ENDPOINTS BACKEND FONCTIONNENT PARFAITEMENT ✅ GET /api/community/members retourne 17 membres avec données complètes ✅ GET /api/community/stats retourne statistiques communauté ✅ GET /api/profiles/{user_id} fonctionne avec structure complète ✅ Données structurées correctement (profils, trophées, statistiques) ✅ 9/9 tests réussis (100%). CONCLUSION: Les problèmes d'affichage /communaute ne viennent PAS du backend - le problème est côté frontend/intégration. Tous les endpoints retournent des données valides."
