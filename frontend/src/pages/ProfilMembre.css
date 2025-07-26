@@ -191,19 +191,17 @@
 }
 
 .info-label {
-  font-weight: 900;
-  color: #000000;
-  font-size: 1.1rem;
-  text-shadow: 0 2px 4px rgba(255,255,255,0.9);
-  background: linear-gradient(135deg, #1e293b, #334155);
-  color: #ffffff;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  border: 2px solid #0f172a;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  font-family: 'Arial Black', Arial, sans-serif;
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.95rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border-left: 4px solid #3b82f6;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  margin-bottom: 0.3rem;
 }
 
 /* Special styling for important values - more compact */
