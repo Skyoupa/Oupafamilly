@@ -22,6 +22,11 @@ const Communaute = () => {
   const [userBets, setUserBets] = useState([]);
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  
+  // Messaging state
+  const [memberSearch, setMemberSearch] = useState('');
+  const [selectedRecipient, setSelectedRecipient] = useState('');
+  const [messageContent, setMessageContent] = useState('');
 
   // Filtered data based on search
   const filteredMembers = members.filter(member => 
