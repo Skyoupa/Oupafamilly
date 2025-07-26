@@ -562,6 +562,9 @@ class OupafamillyAPITester:
         # MAIN FOCUS: Tutorial endpoints testing
         self.test_tutorials_endpoints()
         
+        # SPECIFIC FOCUS: CS2 Economy Tutorial French Translation
+        self.test_cs2_economy_tutorial_french_translation()
+        
         # User registration (should work without auth)
         self.test_user_registration()
         
