@@ -439,8 +439,9 @@ const TutorialDetail = () => {
                 className="prose prose-invert prose-blue max-w-none tutorial-content-enhanced"
                 style={{ 
                   color: '#f3f4f6',
-                  lineHeight: '1.6',
-                  fontSize: '13px'
+                  lineHeight: '1.5',
+                  fontSize: '14px',
+                  fontFamily: 'system-ui, -apple-system, sans-serif'
                 }}
                 dangerouslySetInnerHTML={{
                   __html: tutorial.content
@@ -448,18 +449,20 @@ const TutorialDetail = () => {
                     ?.replace(/#{1,6}\s(.+)/g, (match, title) => {
                       const level = match.indexOf(' ') - 1;
                       const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
-                      // Réduire significativement la taille des titres
-                      const fontSize = level === 0 ? '1.4rem' : // H1 beaucoup plus petit
-                                     level === 1 ? '1.2rem' : // H2 plus petit
-                                     level === 2 ? '1.1rem' : // H3 plus petit
-                                     '1rem'; // H4+ normal
-                      return `<h${level + 1} style="color: ${colors[level] || '#3b82f6'}; font-weight: bold; margin: 1rem 0 0.8rem 0; font-size: ${fontSize}; background: linear-gradient(135deg, ${colors[level] || '#3b82f6'}22, transparent); padding: 0.6rem; border-left: 3px solid ${colors[level] || '#3b82f6'}; border-radius: 6px;">${title}</h${level + 1}>`;
+                      // Tailles plus petites et plus professionnelles
+                      const fontSize = level === 0 ? '1.15rem' : // H1 plus compact
+                                     level === 1 ? '1.05rem' : // H2 plus compact
+                                     level === 2 ? '0.95rem' : // H3 plus compact
+                                     '0.9rem'; // H4+ petit
+                      return `<h${level + 1} style="color: ${colors[level] || '#3b82f6'}; font-weight: 600; margin: 0.8rem 0 0.5rem 0; font-size: ${fontSize}; background: linear-gradient(135deg, ${colors[level] || '#3b82f6'}15, transparent); padding: 0.4rem 0.6rem; border-left: 2px solid ${colors[level] || '#3b82f6'}; border-radius: 4px; font-family: system-ui, -apple-system, sans-serif;">${title}</h${level + 1}>`;
                     })
-                    ?.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; background: #fbbf2420; padding: 1px 4px; border-radius: 3px; font-weight: 600; font-size: 13px;">$1</strong>')
-                    ?.replace(/\*(.+?)\*/g, '<em style="color: #a78bfa; font-style: italic; background: #a78bfa15; padding: 1px 3px; border-radius: 2px; font-size: 13px;">$1</em>')
-                    ?.replace(/```([\s\S]*?)```/g, '<pre style="background: #111827; padding: 0.8rem; border-radius: 0.5rem; border: 1px solid #374151; overflow-x: auto; margin: 0.8rem 0; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"><code style="color: #10b981; font-size: 12px; font-family: Consolas, Monaco, monospace; line-height: 1.4;">$1</code></pre>')
-                    ?.replace(/`(.+?)`/g, '<code style="background: #374151; color: #fbbf24; padding: 1px 4px; border-radius: 3px; font-family: Consolas, Monaco, monospace; font-size: 12px; border: 1px solid #4b5563;">$1</code>')
-                    ?.replace(/•/g, '<span style="color: #3b82f6; font-weight: bold; margin-right: 8px;">•</span>')
+                    ?.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; background: #fbbf2415; padding: 1px 3px; border-radius: 2px; font-weight: 500; font-size: 14px;">$1</strong>')
+                    ?.replace(/\*(.+?)\*/g, '<em style="color: #a78bfa; font-style: italic; background: #a78bfa10; padding: 1px 2px; border-radius: 2px; font-size: 14px;">$1</em>')
+                    ?.replace(/```([\s\S]*?)```/g, '<pre style="background: #111827; padding: 0.6rem; border-radius: 0.4rem; border: 1px solid #374151; overflow-x: auto; margin: 0.6rem 0; box-shadow: 0 1px 4px rgba(0,0,0,0.2);"><code style="color: #10b981; font-size: 13px; font-family: Consolas, Monaco, monospace; line-height: 1.3;">$1</code></pre>')
+                    ?.replace(/`(.+?)`/g, '<code style="background: #374151; color: #fbbf24; padding: 1px 3px; border-radius: 2px; font-family: Consolas, Monaco, monospace; font-size: 13px; border: 1px solid #4b5563;">$1</code>')
+                    ?.replace(/•/g, '<span style="color: #3b82f6; font-weight: 500; margin-right: 6px;">•</span>')
+                    ?.replace(/^(\d+\.\s)/gm, '<span style="color: #10b981; font-weight: 500; margin-right: 4px;">$1</span>')
+                    ?.replace(/^-\s/gm, '<span style="color: #3b82f6; font-weight: 500; margin-right: 6px;">•</span>')
                     || tutorial.content
                 }}
               />
