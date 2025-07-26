@@ -18,6 +18,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminTournaments from './pages/AdminTournaments';
 import AdminUsers from './pages/AdminUsers';
 import AdminContent from './pages/AdminContent';
+import ProfilMembre from './pages/ProfilMembre';
 import './App.css';
 
 function App() {
