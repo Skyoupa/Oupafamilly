@@ -325,6 +325,7 @@ async def get_user_tournament_victories(user_id: str) -> dict:
         return {"1v1": 0, "2v2": 0, "5v5": 0}
 
 @router.get("/members")
+@cached(ttl=300, key_prefix="community_members")  # Cache for 5 minutes
 async def get_community_members():
     """Get community members with enhanced profiles."""
     try:
