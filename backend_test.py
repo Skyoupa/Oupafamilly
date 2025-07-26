@@ -3837,9 +3837,24 @@ class OupafamillyAPITester:
             return 1
 
 def main():
-    """Main test runner"""
+    """Main test runner - Priority tests for review"""
     tester = OupafamillyAPITester()
-    return tester.run_all_tests()
+    
+    # Run priority tests as requested in the review
+    print("🎯 RUNNING PRIORITY TESTS FOR OUPAFAMILLY AUDIT")
+    print("=" * 80)
+    
+    success = tester.run_priority_tests()
+    
+    if success:
+        print("\n🎉 ALL PRIORITY TESTS COMPLETED SUCCESSFULLY!")
+        print("✅ Tournament selector should now have data")
+        print("✅ Tutorials by game endpoints verified")
+        return 0
+    else:
+        print("\n⚠️ SOME PRIORITY TESTS FAILED")
+        print("❌ Check the detailed logs above for issues")
+        return 1
 
 if __name__ == "__main__":
     sys.exit(main())
