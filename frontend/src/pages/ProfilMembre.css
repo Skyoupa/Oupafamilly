@@ -410,7 +410,8 @@
 
 .comment-content {
   line-height: 1.6;
-  color: var(--text-white-bg-secondary);
+  color: #2d3748;
+  font-weight: 500;
   background: #f8fafc;
   padding: 1rem;
   border-radius: 8px;
