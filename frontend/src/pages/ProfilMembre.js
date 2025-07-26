@@ -266,28 +266,10 @@ const ProfilMembre = () => {
               {/* Gaming Info */}
               <div className="profile-section">
                 <h3>🎮 Informations Gaming</h3>
-                <div className="gaming-info-grid">
-                  <div className="info-item">
-                    <span className="info-label">Nom d'utilisateur :</span>
-                    <span className="info-value username-value">
-                      {memberProfile.user?.username || 'Non spécifié'}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Steam :</span>
-                    <span className="info-value steam-value">
-                      {memberProfile.profile?.steam_profile || 'Non spécifié'}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Membre depuis :</span>
-                    <span className="info-value member-since-value">
-                      {new Date(memberProfile.user?.created_at).toLocaleDateString('fr-FR', { 
-                        year: 'numeric', 
-                        month: 'long' 
-                      })}
-                    </span>
-                  </div>
+                <div className="simple-info">
+                  <p><strong>Nom d'utilisateur :</strong> {memberProfile.user?.username || 'Non spécifié'}</p>
+                  <p><strong>Steam :</strong> {memberProfile.profile?.steam_profile || 'Non spécifié'}</p>
+                  <p><strong>Membre depuis :</strong> {new Date(memberProfile.user?.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' })}</p>
                 </div>
               </div>
 
