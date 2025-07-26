@@ -146,14 +146,14 @@ La **gestion économique** sépare les équipes amateurs des équipes **Tier 1**
 ### 🔄 Adaptation Économique
 
 #### **Réaction aux Eco Adverses**
-- **Anti-Eco Setup** : Positions pour contrer les rushes
-- **Utility Conservation** : Économiser les grenades
-- **Weapon Positioning** : Éviter les drops d'armes
+- **Setup Anti-Eco** : Positions pour contrer les rushes
+- **Conservation Utility** : Économiser les grenades
+- **Positionnement Armes** : Éviter les drops d'armes
 
-#### **Réaction aux Force-Buys**
+#### **Réaction aux Achats Forcés**
 - **Respect Distance** : Éviter les duels proche
-- **Utility Usage** : Maximiser l'usage des grenades
-- **Crossfire Focus** : Coordination défensive renforcée
+- **Usage Utility** : Maximiser l'usage des grenades
+- **Focus Crossfire** : Coordination défensive renforcée
 
 ---
 
