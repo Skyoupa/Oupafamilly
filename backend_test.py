@@ -1868,6 +1868,8 @@ class OupafamillyAPITester:
             
         self.log("=== TESTING NEW MATCH SCHEDULING SYSTEM ===")
         
+        from datetime import datetime, timedelta
+        
         # First, get available tournaments and matches for testing
         tournaments_success, tournaments_response = self.run_test(
             "Get Tournaments for Match Scheduling",
@@ -1934,7 +1936,6 @@ class OupafamillyAPITester:
         # Test 2: POST /api/match-scheduling/schedule-match (admin/organizer only)
         success2 = True
         if match_id:
-            from datetime import datetime, timedelta
             # Schedule match for 2 hours from now
             future_time = datetime.utcnow() + timedelta(hours=2)
             
