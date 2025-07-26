@@ -424,88 +424,83 @@ async def buy_marketplace_item(
     item_id: str,
     current_user: User = Depends(get_current_active_user)
 ):
-    """Acheter un article de la marketplace."""
+    """Acheter un article de la marketplace et l'ajouter à l'inventaire."""
     try:
         # Récupérer l'article
-        item_data = await db.marketplace_items.find_one({"id": item_id})
-        if not item_data:
+        item = await db.marketplace_items.find_one({"id": item_id})
+        if not item:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Article non trouvé"
             )
         
-        item = MarketplaceItem(**item_data)
-        
-        if not item.is_available:
+        if not item.get("is_available", True):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Cet article n'est plus disponible"
+                detail="Article non disponible"
             )
         
-        # Vérifier si l'utilisateur possède déjà cet article
-        existing_item = await db.user_inventory.find_one({
+        # Vérifier le solde de l'utilisateur
+        user_profile = await db.user_profiles.find_one({"user_id": current_user.id})
+        if not user_profile or user_profile.get("coins", 0) < item["price"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Solde insuffisant"
+            )
+        
+        # Vérifier si l'utilisateur possède déjà cet item
+        existing_inventory = await db.user_inventory.find_one({
             "user_id": current_user.id,
             "item_id": item_id
         })
         
-        if existing_item:
+        if existing_inventory:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Vous possédez déjà cet article"
             )
         
-        # Vérifier le solde
-        current_balance = await get_current_balance(current_user.id)
-        if current_balance < item.price:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Solde insuffisant. Prix: {item.price} coins, Solde: {current_balance} coins"
-            )
+        # Débiter le compte
+        await db.user_profiles.update_one(
+            {"user_id": current_user.id},
+            {"$inc": {"coins": -item["price"]}}
+        )
         
-        # Effectuer l'achat
-        # 1. Créer la transaction de dépense
+        # Ajouter à l'inventaire
+        inventory_item = {
+            "id": str(uuid.uuid4()),
+            "user_id": current_user.id,
+            "item_id": item_id,
+            "item_name": item["name"],
+            "item_type": item["item_type"],
+            "item_data": item.get("custom_data", {}),
+            "is_equipped": False,
+            "purchased_at": datetime.utcnow()
+        }
+        
+        await db.user_inventory.insert_one(inventory_item)
+        
+        # Créer transaction
         transaction = CoinTransaction(
             user_id=current_user.id,
-            amount=-item.price,
+            amount=-item["price"],
             transaction_type="marketplace_purchase",
-            description=f"Achat: {item.name}",
+            description=f"Achat: {item['name']}",
             reference_id=item_id
         )
         
         await db.coin_transactions.insert_one(transaction.dict())
         
-        # 2. Ajouter l'article à l'inventaire
-        inventory_item = UserInventory(
-            user_id=current_user.id,
-            item_id=item_id,
-            item_name=item.name,
-            item_type=item.item_type
-        )
-        
-        await db.user_inventory.insert_one(inventory_item.dict())
-        
-        # 3. Mettre à jour le solde
-        await db.user_profiles.update_one(
-            {"user_id": current_user.id},
-            {
-                "$inc": {"coins": -item.price},
-                "$set": {"updated_at": datetime.utcnow()}
-            }
-        )
-        
-        logger.info(f"Utilisateur {current_user.username} a acheté {item.name} pour {item.price} coins")
-        
         return {
-            "message": f"Achat réussi ! Vous avez acheté {item.name}",
-            "item": item,
-            "cost": item.price,
-            "new_balance": await get_current_balance(current_user.id)
+            "message": "Article acheté avec succès",
+            "item": inventory_item,
+            "remaining_coins": user_profile["coins"] - item["price"]
         }
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Erreur lors de l'achat: {str(e)}")
+        logger.error(f"Erreur achat marketplace: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Erreur lors de l'achat"
