@@ -71,7 +71,16 @@ async def get_user_badges_public(
         badges = await get_user_badges(user_id)
         
         # Filtrer seulement les badges non-cachés ou déjà obtenus
-        public_badges = [badge for badge in badges if not achievement_engine.badges_registry.get(badge["badge_id"], Badge()).hidden]
+        public_badges = []
+        for badge in badges:
+            badge_info = achievement_engine.badges_registry.get(badge["badge_id"])
+            if badge_info and not badge_info.hidden:
+                public_badges.append(badge)
+        
+        # Récupérer le nom d'utilisateur
+        from database import db
+        user_data = await db.users.find_one({"id": user_id})
+        username = user_data.get("username", "Utilisateur") if user_data else "Utilisateur"
         
         return {
             "user_id": user_id,
