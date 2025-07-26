@@ -283,17 +283,17 @@ Les **anti-strats** et **counter-tactical play** sont l'essence de la domination
 
 ### 📊 Développement Compétences
 
-#### **Analyse Skills**
-- **Pattern Recognition** : Reconnaissance patterns
-- **Quick Decision** : Décision rapide
-- **Information Processing** : Traitement information
-- **Strategic Thinking** : Pensée stratégique
+#### **Compétences Analyse**
+- **Reconnaissance Patterns** : Reconnaissance patterns
+- **Décision Rapide** : Décision rapide
+- **Traitement Information** : Traitement information
+- **Pensée Stratégique** : Pensée stratégique
 
-#### **Execution Skills**
-- **Adaptation Speed** : Vitesse adaptation
+#### **Compétences Exécution**
+- **Vitesse Adaptation** : Vitesse adaptation
 - **Communication** : Communication efficace
-- **Team Coordination** : Coordination équipe
-- **Pressure Performance** : Performance sous pression
+- **Coordination Équipe** : Coordination équipe
+- **Performance Pression** : Performance sous pression
 
 ---
 
