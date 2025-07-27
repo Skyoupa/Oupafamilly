@@ -12,6 +12,13 @@ const Tournois = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { API_BASE_URL, user, token } = useAuth();
+  
+  // États pour l'inscription améliorée
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [selectedTournament, setSelectedTournament] = useState(null);
+  const [userTeams, setUserTeams] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState('');
+  const [registrationLoading, setRegistrationLoading] = useState(false);
 
   useEffect(() => {
     fetchTournaments();
