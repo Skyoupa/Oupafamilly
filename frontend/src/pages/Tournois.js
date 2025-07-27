@@ -77,17 +77,46 @@ const Tournois = () => {
       return;
     }
 
+    // Trouver le tournoi sélectionné
+    const tournament = [...tournaments['a-venir'], ...tournaments['en-cours'], ...tournaments['termines']]
+      .find(t => t.id === tournamentId);
+    
+    if (!tournament) {
+      alert('Tournoi non trouvé');
+      return;
+    }
+
+    setSelectedTournament(tournament);
+    setShowRegistrationModal(true);
+  };
+
+  const handleRegistrationSubmit = async () => {
+    if (!selectedTournament) return;
+
+    setRegistrationLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/tournaments/${tournamentId}/register`, {
+      const registrationData = {
+        tournament_id: selectedTournament.id
+      };
+
+      if (selectedTeam) {
+        registrationData.team_id = selectedTeam;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/tournaments/${selectedTournament.id}/register`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(registrationData)
       });
 
       if (response.ok) {
         alert('Inscription réussie !');
+        setShowRegistrationModal(false);
+        setSelectedTournament(null);
+        setSelectedTeam('');
         fetchTournaments(); // Actualiser la liste
       } else {
         const errorData = await response.json();
@@ -95,6 +124,8 @@ const Tournois = () => {
       }
     } catch (error) {
       alert('Erreur de connexion au serveur');
+    } finally {
+      setRegistrationLoading(false);
     }
   };
 
