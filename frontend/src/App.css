@@ -346,6 +346,213 @@ body {
   transform: translateX(8px);
 }
 
+/* Auth Section & Economic Elements */
+.auth-section-desktop {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-economy {
+  position: relative;
+}
+
+.balance-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-link:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+  border-color: rgba(16, 185, 129, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+}
+
+.coin-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 4px rgba(255, 193, 7, 0.5));
+}
+
+.balance-amount {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-bold);
+  font-size: 1.1rem;
+  color: var(--accent-green);
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.balance-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.profile-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.profile-link:hover {
+  color: var(--text-primary);
+}
+
+.welcome-text {
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.admin-link {
+  text-decoration: none;
+}
+
+.admin-badge, .ultimate-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-primary);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 1px;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.admin-badge {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.ultimate-badge {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.admin-badge:hover, .ultimate-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.logout-btn {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--text-secondary);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.logout-btn:hover {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: rgba(220, 38, 38, 0.5);
+  color: #fca5a5;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.auth-btn {
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-secondary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  text-decoration: none;
+}
+
+.login-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.login-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--primary-blue);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.register-btn {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-cyan) 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* Economic Navigation */
+.nav-link-pro.economic-nav {
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+}
+
+.nav-link-pro.economic-nav:hover {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.nav-link-pro.economic-nav .nav-text {
+  font-size: 0.85rem;
+}
+
+/* Theme Toggle */
+.theme-toggle-btn, .theme-toggle-btn-mobile {
+  background: rgba(75, 85, 99, 0.1);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+}
+
+.theme-toggle-btn:hover, .theme-toggle-btn-mobile:hover {
+  background: rgba(75, 85, 99, 0.2);
+  border-color: rgba(75, 85, 99, 0.5);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.theme-icon, .theme-icon-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
 /* ===========================================
    PRO GAMING TYPOGRAPHY & SECTIONS
 =========================================== */
