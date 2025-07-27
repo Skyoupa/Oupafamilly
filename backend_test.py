@@ -4084,6 +4084,12 @@ class OupafamillyAPITester:
             self.log("="*60)
             ultimate_dashboard_success = self.test_ultimate_dashboard_endpoints()
             
+            # ANALYTICS OVERVIEW SPECIFIC TEST (USER OBJECT FIX)
+            self.log("\n" + "="*60)
+            self.log("🔧 ANALYTICS OVERVIEW ENDPOINT - USER OBJECT FIX TEST")
+            self.log("="*60)
+            analytics_overview_success = self.test_analytics_overview_endpoint()
+            
             # Summary of main testing
             self.log("\n" + "="*80)
             self.log("📊 ENRICHED ACHIEVEMENTS SYSTEM TEST SUMMARY")
