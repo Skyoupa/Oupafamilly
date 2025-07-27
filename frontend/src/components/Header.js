@@ -9,8 +9,9 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login');
+  const [userBalance, setUserBalance] = useState(0);
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, API_BASE_URL } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -28,6 +29,32 @@ const Header = () => {
       window.removeEventListener('openAuthModal', handleOpenAuthModal);
     };
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserBalance();
+    }
+  }, [isAuthenticated]);
+
+  const fetchUserBalance = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`${API_BASE_URL}/currency/balance`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserBalance(data.balance || 0);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement du solde:', error);
+    }
+  };
 
   const isActive = (path) => {
     return location.pathname === path;
