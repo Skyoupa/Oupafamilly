@@ -513,6 +513,122 @@ const Communaute = () => {
       .includes(memberSearch.toLowerCase())
   );
 
+  // Fonctions de gestion des équipes
+  const createTeam = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Vous devez être connecté pour créer une équipe');
+      return;
+    }
+
+    setTeamLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/teams/create`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(teamForm)
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Équipe créée avec succès !');
+        setShowCreateTeamModal(false);
+        setTeamForm({
+          name: '',
+          game: 'cs2',
+          description: '',
+          max_members: 5,
+          is_open: true
+        });
+        fetchCommunityData();
+        fetchUserTeams();
+      } else {
+        alert(data.detail || 'Erreur lors de la création de l\'équipe');
+      }
+    } catch (error) {
+      console.error('Erreur création équipe:', error);
+      alert('Erreur de connexion au serveur');
+    } finally {
+      setTeamLoading(false);
+    }
+  };
+
+  const deleteTeam = async (teamId) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette équipe ?')) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/teams/${teamId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        alert('Équipe supprimée avec succès !');
+        setShowManageTeamModal(false);
+        fetchCommunityData();
+        fetchUserTeams();
+      } else {
+        const data = await response.json();
+        alert(data.detail || 'Erreur lors de la suppression');
+      }
+    } catch (error) {
+      console.error('Erreur suppression équipe:', error);
+      alert('Erreur de connexion au serveur');
+    }
+  };
+
+  const leaveTeam = async (teamId) => {
+    if (!confirm('Êtes-vous sûr de vouloir quitter cette équipe ?')) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/teams/${teamId}/leave`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        alert('Vous avez quitté l\'équipe avec succès !');
+        setShowManageTeamModal(false);
+        fetchCommunityData();
+        fetchUserTeams();
+      } else {
+        const data = await response.json();
+        alert(data.detail || 'Erreur lors de la sortie d\'équipe');
+      }
+    } catch (error) {
+      console.error('Erreur sortie équipe:', error);
+      alert('Erreur de connexion au serveur');
+    }
+  };
+  
+  const getGameDisplay = (game) => {
+    const games = {
+      'cs2': 'Counter-Strike 2',
+      'lol': 'League of Legends',
+      'wow': 'World of Warcraft',
+      'sc2': 'StarCraft II',
+      'minecraft': 'Minecraft'
+    };
+    return games[game] || game;
+  };
+
   if (loading) {
     return (
       <div className="page-pro">
