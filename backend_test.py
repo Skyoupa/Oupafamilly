@@ -3986,6 +3986,12 @@ class OupafamillyAPITester:
             self.log("="*60)
             daily_quests_success = self.test_daily_quests_system()
             
+            # ULTIMATE DASHBOARD TESTING
+            self.log("\n" + "="*60)
+            self.log("🎯 ULTIMATE DASHBOARD ENDPOINTS TESTING")
+            self.log("="*60)
+            ultimate_dashboard_success = self.test_ultimate_dashboard_endpoints()
+            
             # Summary of main testing
             self.log("\n" + "="*80)
             self.log("📊 ENRICHED ACHIEVEMENTS SYSTEM TEST SUMMARY")
