@@ -1501,6 +1501,98 @@ class OupafamillyAPITester:
         
         return success1 and success2 and success3 and success4 and success5
 
+    def test_analytics_overview_endpoint(self):
+        """Test Analytics Overview endpoint - SPECIFIC TEST FOR USER OBJECT FIX"""
+        if not self.token:
+            self.log("Skipping analytics overview test - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING ANALYTICS OVERVIEW ENDPOINT (USER OBJECT FIX) ===")
+        
+        # Test the specific endpoint that was failing with 'User' object is not subscriptable
+        success, response = self.run_test(
+            "Analytics Overview - Ultimate Dashboard",
+            "GET",
+            "analytics/overview",
+            200
+        )
+        
+        if success:
+            self.log("  ✅ Analytics Overview endpoint now returns 200 OK (fix successful)")
+            
+            # Verify the expected response structure
+            expected_sections = ['overview', 'user_engagement', 'gaming_activity', 'economy', 'achievements', 'realtime', 'performance']
+            found_sections = []
+            missing_sections = []
+            
+            for section in expected_sections:
+                if section in response:
+                    found_sections.append(section)
+                    self.log(f"    ✅ Section '{section}' present")
+                else:
+                    missing_sections.append(section)
+                    self.log(f"    ❌ Section '{section}' missing", "ERROR")
+            
+            # Check overview section details
+            if 'overview' in response:
+                overview = response['overview']
+                self.log(f"    Overview generated at: {overview.get('generated_at', 'unknown')}")
+                self.log(f"    Period: {overview.get('period', 'unknown')}")
+                self.log(f"    Status: {overview.get('status', 'unknown')}")
+            
+            # Check user engagement metrics
+            if 'user_engagement' in response and response['user_engagement']:
+                engagement = response['user_engagement']
+                self.log(f"    Total users: {engagement.get('total_users', 0)}")
+                self.log(f"    Active users (7d): {engagement.get('active_users_7d', 0)}")
+                self.log(f"    Active users (30d): {engagement.get('active_users_30d', 0)}")
+            
+            # Check gaming activity metrics
+            if 'gaming_activity' in response and response['gaming_activity']:
+                gaming = response['gaming_activity']
+                self.log(f"    Total tournaments: {gaming.get('total_tournaments', 0)}")
+                self.log(f"    Active tournaments: {gaming.get('active_tournaments', 0)}")
+                self.log(f"    Most popular game: {gaming.get('most_popular_game', 'unknown')}")
+            
+            # Check economy metrics
+            if 'economy' in response and response['economy']:
+                economy = response['economy']
+                self.log(f"    Total coins circulation: {economy.get('total_coins_circulation', 0)}")
+                self.log(f"    Daily transactions: {economy.get('daily_transactions', 0)}")
+            
+            # Check achievements metrics
+            if 'achievements' in response and response['achievements']:
+                achievements = response['achievements']
+                self.log(f"    Total badges awarded: {achievements.get('total_badges_awarded', 0)}")
+                self.log(f"    Most earned badge: {achievements.get('most_earned_badge', 'none')}")
+            
+            # Check realtime stats
+            if 'realtime' in response and response['realtime']:
+                realtime = response['realtime']
+                self.log(f"    Users online: {realtime.get('users_online', 0)}")
+                self.log(f"    Active tournaments: {realtime.get('active_tournaments', 0)}")
+            
+            # Check performance metrics
+            if 'performance' in response and response['performance']:
+                performance = response['performance']
+                self.log(f"    API health: {performance.get('api_health', 'unknown')}")
+                self.log(f"    Database health: {performance.get('database_health', 'unknown')}")
+                self.log(f"    Cache hit rate: {performance.get('cache_hit_rate', 0)}%")
+            
+            # Final assessment
+            if len(found_sections) == len(expected_sections):
+                self.log("  ✅ ALL EXPECTED SECTIONS PRESENT - Ultimate Dashboard Analytics Overview 100% operational")
+                return True
+            elif len(found_sections) >= 5:
+                self.log(f"  ⚠️ MOSTLY WORKING - {len(found_sections)}/{len(expected_sections)} sections present", "WARNING")
+                return True
+            else:
+                self.log(f"  ❌ INCOMPLETE RESPONSE - Only {len(found_sections)}/{len(expected_sections)} sections present", "ERROR")
+                return False
+        else:
+            self.log("  ❌ Analytics Overview endpoint still failing - 'User' object fix may not be complete", "ERROR")
+            return False
+
     def test_elite_achievements_system_58_badges(self):
         """Test FINAL ELITE achievements system with 58+ badges and mythic rewards - MAIN FOCUS"""
         if not self.token:
