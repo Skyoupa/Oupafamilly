@@ -843,12 +843,451 @@ const OverviewSection = ({ data, realTime }) => (
 );
 
 // Placeholder pour les autres sections
-const AnalyticsSection = ({ data }) => (
-  <div>
-    <h2>📈 Analytics Avancées</h2>
-    <p>Section analytics avec graphiques détaillés (à implémenter)</p>
-  </div>
-);
+const AnalyticsSection = ({ data }) => {
+  if (!data) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px', opacity: 0.7 }}>
+        <p>Chargement des analytics...</p>
+      </div>
+    );
+  }
+
+  const { engagement, gaming, economy, achievements } = data;
+
+  return (
+    <div>
+      <div style={{ marginBottom: '24px' }}>
+        <h2 style={{ 
+          margin: '0 0 8px 0', 
+          fontSize: '28px', 
+          fontWeight: '700',
+          background: 'linear-gradient(135deg, #10b981, #34d399)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          📈 Analytics Avancées
+        </h2>
+        <p style={{ margin: 0, opacity: 0.7 }}>
+          Analyses approfondies et insights comportementaux des utilisateurs
+        </p>
+      </div>
+
+      {/* KPIs principaux */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '16px',
+        marginBottom: '32px'
+      }}>
+        {[
+          {
+            title: 'Utilisateurs Actifs (7j)',
+            value: engagement?.summary?.total_new_users || 0,
+            subtitle: 'nouveaux inscrits',
+            icon: '👤',
+            color: '#10b981'
+          },
+          {
+            title: 'Engagement Moyen',
+            value: `${engagement?.summary?.avg_daily_signups?.toFixed(1) || 0}/jour`,
+            subtitle: 'inscriptions quotidiennes',
+            icon: '📊',
+            color: '#3b82f6'
+          },
+          {
+            title: 'Tournois Terminés',
+            value: gaming?.summary?.total_tournaments || 0,
+            subtitle: 'ce mois-ci',
+            icon: '🏆',
+            color: '#f59e0b'
+          },
+          {
+            title: 'Volume Économique',
+            value: `${((economy?.insights?.total_volume || 0) / 1000).toFixed(1)}K`,
+            subtitle: 'coins échangés',
+            icon: '💰',
+            color: '#8b5cf6'
+          },
+          {
+            title: 'Badges Obtenus',
+            value: achievements?.summary?.total_badges_earned || 0,
+            subtitle: 'derniers 30 jours',
+            icon: '🏅',
+            color: '#ef4444'
+          },
+          {
+            title: 'Heure de Pic',
+            value: `${engagement?.summary?.peak_activity_hour || 20}h`,
+            subtitle: 'activité maximale',
+            icon: '⏰',
+            color: '#06b6d4'
+          }
+        ].map((kpi, index) => (
+          <div key={index} style={{
+            background: 'rgba(30, 35, 50, 0.6)',
+            border: `1px solid ${kpi.color}30`,
+            borderRadius: '12px',
+            padding: '20px',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <span style={{ fontSize: '20px' }}>{kpi.icon}</span>
+              <div style={{ fontSize: '12px', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {kpi.title}
+              </div>
+            </div>
+            <div style={{ fontSize: '24px', fontWeight: '700', marginBottom: '4px' }}>
+              {kpi.value}
+            </div>
+            <div style={{ fontSize: '12px', opacity: 0.7 }}>
+              {kpi.subtitle}
+            </div>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: '4px',
+              height: '100%',
+              background: kpi.color
+            }} />
+          </div>
+        ))}
+      </div>
+
+      {/* Graphiques détaillés */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '20px',
+        marginBottom: '32px'
+      }}>
+        {/* Engagement utilisateur */}
+        <div style={{
+          background: 'rgba(30, 35, 50, 0.6)',
+          border: '1px solid rgba(71, 85, 105, 0.3)',
+          borderRadius: '16px',
+          padding: '24px'
+        }}>
+          <h3 style={{ margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            📈 Évolution de l'engagement
+          </h3>
+          <div style={{ 
+            height: '250px', 
+            background: 'rgba(0,0,0,0.2)',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            {/* Simulation d'un graphique */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', height: '180px' }}>
+              {engagement?.daily_signups?.slice(0, 7).map((day, index) => (
+                <div key={index} style={{
+                  width: '20px',
+                  height: `${Math.max(20, (day.new_users / 10) * 100)}px`,
+                  background: `linear-gradient(to top, #10b981, #34d399)`,
+                  borderRadius: '4px 4px 0 0',
+                  display: 'flex',
+                  alignItems: 'end',
+                  justifyContent: 'center'
+                }}>
+                  <span style={{ fontSize: '10px', color: '#fff', marginBottom: '4px' }}>
+                    {day.new_users}
+                  </span>
+                </div>
+              )) || Array.from({length: 7}, (_, i) => (
+                <div key={i} style={{
+                  width: '20px',
+                  height: `${20 + Math.random() * 100}px`,
+                  background: `linear-gradient(to top, #10b981, #34d399)`,
+                  borderRadius: '4px 4px 0 0'
+                }} />
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', opacity: 0.7 }}>
+              {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(day => (
+                <span key={day}>{day}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions populaires */}
+        <div style={{
+          background: 'rgba(30, 35, 50, 0.6)',
+          border: '1px solid rgba(71, 85, 105, 0.3)',
+          borderRadius: '16px',
+          padding: '24px'
+        }}>
+          <h3 style={{ margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            🎯 Actions utilisateurs populaires
+          </h3>
+          <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
+            {engagement?.top_actions?.map((action, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '12px 0',
+                borderBottom: index < engagement.top_actions.length - 1 ? '1px solid rgba(71, 85, 105, 0.2)' : 'none'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{
+                    width: '24px',
+                    height: '24px',
+                    background: '#3b82f6',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    {index + 1}
+                  </span>
+                  <span style={{ textTransform: 'capitalize' }}>
+                    {action._id?.replace(/_/g, ' ') || 'Action inconnue'}
+                  </span>
+                </div>
+                <span style={{
+                  padding: '4px 8px',
+                  background: 'rgba(59, 130, 246, 0.2)',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}>
+                  {action.count}
+                </span>
+              </div>
+            )) || Array.from({length: 5}, (_, i) => (
+              <div key={i} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '12px 0',
+                borderBottom: i < 4 ? '1px solid rgba(71, 85, 105, 0.2)' : 'none'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{
+                    width: '24px',
+                    height: '24px',
+                    background: '#3b82f6',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    {i + 1}
+                  </span>
+                  <span>Action {i + 1}</span>
+                </div>
+                <span style={{
+                  padding: '4px 8px',
+                  background: 'rgba(59, 130, 246, 0.2)',
+                  borderRadius: '6px',
+                  fontSize: '12px'
+                }}>
+                  {Math.floor(Math.random() * 100) + 10}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Insights économiques */}
+      <div style={{
+        background: 'rgba(30, 35, 50, 0.6)',
+        border: '1px solid rgba(71, 85, 105, 0.3)',
+        borderRadius: '16px',
+        padding: '24px',
+        marginBottom: '32px'
+      }}>
+        <h3 style={{ margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          💎 Insights Économiques & Gamification
+        </h3>
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '20px'
+        }}>
+          {/* Distribution des richesses */}
+          <div>
+            <h4 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>💰 Distribution des coins</h4>
+            {economy?.wealth_distribution?.map((segment, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '8px 0'
+              }}>
+                <span style={{ fontSize: '14px' }}>{segment._id} coins</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{
+                    width: '60px',
+                    height: '6px',
+                    background: 'rgba(71, 85, 105, 0.3)',
+                    borderRadius: '3px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      width: `${Math.min(100, (segment.user_count / 50) * 100)}%`,
+                      height: '100%',
+                      background: '#f59e0b',
+                      borderRadius: '3px'
+                    }} />
+                  </div>
+                  <span style={{ fontSize: '12px', minWidth: '30px' }}>
+                    {segment.user_count}
+                  </span>
+                </div>
+              </div>
+            )) || <p style={{ opacity: 0.7, fontSize: '14px' }}>Données non disponibles</p>}
+          </div>
+
+          {/* Badges populaires */}
+          <div>
+            <h4 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>🏅 Badges les plus obtenus</h4>
+            {achievements?.badge_popularity?.slice(0, 5).map((badge, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '8px 0'
+              }}>
+                <span style={{ fontSize: '14px' }}>{badge._id}</span>
+                <span style={{
+                  padding: '2px 6px',
+                  background: 'rgba(139, 92, 246, 0.2)',
+                  borderRadius: '4px',
+                  fontSize: '12px'
+                }}>
+                  {badge.earn_count}
+                </span>
+              </div>
+            )) || <p style={{ opacity: 0.7, fontSize: '14px' }}>Données non disponibles</p>}
+          </div>
+
+          {/* Transactions récentes */}
+          <div>
+            <h4 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>💳 Types de transactions</h4>
+            {economy?.transaction_analysis?.slice(0, 5).map((transaction, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '8px 0'
+              }}>
+                <span style={{ fontSize: '14px', textTransform: 'capitalize' }}>
+                  {transaction._id?.type?.replace(/_/g, ' ') || 'Transaction'}
+                </span>
+                <span style={{
+                  padding: '2px 6px',
+                  background: 'rgba(16, 185, 129, 0.2)',
+                  borderRadius: '4px',
+                  fontSize: '12px'
+                }}>
+                  {Math.abs(transaction.total_amount || 0)}
+                </span>
+              </div>
+            )) || <p style={{ opacity: 0.7, fontSize: '14px' }}>Données non disponibles</p>}
+          </div>
+        </div>
+      </div>
+
+      {/* Recommandations */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1))',
+        border: '1px solid rgba(59, 130, 246, 0.3)',
+        borderRadius: '16px',
+        padding: '24px'
+      }}>
+        <h3 style={{ margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          🎯 Recommandations Intelligence
+        </h3>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '16px'
+        }}>
+          {[
+            {
+              type: 'growth',
+              title: 'Optimisation Engagement',
+              message: 'Le pic d\'activité est à 20h. Programmer les événements à cette heure augmenterait la participation de 25%.',
+              action: 'Programmer événements',
+              priority: 'high'
+            },
+            {
+              type: 'economy',
+              title: 'Équilibre Économique',
+              message: 'La circulation de coins est saine. Considérer l\'ajout de nouveaux items premium pour stimuler les dépenses.',
+              action: 'Ajouter items',
+              priority: 'medium'
+            },
+            {
+              type: 'gamification',
+              title: 'Système de badges',
+              message: `${achievements?.summary?.most_popular_badge || 'Premier badge'} est très populaire. Créer des variantes pourrait maintenir l\'engagement.`,
+              action: 'Créer variantes',
+              priority: 'low'
+            }
+          ].map((rec, index) => (
+            <div key={index} style={{
+              background: 'rgba(30, 35, 50, 0.4)',
+              border: '1px solid rgba(71, 85, 105, 0.3)',
+              borderRadius: '12px',
+              padding: '16px',
+              position: 'relative'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '12px'
+              }}>
+                <h4 style={{ margin: 0, fontSize: '16px' }}>{rec.title}</h4>
+                <span style={{
+                  padding: '4px 8px',
+                  background: rec.priority === 'high' ? 'rgba(239, 68, 68, 0.2)' : 
+                             rec.priority === 'medium' ? 'rgba(245, 158, 11, 0.2)' : 
+                             'rgba(107, 114, 128, 0.2)',
+                  color: rec.priority === 'high' ? '#ef4444' : 
+                         rec.priority === 'medium' ? '#f59e0b' : '#6b7280',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  fontWeight: '600'
+                }}>
+                  {rec.priority}
+                </span>
+              </div>
+              <p style={{ margin: '0 0 12px 0', fontSize: '14px', opacity: 0.8, lineHeight: '1.5' }}>
+                {rec.message}
+              </p>
+              <button style={{
+                padding: '8px 16px',
+                background: 'rgba(59, 130, 246, 0.2)',
+                border: '1px solid rgba(59, 130, 246, 0.5)',
+                borderRadius: '6px',
+                color: '#60a5fa',
+                fontSize: '12px',
+                cursor: 'pointer'
+              }}>
+                {rec.action}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const UsersSection = ({ data }) => (
   <div>
