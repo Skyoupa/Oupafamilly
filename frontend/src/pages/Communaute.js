@@ -1696,6 +1696,208 @@ const Communaute = () => {
           onClose={() => setShowInventory(false)}
         />
       )}
+
+      {/* Modal de création d'équipe */}
+      {showCreateTeamModal && (
+        <div className="modal-overlay" onClick={() => setShowCreateTeamModal(false)}>
+          <div className="create-team-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>➕ Créer une Équipe</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowCreateTeamModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <form onSubmit={(e) => { e.preventDefault(); createTeam(); }}>
+                <div className="form-group">
+                  <label>Nom de l'équipe *</label>
+                  <input
+                    type="text"
+                    value={teamForm.name}
+                    onChange={(e) => setTeamForm({...teamForm, name: e.target.value})}
+                    placeholder="Nom de votre équipe"
+                    required
+                    maxLength={50}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Jeu principal *</label>
+                  <select
+                    value={teamForm.game}
+                    onChange={(e) => setTeamForm({...teamForm, game: e.target.value})}
+                    required
+                  >
+                    <option value="cs2">Counter-Strike 2</option>
+                    <option value="lol">League of Legends</option>
+                    <option value="wow">World of Warcraft</option>
+                    <option value="sc2">StarCraft II</option>
+                    <option value="minecraft">Minecraft</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    value={teamForm.description}
+                    onChange={(e) => setTeamForm({...teamForm, description: e.target.value})}
+                    placeholder="Décrivez votre équipe, votre style de jeu, vos objectifs..."
+                    rows={4}
+                    maxLength={500}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Nombre maximum de membres</label>
+                  <select
+                    value={teamForm.max_members}
+                    onChange={(e) => setTeamForm({...teamForm, max_members: parseInt(e.target.value)})}
+                  >
+                    <option value={2}>2 membres</option>
+                    <option value={3}>3 membres</option>
+                    <option value={4}>4 membres</option>
+                    <option value={5}>5 membres</option>
+                    <option value={6}>6 membres</option>
+                  </select>
+                </div>
+                
+                <div className="form-group">
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={teamForm.is_open}
+                      onChange={(e) => setTeamForm({...teamForm, is_open: e.target.checked})}
+                    />
+                    <span className="checkmark"></span>
+                    Équipe ouverte aux candidatures
+                  </label>
+                  <small>Si décoché, l'équipe sera privée et seuls les membres invités pourront rejoindre</small>
+                </div>
+                
+                <div className="modal-actions">
+                  <button 
+                    type="button"
+                    className="btn-cancel"
+                    onClick={() => setShowCreateTeamModal(false)}
+                    disabled={teamLoading}
+                  >
+                    Annuler
+                  </button>
+                  <button 
+                    type="submit"
+                    className="btn-confirm"
+                    disabled={teamLoading || !teamForm.name}
+                  >
+                    {teamLoading ? '⏳ Création...' : '➕ Créer l\'équipe'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de gestion d'équipes */}
+      {showManageTeamModal && (
+        <div className="modal-overlay" onClick={() => setShowManageTeamModal(false)}>
+          <div className="manage-team-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>⚙️ Gérer mes Équipes</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowManageTeamModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <div className="teams-management-list">
+                {userTeams.length === 0 ? (
+                  <div className="no-teams">
+                    <div className="no-teams-icon">🤝</div>
+                    <p>Vous n'avez pas encore d'équipe</p>
+                    <button 
+                      className="btn-create-team-inline"
+                      onClick={() => {
+                        setShowManageTeamModal(false);
+                        setShowCreateTeamModal(true);
+                      }}
+                    >
+                      ➕ Créer ma première équipe
+                    </button>
+                  </div>
+                ) : (
+                  userTeams.map(team => (
+                    <div key={team.id} className="team-management-card">
+                      <div className="team-management-header">
+                        <div className="team-management-info">
+                          <h4>{team.name}</h4>
+                          <div className="team-meta">
+                            <span className="team-game">{getGameDisplay(team.game)}</span>
+                            <span className="team-members">{team.members?.length || 1}/{team.max_members} membres</span>
+                            <span className={`team-status ${team.is_open ? 'open' : 'closed'}`}>
+                              {team.is_open ? '🟢 Ouverte' : '🔒 Fermée'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="team-role">
+                          {team.is_captain ? (
+                            <span className="captain-badge">👑 Capitaine</span>
+                          ) : (
+                            <span className="member-badge">👤 Membre</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="team-management-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">Tournois</span>
+                          <span className="stat-value">{team.statistics?.total_tournaments || 0}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">Victoires</span>
+                          <span className="stat-value">{team.statistics?.tournaments_won || 0}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">Winrate</span>
+                          <span className="stat-value">{team.statistics?.win_rate || 0}%</span>
+                        </div>
+                      </div>
+                      
+                      <div className="team-management-actions">
+                        {team.is_captain ? (
+                          <>
+                            <button className="btn-edit-team">📝 Modifier</button>
+                            <button className="btn-manage-members">👥 Membres</button>
+                            <button 
+                              className="btn-delete-team"
+                              onClick={() => deleteTeam(team.id)}
+                            >
+                              🗑️ Supprimer
+                            </button>
+                          </>
+                        ) : (
+                          <button 
+                            className="btn-leave-team"
+                            onClick={() => leaveTeam(team.id)}
+                          >
+                            🚪 Quitter l'équipe
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
