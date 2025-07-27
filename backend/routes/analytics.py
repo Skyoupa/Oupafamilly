@@ -61,7 +61,7 @@ class AchievementMetrics(BaseModel):
 async def get_analytics_overview(admin_user: dict = Depends(get_admin_user)):
     """📊 Vue d'ensemble des analytics Oupafamilly"""
     try:
-        app_logger.info(f"📊 Admin {admin_user['username']} accède aux analytics")
+        app_logger.info(f"📊 Admin {admin_user.username} accède aux analytics")
         
         # Calculer les métriques en parallèle
         tasks = [
