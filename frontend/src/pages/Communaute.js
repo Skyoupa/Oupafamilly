@@ -617,17 +617,6 @@ const Communaute = () => {
       alert('Erreur de connexion au serveur');
     }
   };
-  
-  const getGameDisplay = (game) => {
-    const games = {
-      'cs2': 'Counter-Strike 2',
-      'lol': 'League of Legends',
-      'wow': 'World of Warcraft',
-      'sc2': 'StarCraft II',
-      'minecraft': 'Minecraft'
-    };
-    return games[game] || game;
-  };
 
   if (loading) {
     return (
