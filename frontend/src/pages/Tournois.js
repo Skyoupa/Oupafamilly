@@ -227,7 +227,7 @@ const Tournois = () => {
             onClick={() => registerForTournament(tournament.id)}
             disabled={tournament.participants.length >= tournament.max_participants}
           >
-            {tournament.participants.includes(user.id) ? '✅ Inscrit' : '📝 S\'inscrire'}
+            {tournament.participants.includes(user.id) ? '✅ Inscrit' : '🚀 Rejoindre'}
           </button>
         )}
         <Link to={`/tournois/${tournament.id}`} className="btn-details-pro">
