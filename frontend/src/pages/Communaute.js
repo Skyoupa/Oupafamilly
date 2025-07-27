@@ -30,6 +30,20 @@ const Communaute = () => {
   const [selectedRecipient, setSelectedRecipient] = useState('');
   const [messageContent, setMessageContent] = useState('');
   
+  // Team management state
+  const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
+  const [showManageTeamModal, setShowManageTeamModal] = useState(false);
+  const [selectedTeamForManagement, setSelectedTeamForManagement] = useState(null);
+  const [userTeams, setUserTeams] = useState([]);
+  const [teamForm, setTeamForm] = useState({
+    name: '',
+    game: 'cs2',
+    description: '',
+    max_members: 5,
+    is_open: true
+  });
+  const [teamLoading, setTeamLoading] = useState(false);
+  
   // Tournament scheduling state
   const [tournaments, setTournaments] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState('');
