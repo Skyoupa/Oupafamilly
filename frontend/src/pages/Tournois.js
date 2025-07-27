@@ -357,6 +357,119 @@ const Tournois = () => {
         </div>
       </div>
 
+      {/* Modal d'inscription amélioré */}
+      {showRegistrationModal && selectedTournament && (
+        <div className="modal-overlay" onClick={() => setShowRegistrationModal(false)}>
+          <div className="registration-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>🚀 Inscription au Tournoi</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowRegistrationModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <div className="tournament-info">
+                <h4>{selectedTournament.title}</h4>
+                <div className="tournament-details">
+                  <div className="detail-item">
+                    <span className="detail-label">🎮 Jeu:</span>
+                    <span>{getGameName(selectedTournament.game)}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">🏆 Type:</span>
+                    <span>{getTournamentTypeName(selectedTournament.tournament_type)}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">👥 Participants:</span>
+                    <span>{selectedTournament.participants.length}/{selectedTournament.max_participants}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">💰 Prix:</span>
+                    <span>{selectedTournament.prize_pool > 0 ? `${selectedTournament.prize_pool}€` : 'Gratuit'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="team-selection">
+                <h4>⚡ Sélection d'équipe</h4>
+                <p>Choisissez avec quelle équipe vous souhaitez participer au tournoi:</p>
+                
+                <div className="team-options">
+                  <div className="team-option">
+                    <input
+                      type="radio"
+                      id="solo"
+                      name="team"
+                      value=""
+                      checked={selectedTeam === ''}
+                      onChange={(e) => setSelectedTeam(e.target.value)}
+                    />
+                    <label htmlFor="solo" className="team-option-label">
+                      <div className="team-icon">👤</div>
+                      <div className="team-info">
+                        <strong>Participation Solo</strong>
+                        <small>Je participe individuellement</small>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  {userTeams.length > 0 && userTeams.map(team => (
+                    <div key={team.id} className="team-option">
+                      <input
+                        type="radio"
+                        id={`team-${team.id}`}
+                        name="team"
+                        value={team.id}
+                        checked={selectedTeam === team.id}
+                        onChange={(e) => setSelectedTeam(e.target.value)}
+                      />
+                      <label htmlFor={`team-${team.id}`} className="team-option-label">
+                        <div className="team-icon">🛡️</div>
+                        <div className="team-info">
+                          <strong>{team.name}</strong>
+                          <small>{team.members?.length || 0} membres - Capitaine: {team.captain_name}</small>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                
+                {userTeams.length === 0 && (
+                  <div className="no-teams-message">
+                    <div className="no-teams-icon">🤝</div>
+                    <p>Vous n'avez pas encore d'équipe. Vous pouvez participer en solo ou créer une équipe dans la section Communauté.</p>
+                    <Link to="/communaute" className="create-team-link">
+                      ➕ Créer une équipe
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="modal-actions">
+              <button 
+                className="btn-cancel"
+                onClick={() => setShowRegistrationModal(false)}
+                disabled={registrationLoading}
+              >
+                Annuler
+              </button>
+              <button 
+                className="btn-confirm"
+                onClick={handleRegistrationSubmit}
+                disabled={registrationLoading}
+              >
+                {registrationLoading ? '⏳ Inscription...' : '🚀 Confirmer l\'inscription'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
         .tournaments-container-pro {
           max-width: 1200px;
