@@ -13,8 +13,8 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Configuration CORS pour React frontend - PRODUCTION
 define('ALLOWED_ORIGINS', [
-    'https://your-domain.ovh',  // ⚠️ REMPLACER PAR VOTRE DOMAINE OVH
-    'https://www.your-domain.ovh',
+    'https://oupafamilly.com',
+    'https://www.oupafamilly.com',
     'http://localhost:3000'  // Pour les tests locaux
 ]);
 
