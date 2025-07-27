@@ -1654,7 +1654,6 @@ const Communaute = () => {
             </div>
           )}
         </div>
-        </div>
       </section>
 
       {/* Join CTA */}
