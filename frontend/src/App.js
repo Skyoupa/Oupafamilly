@@ -149,6 +149,7 @@ function App() {
                 <Route path="/news" element={<News />} />
                 <Route path="/profil" element={<Profil />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/ultimate" element={<UltimateDashboard />} />
                 <Route path="/admin/tournaments" element={<AdminTournaments />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="/admin/content" element={<AdminContent />} />
