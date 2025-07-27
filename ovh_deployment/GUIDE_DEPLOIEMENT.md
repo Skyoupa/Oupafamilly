@@ -6,6 +6,7 @@
 ✅ **Frontend :** Build React optimisé pour production  
 ✅**Backend :** API PHP complète avec toutes les fonctionnalités  
 ✅ **Base de données :** Structure MySQL équivalente à MongoDB  
+✅ **Domaine configuré :** oupafamilly.com
 
 ## 🗂️ STRUCTURE DES FICHIERS À TÉLÉCHARGER
 
@@ -17,7 +18,7 @@ ovh_deployment/
 ├── favicon.ico
 └── api/ (Backend PHP)
     ├── index.php (API principale)
-    ├── config.php (Configuration)
+    ├── config.php (Configuration oupafamilly.com)
     ├── database.php (Connexion MySQL)
     ├── auth.php (Authentification)
     ├── .htaccess (Réécriture URL)
@@ -30,8 +31,8 @@ ovh_deployment/
 
 1. Connectez-vous à votre **Manager OVH**
 2. Accédez à votre **Hébergement Web Starter**
-3. Allez dans **Multisite** et configurez votre domaine
-4. Notez votre **domaine principal** (ex: `monsite.ovh`)
+3. Allez dans **Multisite** et configurez **oupafamilly.com**
+4. Vérifiez que le domaine pointe vers votre hébergement
 
 ### 2. **Télécharger les fichiers**
 
@@ -40,34 +41,35 @@ ovh_deployment/
 3. Téléchargez **TOUT le contenu** du dossier `ovh_deployment/`
 4. Respectez la structure exacte des dossiers
 
-### 3. **Configuration finale**
+### 3. **Configuration finale** ✅ DÉJÀ FAITE
 
-1. **Modifier le domaine dans `api/config.php` :**
-   ```php
-   define('ALLOWED_ORIGINS', [
-       'https://votre-domaine.ovh',     // ⚠️ REMPLACER
-       'https://www.votre-domaine.ovh'
-   ]);
-   ```
+Le domaine **oupafamilly.com** est déjà configuré dans `api/config.php` :
+```php
+define('ALLOWED_ORIGINS', [
+    'https://oupafamilly.com',
+    'https://www.oupafamilly.com'
+]);
+```
 
-2. **Changer la clé JWT (sécurité) :**
+**⚠️ IMPORTANT :**
+1. **Changez la clé JWT (sécurité) :**
    ```php
    define('JWT_SECRET', 'votre-cle-secrete-unique-ici');
    ```
 
-3. **Vérifier les permissions :**
+2. **Vérifiez les permissions :**
    - Dossier `api/logs/` : 755
    - Fichiers PHP : 644
 
 ### 4. **Test de connexion MySQL**
 
-1. Allez sur : `https://votre-domaine.ovh/api/test_db.php`
+1. Allez sur : `https://oupafamilly.com/api/test_db.php`
 2. Vous devriez voir : ✅ Connexion MySQL OVH réussie !
 3. Si erreur, vérifiez vos identifiants MySQL dans le Manager OVH
 
 ### 5. **Test de l'API**
 
-1. Allez sur : `https://votre-domaine.ovh/api/`
+1. Allez sur : `https://oupafamilly.com/api/`
 2. Vous devriez voir :
    ```json
    {
@@ -79,7 +81,7 @@ ovh_deployment/
 
 ### 6. **Test du site complet**
 
-1. Allez sur : `https://votre-domaine.ovh`
+1. Allez sur : `https://oupafamilly.com`
 2. Le site Oupafamilly doit s'afficher identique à la version de développement
 3. Testez la connexion/inscription d'un utilisateur
 
@@ -150,6 +152,7 @@ ovh_deployment/
 - **Base de données** : MongoDB → MySQL (structure identique)
 - **Frontend** : React build optimisé (inchangé)
 - **Hébergement** : Compatible OVH Starter (PHP + MySQL)
+- **Domaine** : Configuré pour oupafamilly.com
 
 ## 📞 SUPPORT
 
@@ -157,9 +160,16 @@ Si vous rencontrez des problèmes :
 
 1. Vérifiez les **logs PHP** dans `api/logs/`
 2. Testez la **connexion MySQL** avec test_db.php
-3. Vérifiez la **configuration des domaines** dans config.php
+3. Vérifiez que **oupafamilly.com** pointe vers votre hébergement OVH
 4. Assurez-vous que tous les **fichiers sont téléchargés**
+
+## 🌐 URLS DE TEST
+
+- **Site principal :** https://oupafamilly.com
+- **API status :** https://oupafamilly.com/api/
+- **Test MySQL :** https://oupafamilly.com/api/test_db.php
+- **Dashboard admin :** https://oupafamilly.com/admin/ultimate
 
 ---
 
-🎉 **Votre site Oupafamilly est maintenant prêt pour OVH !**
+🎉 **Votre site Oupafamilly est maintenant prêt pour oupafamilly.com !**
