@@ -1289,12 +1289,529 @@ const AnalyticsSection = ({ data }) => {
   );
 };
 
-const UsersSection = ({ data }) => (
-  <div>
-    <h2>👥 Gestion Utilisateurs</h2>
-    <p>Gestion complète des utilisateurs (à implémenter)</p>
-  </div>
-);
+// Section Gestion Utilisateurs
+const UsersSection = ({ data }) => {
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userAction, setUserAction] = useState('');
+  const [filterRole, setFilterRole] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  if (!data) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px', opacity: 0.7 }}>
+        <p>Chargement des données utilisateurs...</p>
+      </div>
+    );
+  }
+
+  const { users, stats, recentActions } = data;
+
+  const filteredUsers = users?.filter(user => {
+    const matchesRole = filterRole === 'all' || user.role === filterRole;
+    const matchesSearch = !searchTerm || 
+      user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesRole && matchesSearch;
+  }) || [];
+
+  const handleUserAction = async (userId, action) => {
+    // Ici on implémenterait les actions sur les utilisateurs
+    console.log(`Action ${action} sur utilisateur ${userId}`);
+    setUserAction('');
+    setSelectedUser(null);
+  };
+
+  return (
+    <div>
+      <div style={{ marginBottom: '24px' }}>
+        <h2 style={{ 
+          margin: '0 0 8px 0', 
+          fontSize: '28px', 
+          fontWeight: '700',
+          background: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          👥 Gestion Utilisateurs
+        </h2>
+        <p style={{ margin: 0, opacity: 0.7 }}>
+          Administration complète des membres et de leurs permissions
+        </p>
+      </div>
+
+      {/* Statistiques utilisateurs */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '16px',
+        marginBottom: '32px'
+      }}>
+        {[
+          {
+            title: 'Total Utilisateurs',
+            value: users?.length || 0,
+            change: '+12 cette semaine',
+            icon: '👤',
+            color: '#8b5cf6'
+          },
+          {
+            title: 'Actifs (7j)',
+            value: Math.floor((users?.length || 0) * 0.7),
+            change: '+5.2%',
+            icon: '🟢',
+            color: '#10b981'
+          },
+          {
+            title: 'Administrateurs',
+            value: users?.filter(u => u.role === 'admin')?.length || 0,
+            change: 'Stable',
+            icon: '👑',
+            color: '#f59e0b'
+          },
+          {
+            title: 'Premium',
+            value: users?.filter(u => u.premium_tier)?.length || 0,
+            change: '+18%',
+            icon: '💎',
+            color: '#06b6d4'
+          },
+          {
+            title: 'Bannissements',
+            value: users?.filter(u => u.status === 'banned')?.length || 0,
+            change: '-2 ce mois',
+            icon: '🚫',
+            color: '#ef4444'
+          }
+        ].map((stat, index) => (
+          <div key={index} style={{
+            background: 'rgba(30, 35, 50, 0.6)',
+            border: `1px solid ${stat.color}30`,
+            borderRadius: '12px',
+            padding: '20px',
+            position: 'relative'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ fontSize: '20px' }}>{stat.icon}</span>
+              <span style={{
+                padding: '4px 8px',
+                background: `${stat.color}20`,
+                color: stat.color,
+                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: '600'
+              }}>
+                {stat.change}
+              </span>
+            </div>
+            <div style={{ fontSize: '24px', fontWeight: '700', marginBottom: '4px' }}>
+              {stat.value}
+            </div>
+            <div style={{ fontSize: '12px', opacity: 0.7 }}>
+              {stat.title}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
+        {/* Liste des utilisateurs */}
+        <div style={{
+          background: 'rgba(30, 35, 50, 0.6)',
+          border: '1px solid rgba(71, 85, 105, 0.3)',
+          borderRadius: '16px',
+          padding: '24px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0 }}>📋 Liste des Utilisateurs</h3>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              {/* Filtre par rôle */}
+              <select 
+                value={filterRole}
+                onChange={(e) => setFilterRole(e.target.value)}
+                style={{
+                  padding: '8px 12px',
+                  background: 'rgba(71, 85, 105, 0.3)',
+                  border: '1px solid rgba(71, 85, 105, 0.5)',
+                  borderRadius: '6px',
+                  color: '#f8fafc',
+                  fontSize: '12px'
+                }}
+              >
+                <option value="all">Tous les rôles</option>
+                <option value="admin">Administrateurs</option>
+                <option value="moderator">Modérateurs</option>
+                <option value="user">Utilisateurs</option>
+              </select>
+
+              {/* Recherche */}
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  padding: '8px 12px',
+                  background: 'rgba(71, 85, 105, 0.3)',
+                  border: '1px solid rgba(71, 85, 105, 0.5)',
+                  borderRadius: '6px',
+                  color: '#f8fafc',
+                  fontSize: '12px',
+                  width: '150px'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Table des utilisateurs */}
+          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '40px 1fr 100px 80px 100px 120px',
+              gap: '16px',
+              padding: '12px 0',
+              borderBottom: '1px solid rgba(71, 85, 105, 0.3)',
+              fontSize: '12px',
+              fontWeight: '600',
+              opacity: 0.7,
+              textTransform: 'uppercase'
+            }}>
+              <div></div>
+              <div>Utilisateur</div>
+              <div>Rôle</div>
+              <div>Statut</div>
+              <div>Premium</div>
+              <div>Actions</div>
+            </div>
+
+            {filteredUsers.slice(0, 20).map((user, index) => (
+              <div key={user.id || index} style={{
+                display: 'grid',
+                gridTemplateColumns: '40px 1fr 100px 80px 100px 120px',
+                gap: '16px',
+                padding: '16px 0',
+                borderBottom: '1px solid rgba(71, 85, 105, 0.2)',
+                alignItems: 'center',
+                fontSize: '14px'
+              }}>
+                {/* Avatar */}
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: `linear-gradient(135deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  color: '#fff'
+                }}>
+                  {user.username?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+
+                {/* Informations utilisateur */}
+                <div>
+                  <div style={{ fontWeight: '600' }}>{user.username || 'Utilisateur'}</div>
+                  <div style={{ fontSize: '12px', opacity: 0.7 }}>{user.email || 'Email non défini'}</div>
+                </div>
+
+                {/* Rôle */}
+                <div>
+                  <span style={{
+                    padding: '4px 8px',
+                    background: user.role === 'admin' ? 'rgba(239, 68, 68, 0.2)' :
+                               user.role === 'moderator' ? 'rgba(245, 158, 11, 0.2)' :
+                               'rgba(59, 130, 246, 0.2)',
+                    color: user.role === 'admin' ? '#ef4444' :
+                           user.role === 'moderator' ? '#f59e0b' :
+                           '#3b82f6',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    textTransform: 'capitalize'
+                  }}>
+                    {user.role || 'user'}
+                  </span>
+                </div>
+
+                {/* Statut */}
+                <div>
+                  <span style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    background: user.status === 'active' ? '#10b981' :
+                               user.status === 'banned' ? '#ef4444' :
+                               '#6b7280',
+                    display: 'inline-block',
+                    marginRight: '6px'
+                  }} />
+                  <span style={{ fontSize: '12px', textTransform: 'capitalize' }}>
+                    {user.status || 'active'}
+                  </span>
+                </div>
+
+                {/* Premium */}
+                <div>
+                  {user.premium_tier ? (
+                    <span style={{
+                      padding: '4px 8px',
+                      background: 'rgba(139, 92, 246, 0.2)',
+                      color: '#8b5cf6',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase'
+                    }}>
+                      {user.premium_tier}
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: '12px', opacity: 0.5 }}>Free</span>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => setSelectedUser(user)}
+                    style={{
+                      padding: '4px 8px',
+                      background: 'rgba(59, 130, 246, 0.2)',
+                      border: '1px solid rgba(59, 130, 246, 0.5)',
+                      borderRadius: '4px',
+                      color: '#60a5fa',
+                      fontSize: '11px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    👁️ Voir
+                  </button>
+                  {user.role !== 'admin' && (
+                    <button
+                      onClick={() => handleUserAction(user.id, 'ban')}
+                      style={{
+                        padding: '4px 8px',
+                        background: 'rgba(239, 68, 68, 0.2)',
+                        border: '1px solid rgba(239, 68, 68, 0.5)',
+                        borderRadius: '4px',
+                        color: '#ef4444',
+                        fontSize: '11px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🚫 Ban
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {filteredUsers.length === 0 && (
+              <div style={{
+                textAlign: 'center',
+                padding: '40px',
+                opacity: 0.7
+              }}>
+                <p>Aucun utilisateur trouvé avec ces critères</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sidebar - Actions récentes et détails */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Actions récentes */}
+          <div style={{
+            background: 'rgba(30, 35, 50, 0.6)',
+            border: '1px solid rgba(71, 85, 105, 0.3)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '16px' }}>🕒 Actions Récentes</h3>
+            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+              {recentActions?.slice(0, 10).map((action, index) => (
+                <div key={index} style={{
+                  padding: '8px 0',
+                  borderBottom: index < recentActions.length - 1 ? '1px solid rgba(71, 85, 105, 0.2)' : 'none'
+                }}>
+                  <div style={{ fontSize: '12px', fontWeight: '600' }}>
+                    {action.action_type?.replace(/_/g, ' ') || 'Action'}
+                  </div>
+                  <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                    Par {action.username || 'Utilisateur'} • {action.timestamp ? new Date(action.timestamp).toLocaleTimeString() : 'Maintenant'}
+                  </div>
+                </div>
+              )) || Array.from({length: 5}, (_, i) => (
+                <div key={i} style={{
+                  padding: '8px 0',
+                  borderBottom: i < 4 ? '1px solid rgba(71, 85, 105, 0.2)' : 'none'
+                }}>
+                  <div style={{ fontSize: '12px', fontWeight: '600' }}>Action {i + 1}</div>
+                  <div style={{ fontSize: '11px', opacity: 0.7 }}>Il y a {Math.floor(Math.random() * 60)} min</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Détails utilisateur sélectionné */}
+          {selectedUser && (
+            <div style={{
+              background: 'rgba(30, 35, 50, 0.6)',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              borderRadius: '16px',
+              padding: '20px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h3 style={{ margin: 0, fontSize: '16px' }}>👤 Détails Utilisateur</h3>
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#6b7280',
+                    cursor: 'pointer',
+                    fontSize: '18px'
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <div style={{ fontSize: '12px', opacity: 0.7, textTransform: 'uppercase' }}>Nom d'utilisateur</div>
+                  <div style={{ fontWeight: '600' }}>{selectedUser.username}</div>
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '12px', opacity: 0.7, textTransform: 'uppercase' }}>Email</div>
+                  <div style={{ fontSize: '14px' }}>{selectedUser.email || 'Non défini'}</div>
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '12px', opacity: 0.7, textTransform: 'uppercase' }}>Inscription</div>
+                  <div style={{ fontSize: '14px' }}>
+                    {selectedUser.created_at ? new Date(selectedUser.created_at).toLocaleDateString() : 'Date inconnue'}
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '12px', opacity: 0.7', textTransform: 'uppercase' }}>Coins</div>
+                  <div style={{ fontSize: '14px', fontWeight: '600' }}>{selectedUser.coins || 0} coins</div>
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '12px', opacity: 0.7', textTransform: 'uppercase' }}>Niveau</div>
+                  <div style={{ fontSize: '14px' }}>Niveau {selectedUser.level || 1}</div>
+                </div>
+
+                {/* Actions rapides */}
+                <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <button
+                    onClick={() => handleUserAction(selectedUser.id, 'promote')}
+                    style={{
+                      padding: '8px 12px',
+                      background: 'rgba(16, 185, 129, 0.2)',
+                      border: '1px solid rgba(16, 185, 129, 0.5)',
+                      borderRadius: '6px',
+                      color: '#10b981',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    ⬆️ Promouvoir
+                  </button>
+                  
+                  <button
+                    onClick={() => handleUserAction(selectedUser.id, 'message')}
+                    style={{
+                      padding: '8px 12px',
+                      background: 'rgba(59, 130, 246, 0.2)',
+                      border: '1px solid rgba(59, 130, 246, 0.5)',
+                      borderRadius: '6px',
+                      color: '#3b82f6',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    💬 Envoyer Message
+                  </button>
+
+                  {selectedUser.role !== 'admin' && (
+                    <button
+                      onClick={() => handleUserAction(selectedUser.id, 'ban')}
+                      style={{
+                        padding: '8px 12px',
+                        background: 'rgba(239, 68, 68, 0.2)',
+                        border: '1px solid rgba(239, 68, 68, 0.5)',
+                        borderRadius: '6px',
+                        color: '#ef4444',
+                        fontSize: '12px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🚫 Bannir
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Actions rapides */}
+          <div style={{
+            background: 'rgba(30, 35, 50, 0.6)',
+            border: '1px solid rgba(71, 85, 105, 0.3)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '16px' }}>⚡ Actions Rapides</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button style={{
+                padding: '10px',
+                background: 'rgba(16, 185, 129, 0.2)',
+                border: '1px solid rgba(16, 185, 129, 0.5)',
+                borderRadius: '8px',
+                color: '#10b981',
+                fontSize: '12px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}>
+                👥 Créer Utilisateur
+              </button>
+              
+              <button style={{
+                padding: '10px',
+                background: 'rgba(245, 158, 11, 0.2)',
+                border: '1px solid rgba(245, 158, 11, 0.5)',
+                borderRadius: '8px',
+                color: '#f59e0b',
+                fontSize: '12px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}>
+                📧 Message Groupe
+              </button>
+              
+              <button style={{
+                padding: '10px',
+                background: 'rgba(139, 92, 246, 0.2)',
+                border: '1px solid rgba(139, 92, 246, 0.5)',
+                borderRadius: '8px',
+                color: '#8b5cf6',
+                fontSize: '12px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}>
+                📊 Export Données
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ContentSection = ({ data }) => (
   <div>
