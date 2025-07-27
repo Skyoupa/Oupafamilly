@@ -22,7 +22,27 @@ const Tournois = () => {
 
   useEffect(() => {
     fetchTournaments();
-  }, []);
+    if (user) {
+      fetchUserTeams();
+    }
+  }, [user]);
+
+  const fetchUserTeams = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/teams/my-teams`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUserTeams(data.teams || []);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des équipes:', error);
+    }
+  };
 
   const fetchTournaments = async () => {
     try {
