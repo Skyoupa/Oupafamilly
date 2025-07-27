@@ -1696,7 +1696,7 @@ const UsersSection = ({ data }) => {
                 </div>
 
                 <div>
-                  <div style={{ fontSize: '12px', opacity: 0.7', textTransform: 'uppercase' }}>Coins</div>
+                  <div style={{ fontSize: '12px', opacity: 0.7, textTransform: 'uppercase' }}>Coins</div>
                   <div style={{ fontSize: '14px', fontWeight: '600' }}>{selectedUser.coins || 0} coins</div>
                 </div>
 
