@@ -4134,14 +4134,17 @@ class OupafamillyAPITester:
                 self.log("  ➡️ Analytics Overview needs further fixes", "ERROR")
             
             self.log("="*80)
-            if enriched_achievements_success and daily_quests_success:
-                self.log("🎉 ENRICHED ACHIEVEMENTS & QUESTS: FULLY OPERATIONAL!", "SUCCESS")
-                self.log("🔧 RECOMMENDATION: Systems ready for frontend integration", "SUCCESS")
-            elif enriched_achievements_success:
-                self.log("🎉 ENRICHED ACHIEVEMENTS: OPERATIONAL! (Quests need fixes)", "SUCCESS")
-                self.log("🔧 RECOMMENDATION: Main system ready, fix quests system", "SUCCESS")
+            if enriched_achievements_success and daily_quests_success and analytics_overview_success:
+                self.log("🎉 ALL SYSTEMS: FULLY OPERATIONAL!", "SUCCESS")
+                self.log("🔧 RECOMMENDATION: All systems ready for frontend integration", "SUCCESS")
+            elif enriched_achievements_success and analytics_overview_success:
+                self.log("🎉 ACHIEVEMENTS & ANALYTICS: OPERATIONAL! (Quests need fixes)", "SUCCESS")
+                self.log("🔧 RECOMMENDATION: Main systems ready, fix quests system", "SUCCESS")
+            elif analytics_overview_success:
+                self.log("🎉 ANALYTICS OVERVIEW: FIXED! (Other systems need attention)", "SUCCESS")
+                self.log("🔧 RECOMMENDATION: Analytics fix successful, address other issues", "SUCCESS")
             else:
-                self.log("❌ ENRICHED ACHIEVEMENTS: NEEDS FIXES!", "ERROR")
+                self.log("❌ MULTIPLE SYSTEMS: NEED FIXES!", "ERROR")
                 self.log("🔧 RECOMMENDATION: Fix backend issues before frontend integration", "ERROR")
             self.log("="*80)
         
