@@ -113,6 +113,17 @@ const Header = () => {
                 <span className="nav-underline"></span>
               </Link>
             ))}
+            {/* Economic Navigation */}
+            {economicNavItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`nav-link-pro economic-nav ${isActive(item.path) ? 'active' : ''}`}
+              >
+                <span className="nav-text">{item.label}</span>
+                <span className="nav-underline"></span>
+              </Link>
+            ))}
           </nav>
 
           {/* Auth Section Desktop */}
