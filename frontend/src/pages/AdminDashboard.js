@@ -149,6 +149,36 @@ const AdminDashboard = () => {
             <h2>⚡ Actions rapides</h2>
             <div className="quick-actions">
               <a 
+                href="/admin/ultimate"
+                className="action-btn premium"
+                style={{
+                  background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                  border: '2px solid #60a5fa',
+                  boxShadow: '0 8px 25px rgba(59, 130, 246, 0.4)',
+                  transform: 'scale(1.05)',
+                  position: 'relative'
+                }}
+              >
+                🚀 COMMAND CENTER ULTIME
+                <span style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  right: '-8px',
+                  background: '#ef4444',
+                  color: 'white',
+                  borderRadius: '50%',
+                  width: '20px',
+                  height: '20px',
+                  fontSize: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  animation: 'pulse 2s infinite'
+                }}>
+                  NEW
+                </span>
+              </a>
+              <a 
                 href="/admin/tournaments"
                 className="action-btn primary"
               >
