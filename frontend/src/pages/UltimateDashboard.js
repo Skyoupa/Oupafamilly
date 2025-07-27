@@ -1701,7 +1701,7 @@ const UsersSection = ({ data }) => {
                 </div>
 
                 <div>
-                  <div style={{ fontSize: '12px', opacity: 0.7', textTransform: 'uppercase' }}>Niveau</div>
+                  <div style={{ fontSize: '12px', opacity: 0.7, textTransform: 'uppercase' }}>Niveau</div>
                   <div style={{ fontSize: '14px' }}>Niveau {selectedUser.level || 1}</div>
                 </div>
 
