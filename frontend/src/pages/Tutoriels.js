@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const Tutoriels = () => {
@@ -7,9 +7,19 @@ const Tutoriels = () => {
   const [tutorials, setTutorials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
+
+  // Gérer les paramètres de query pour sélectionner le jeu
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const gameParam = params.get('game');
+    if (gameParam && ['cs2', 'lol', 'wow', 'sc2', 'minecraft'].includes(gameParam)) {
+      setSelectedGame(gameParam);
+    }
+  }, [location.search]);
 
   // Fonction pour convertir le titre en slug URL (améliorée pour gérer les accents français)
   const slugify = (text) => {
