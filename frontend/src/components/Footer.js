@@ -76,9 +76,9 @@ const Footer = () => {
             <h4 className="footer-subtitle-pro">COMMUNAUTÉ</h4>
             <ul className="footer-links-pro">
               <li><a href="mailto:contact@oupafamilly.com">contact@oupafamilly.com</a></li>
-              <li><a href="#">Serveur Discord</a></li>
-              <li><a href="#">Chaîne Twitch</a></li>
-              <li><a href="#">Rejoindre l'élite</a></li>
+              <li><Link to="/communaute">Serveur Discord</Link></li>
+              <li><Link to="/communaute">Chaîne Twitch</Link></li>
+              <li><Link to="/communaute">Rejoindre l'élite</Link></li>
             </ul>
           </div>
         </div>
