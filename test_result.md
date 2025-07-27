@@ -406,6 +406,21 @@ backend:
         agent: "testing"
         comment: "✅ VALIDÉ: Endpoint GET /api/content/tutorials?limit=100 fonctionne parfaitement. Retourne bien les 60 tutoriels avec limite 100. Test réussi à 100%."
 
+  - task: "Correction endpoint Analytics Overview Ultimate Dashboard"
+    implemented: true
+    working: false
+    file: "/app/backend/routes/analytics.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ GET /api/analytics/overview : Erreur 500 - 'Erreur lors de la génération des analytics' (nécessite investigation backend)"
+      - working: false
+        agent: "main"
+        comment: "🔧 ERREUR IDENTIFIÉE - Dans les logs backend : 'User' object is not subscriptable. Problème ligne 64 analytics.py : admin_user['username'] au lieu de admin_user.username. L'endpoint get_admin_user retourne un objet User (Pydantic BaseModel), pas un dictionnaire. Correction appliquée."
+
   - task: "Ultimate Dashboard endpoints validation"
     implemented: true
     working: true
