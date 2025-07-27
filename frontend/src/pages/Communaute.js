@@ -906,7 +906,32 @@ const Communaute = () => {
 
           {/* Teams View */}
           {activeView === 'equipes' && (
-            <div className="teams-grid-pro">
+            <div>
+              {/* Team Management Header */}
+              <div className="teams-management-header">
+                <div className="teams-header-content">
+                  <h3>⚔️ Gestion des Équipes</h3>
+                  <p>Créez votre équipe ou gérez vos équipes existantes</p>
+                </div>
+                <div className="teams-actions">
+                  <button 
+                    className="btn-create-team"
+                    onClick={() => setShowCreateTeamModal(true)}
+                  >
+                    ➕ Créer une équipe
+                  </button>
+                  {userTeams.length > 0 && (
+                    <button 
+                      className="btn-manage-teams"
+                      onClick={() => setShowManageTeamModal(true)}
+                    >
+                      ⚙️ Gérer mes équipes ({userTeams.length})
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="teams-grid-pro">
               {filteredTeams.length === 0 ? (
                 <div className="no-results">
                   <p>
