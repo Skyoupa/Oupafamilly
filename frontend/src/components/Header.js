@@ -150,6 +150,15 @@ const Header = () => {
 
             {isAuthenticated ? (
               <div className="user-menu">
+                {/* Economic Status */}
+                <div className="user-economy">
+                  <Link to="/communaute" className="balance-link" title="Voir le marketplace">
+                    <span className="coin-icon">💰</span>
+                    <span className="balance-amount">{userBalance}</span>
+                    <span className="balance-label">coins</span>
+                  </Link>
+                </div>
+                
                 <Link to="/profil" className="profile-link">
                   <span className="welcome-text">Salut, {user?.username}!</span>
                 </Link>
@@ -157,6 +166,9 @@ const Header = () => {
                   <>
                     <Link to="/admin" className="admin-link">
                       <span className="admin-badge">ADMIN</span>
+                    </Link>
+                    <Link to="/admin/ultimate" className="admin-link">
+                      <span className="ultimate-badge">DASHBOARD</span>
                     </Link>
                   </>
                 )}
