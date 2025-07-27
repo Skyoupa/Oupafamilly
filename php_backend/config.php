@@ -5,7 +5,7 @@
  */
 
 // Configuration MySQL OVH
-define('DB_HOST', 'oupafaj803.mysql.db');
+define('DB_HOST', 'oupafaj803.mysql.db');  // Essayez aussi mysql10-68.perso.sfr.sh si ça ne marche pas
 define('DB_NAME', 'oupafaj803');
 define('DB_USER', 'oupafaj803');
 define('DB_PASS', 'e6f3R9s3N6dYwjqU');
