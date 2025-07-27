@@ -63,11 +63,11 @@ const Footer = () => {
           <div className="footer-section-pro">
             <h4 className="footer-subtitle-pro">NOS JEUX</h4>
             <ul className="footer-links-pro">
-              <li><a href="#">Counter-Strike 2</a></li>
-              <li><a href="#">World of Warcraft</a></li>
-              <li><a href="#">League of Legends</a></li>
-              <li><a href="#">StarCraft II</a></li>
-              <li><a href="#">Minecraft</a></li>
+              <li><Link to="/tutoriels?game=cs2">Counter-Strike 2</Link></li>
+              <li><Link to="/tutoriels?game=wow">World of Warcraft</Link></li>
+              <li><Link to="/tutoriels?game=lol">League of Legends</Link></li>
+              <li><Link to="/tutoriels?game=sc2">StarCraft II</Link></li>
+              <li><Link to="/tutoriels?game=minecraft">Minecraft</Link></li>
             </ul>
           </div>
 
