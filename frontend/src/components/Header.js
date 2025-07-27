@@ -69,6 +69,12 @@ const Header = () => {
     { path: '/a-propos', label: 'À PROPOS' }
   ];
 
+  // Economic navigation items for authenticated users
+  const economicNavItems = isAuthenticated ? [
+    { path: '/communaute?tab=marketplace', label: '🛒 MARKETPLACE' },
+    { path: '/communaute?tab=paris', label: '🎲 PARIS' }
+  ] : [];
+
   const handleAuthClick = (mode) => {
     setAuthModalMode(mode);
     setIsAuthModalOpen(true);
