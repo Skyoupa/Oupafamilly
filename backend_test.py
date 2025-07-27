@@ -3808,6 +3808,153 @@ class OupafamillyAPITester:
         
         return overall_success
 
+    def test_ultimate_dashboard_endpoints(self):
+        """Test Ultimate Dashboard endpoints - MAIN FOCUS FOR VALIDATION"""
+        if not self.token:
+            self.log("Skipping Ultimate Dashboard tests - no token", "WARNING")
+            return False
+            
+        self.log("=== TESTING ULTIMATE DASHBOARD ENDPOINTS ===")
+        
+        # Test 1: GET /api/analytics/overview
+        success1, response1 = self.run_test(
+            "Analytics Overview",
+            "GET",
+            "analytics/overview",
+            200
+        )
+        
+        if success1:
+            self.log(f"  ✅ Analytics Overview accessible")
+            self.log(f"    Total users: {response1.get('total_users', 0)}")
+            self.log(f"    Active users: {response1.get('active_users', 0)}")
+            self.log(f"    Total tournaments: {response1.get('total_tournaments', 0)}")
+            self.log(f"    Revenue: {response1.get('revenue', 0)}")
+        
+        # Test 2: GET /api/analytics/users/engagement
+        success2, response2 = self.run_test(
+            "Analytics Users Engagement",
+            "GET",
+            "analytics/users/engagement",
+            200
+        )
+        
+        if success2:
+            self.log(f"  ✅ User Engagement Analytics accessible")
+            engagement = response2.get('engagement_metrics', {})
+            self.log(f"    Daily active users: {engagement.get('daily_active_users', 0)}")
+            self.log(f"    Weekly active users: {engagement.get('weekly_active_users', 0)}")
+            self.log(f"    Average session time: {engagement.get('avg_session_time', 0)} minutes")
+        
+        # Test 3: GET /api/analytics/gaming/performance
+        success3, response3 = self.run_test(
+            "Analytics Gaming Performance",
+            "GET",
+            "analytics/gaming/performance",
+            200
+        )
+        
+        if success3:
+            self.log(f"  ✅ Gaming Performance Analytics accessible")
+            performance = response3.get('performance_metrics', {})
+            self.log(f"    Total matches: {performance.get('total_matches', 0)}")
+            self.log(f"    Average match duration: {performance.get('avg_match_duration', 0)} minutes")
+            popular_games = response3.get('popular_games', [])
+            if popular_games:
+                self.log(f"    Most popular game: {popular_games[0].get('game', 'unknown')}")
+        
+        # Test 4: GET /api/admin/users
+        success4, response4 = self.run_test(
+            "Admin Users Management",
+            "GET",
+            "admin/users?limit=20",
+            200
+        )
+        
+        if success4:
+            users = response4.get('users', []) if isinstance(response4, dict) else response4
+            self.log(f"  ✅ Admin Users endpoint accessible")
+            self.log(f"    Found {len(users)} users")
+            if users:
+                admin_users = [u for u in users if u.get('role') == 'admin']
+                self.log(f"    Admin users: {len(admin_users)}")
+                self.log(f"    Regular users: {len(users) - len(admin_users)}")
+        
+        # Test 5: GET /api/tournaments/ (already tested but verify for dashboard)
+        success5, response5 = self.run_test(
+            "Tournaments for Dashboard",
+            "GET",
+            "tournaments/?limit=50",
+            200
+        )
+        
+        if success5:
+            tournaments = response5 if isinstance(response5, list) else []
+            self.log(f"  ✅ Tournaments endpoint accessible for dashboard")
+            self.log(f"    Total tournaments: {len(tournaments)}")
+            
+            # Count by status for dashboard
+            status_counts = {}
+            for tournament in tournaments:
+                status = tournament.get('status', 'unknown')
+                status_counts[status] = status_counts.get(status, 0) + 1
+            
+            self.log(f"    Status distribution: {status_counts}")
+        
+        # Test 6: GET /api/premium/admin/subscriptions
+        success6, response6 = self.run_test(
+            "Premium Admin Subscriptions",
+            "GET",
+            "premium/admin/subscriptions?limit=20",
+            200
+        )
+        
+        if success6:
+            subscriptions = response6.get('subscriptions', []) if isinstance(response6, dict) else response6
+            self.log(f"  ✅ Premium Subscriptions endpoint accessible")
+            self.log(f"    Found {len(subscriptions)} subscriptions")
+            if subscriptions:
+                active_subs = [s for s in subscriptions if s.get('status') == 'active']
+                self.log(f"    Active subscriptions: {len(active_subs)}")
+                total_revenue = sum(s.get('amount', 0) for s in subscriptions)
+                self.log(f"    Total subscription revenue: {total_revenue}")
+        
+        # Test admin access security
+        self.log("\n  🔒 Testing admin access security...")
+        
+        # Temporarily remove token to test access denied
+        temp_token = self.token
+        self.token = None
+        
+        success_no_auth, response_no_auth = self.run_test(
+            "Admin Access Without Token",
+            "GET",
+            "admin/users",
+            401  # Should be unauthorized
+        )
+        
+        if success_no_auth:
+            self.log("  ✅ Admin endpoints properly secured (401 without token)")
+        else:
+            self.log("  ❌ Admin endpoints security issue", "ERROR")
+        
+        # Restore token
+        self.token = temp_token
+        
+        # Summary
+        total_tests = 6
+        passed_tests = sum([success1, success2, success3, success4, success5, success6])
+        
+        self.log(f"\n🎯 ULTIMATE DASHBOARD ENDPOINTS SUMMARY:")
+        self.log(f"  Tests passed: {passed_tests}/{total_tests}")
+        
+        if passed_tests >= 5:
+            self.log("  ✅ ULTIMATE DASHBOARD READY: Most endpoints accessible")
+        else:
+            self.log("  ❌ ULTIMATE DASHBOARD ISSUES: Multiple endpoints failing", "ERROR")
+        
+        return passed_tests >= 5
+
     def run_all_tests(self):
         """Run API tests with ENRICHED ACHIEVEMENTS SYSTEM as main focus"""
         self.log("🚀 Starting Oupafamilly API Tests - ENRICHED ACHIEVEMENTS SYSTEM TESTING")
