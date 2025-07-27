@@ -1,0 +1,111 @@
+{
+  "name": "Oupafamilly - Elite Gaming Community",
+  "short_name": "Oupafamilly",
+  "description": "Plateforme gaming élite avec tournois CS2, achievements, ELO et communauté professionnelle",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "categories": ["gaming", "sports", "entertainment", "social"],
+  "lang": "fr",
+  "dir": "ltr",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/desktop-screenshot.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshots/mobile-screenshot.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Communauté",
+      "short_name": "Communauté",
+      "description": "Accéder à la communauté gaming",
+      "url": "/communaute",
+      "icons": [{ "src": "icons/shortcut-community.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Tournois",
+      "short_name": "Tournois",
+      "description": "Voir les tournois en cours",
+      "url": "/communaute?tab=tournaments",
+      "icons": [{ "src": "icons/shortcut-tournaments.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Achievements",
+      "short_name": "Badges",
+      "description": "Voir mes badges et achievements",
+      "url": "/achievements",
+      "icons": [{ "src": "icons/shortcut-achievements.png", "sizes": "96x96" }]
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+oupafamilly",
+      "url": "/invite?code=%s"
+    }
+  ]
+}
