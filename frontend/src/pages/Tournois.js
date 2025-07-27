@@ -966,6 +966,296 @@ const Tournois = () => {
           font-size: 14px;
           opacity: 0.9;
         }
+
+        /* Styles pour le modal d'inscription */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+        }
+
+        .registration-modal {
+          background: white;
+          border-radius: 20px;
+          max-width: 600px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+          padding: 30px 30px 20px;
+          border-bottom: 1px solid #e5e7eb;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .modal-header h3 {
+          margin: 0;
+          color: #1f2937;
+          font-size: 24px;
+          font-weight: 700;
+        }
+
+        .modal-close {
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: #6b7280;
+          cursor: pointer;
+          padding: 5px;
+          border-radius: 50%;
+          transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+          background: #f3f4f6;
+          color: #374151;
+        }
+
+        .modal-content {
+          padding: 30px;
+        }
+
+        .tournament-info {
+          margin-bottom: 30px;
+          padding: 20px;
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+          border-radius: 15px;
+        }
+
+        .tournament-info h4 {
+          margin: 0 0 15px 0;
+          color: #1e40af;
+          font-size: 20px;
+          font-weight: 600;
+        }
+
+        .tournament-details {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 10px;
+        }
+
+        .detail-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+        }
+
+        .detail-label {
+          font-weight: 500;
+          color: #6b7280;
+        }
+
+        .team-selection h4 {
+          margin: 0 0 10px 0;
+          color: #1f2937;
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        .team-selection p {
+          margin: 0 0 20px 0;
+          color: #6b7280;
+          line-height: 1.5;
+        }
+
+        .team-options {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .team-option {
+          position: relative;
+        }
+
+        .team-option input[type="radio"] {
+          position: absolute;
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .team-option-label {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 15px;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.2s;
+          background: white;
+        }
+
+        .team-option input[type="radio"]:checked + .team-option-label {
+          border-color: #3b82f6;
+          background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+
+        .team-option-label:hover {
+          border-color: #60a5fa;
+          background: #f8fafc;
+        }
+
+        .team-icon {
+          font-size: 24px;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #f1f5f9;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .team-option input[type="radio"]:checked + .team-option-label .team-icon {
+          background: #3b82f6;
+          color: white;
+        }
+
+        .team-info strong {
+          display: block;
+          color: #1f2937;
+          font-size: 16px;
+          margin-bottom: 2px;
+        }
+
+        .team-info small {
+          color: #6b7280;
+          font-size: 14px;
+        }
+
+        .no-teams-message {
+          text-align: center;
+          padding: 30px 20px;
+          background: #fef3c7;
+          border: 1px solid #f59e0b;
+          border-radius: 12px;
+          margin-top: 15px;
+        }
+
+        .no-teams-icon {
+          font-size: 48px;
+          margin-bottom: 15px;
+        }
+
+        .no-teams-message p {
+          margin: 0 0 15px 0;
+          color: #92400e;
+          line-height: 1.5;
+        }
+
+        .create-team-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #f59e0b;
+          color: white;
+          text-decoration: none;
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-weight: 500;
+          transition: all 0.2s;
+        }
+
+        .create-team-link:hover {
+          background: #d97706;
+          transform: translateY(-1px);
+        }
+
+        .modal-actions {
+          padding: 20px 30px 30px;
+          border-top: 1px solid #e5e7eb;
+          display: flex;
+          gap: 15px;
+          justify-content: flex-end;
+        }
+
+        .btn-cancel {
+          background: #f8fafc;
+          color: #6b7280;
+          border: 1px solid #d1d5db;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+          background: #f1f5f9;
+          border-color: #9ca3af;
+        }
+
+        .btn-cancel:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .btn-confirm {
+          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-confirm:hover {
+          background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-confirm:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        @media (max-width: 768px) {
+          .modal-overlay {
+            padding: 10px;
+          }
+          
+          .registration-modal {
+            max-height: 95vh;
+          }
+          
+          .modal-header, .modal-content, .modal-actions {
+            padding: 20px;
+          }
+          
+          .tournament-details {
+            grid-template-columns: 1fr;
+          }
+          
+          .modal-actions {
+            flex-direction: column-reverse;
+          }
+          
+          .btn-cancel, .btn-confirm {
+            width: 100%;
+          }
+        }
       `}</style>
     </div>
   );
