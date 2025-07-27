@@ -16,6 +16,7 @@ import APropos from './pages/APropos';
 import News from './pages/News';
 import Profil from './pages/Profil';
 import AdminDashboard from './pages/AdminDashboard';
+import UltimateDashboard from './pages/UltimateDashboard';
 import AdminTournaments from './pages/AdminTournaments';
 import AdminUsers from './pages/AdminUsers';
 import AdminContent from './pages/AdminContent';
